@@ -1,7 +1,7 @@
-# ProjectLamb_YouHaveToReadIt
+# ProjectLamb_NoSignal
 3rd Project of ProjectLamb
 
-> YouHaveToReadIt 프로젝트 생성
+> NoSignal 프로젝트 생성
 
 #### 목차
 1. [Git Setting](#1-git-setting)
