@@ -8,12 +8,13 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDirection;
     private Rigidbody myRigid;
     private float moveSpeed = 4f;
+    private Animator playerAnim;
 
 
     void Awake()
     {
         myRigid = GetComponent<Rigidbody>();
-        if (myRigid != null) Debug.Log("성공!");
+        playerAnim = GetComponentInChildren<Animator>();
     }
 
     void OnMove(InputValue value)
@@ -34,7 +35,6 @@ public class PlayerController : MonoBehaviour
 
             // 입력 벡터를 카메라 기준으로 변환
             moveDirection = (forward * input.y + right * input.x).normalized;
-
         }
         else
         {
@@ -48,7 +48,9 @@ public class PlayerController : MonoBehaviour
         {
             // myRigid.velocity = moveDirection * moveSpeed + Vector3.up * Time.deltaTime;
             myRigid.velocity = moveDirection * moveSpeed + Vector3.up * myRigid.velocity.y;
+            playerAnim.SetBool("IsWalk", true);
         }
+        else playerAnim.SetBool("IsWalk", false);
     }
 
     void FixedUpdate()
