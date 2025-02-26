@@ -17,7 +17,7 @@ public class CameraFollow : MonoBehaviour
     public float mouseY;
     public float rotX = 0f;
     public float rotY;
-    public float sensitivity = 10f;
+    public float sensitivity = 400f;
 
     public Transform target;
 
@@ -55,15 +55,12 @@ public class CameraFollow : MonoBehaviour
     
     void FirstPersonLook()
     {
-        mousePos = Mouse.current.position.ReadValue();
-        Vector2 delta = (mousePos - lastMousePos) * Time.deltaTime * sensitivity;
-        lastMousePos = mousePos;
+        Vector2 delta = Mouse.current.delta.ReadValue() * sensitivity;
 
         mouseX = delta.x;
         mouseY = delta.y;
 
         rotX -= mouseY;
-        rotY -= mouseX;
         rotX = Mathf.Clamp(rotX, -90f, 90f);
 
         transform.localRotation = Quaternion.Euler(rotX,0f,0f);

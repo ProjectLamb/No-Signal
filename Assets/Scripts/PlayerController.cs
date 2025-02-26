@@ -13,23 +13,41 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         myRigid = GetComponent<Rigidbody>();
-        if(myRigid != null) Debug.Log("성공!");
+        if (myRigid != null) Debug.Log("성공!");
     }
 
     void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
-        if (input != null)
+        // if (input != null)
+        // {
+        //     moveDirection = new Vector3(input.x, 0f, input.y);
+        // }
+
+        if (input != Vector2.zero)
         {
-            moveDirection = new Vector3(input.x, 0f, input.y);
+            //카메라의 전방과 우측 벡터 가져오기 (y축 이동 제거)
+            Vector3 forward = Camera.main.transform.forward;
+            Vector3 right = Camera.main.transform.right;
+            forward.y = 0f;
+            right.y = 0f;
+
+            // 입력 벡터를 카메라 기준으로 변환
+            moveDirection = (forward * input.y + right * input.x).normalized;
+
+        }
+        else
+        {
+            moveDirection = Vector3.zero;
         }
     }
 
     void Move()
     {
-        if(moveDirection != Vector3.zero)
+        if (moveDirection != Vector3.zero)
         {
-           myRigid.velocity = moveDirection * moveSpeed + Vector3.up * Time.deltaTime;
+            // myRigid.velocity = moveDirection * moveSpeed + Vector3.up * Time.deltaTime;
+            myRigid.velocity = moveDirection * moveSpeed + Vector3.up * myRigid.velocity.y;
         }
     }
 
