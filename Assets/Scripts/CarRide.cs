@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using FMODUnity;
 public class CarRide : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] private EventReference carEntered;
     public MonoBehaviour CarController;
     public Camera carCam;
     public GameObject player;
@@ -24,6 +24,7 @@ public class CarRide : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.E) && IsCanDrive)
         {
+            AudioManager.instance.PlayOneShot(carEntered,this.transform.position);
             player.transform.SetParent(this.transform);
             player.gameObject.SetActive(false);
 

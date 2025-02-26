@@ -449,7 +449,7 @@ Transform:
   m_GameObject: {fileID: 225740981}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.673, z: 0}
+  m_LocalPosition: {x: 0, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -582,7 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nonRigidbodyVelocity: 0
-  attenuationObject: {fileID: 0}
+  attenuationObject: {fileID: 225740981}
 --- !u!114 &271215761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1711,6 +1711,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5830482095275516976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1755831805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1755831807}
+  - component: {fileID: 1755831806}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1755831806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755831805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80969095a40bcb048b8d492e3e2bbccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1755831807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755831805}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.69053024, y: 1.3198237, z: 0.65349364}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1757119237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1719,6 +1763,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 225740982}
     m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 46489d110aa5b554294012f2f4c99192,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 46489d110aa5b554294012f2f4c99192,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5328,6 +5377,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ae046dac3d4043bb7a8f556d95a84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carEntered:
+    Guid:
+      Data1: -460018071
+      Data2: 1085905425
+      Data3: -1806250071
+      Data4: 947613836
+    Path: event:/car_enter
   CarController: {fileID: 8818152394911339570}
   carCam: {fileID: 330585545}
   player: {fileID: 225740981}
@@ -5478,3 +5534,4 @@ SceneRoots:
   - {fileID: 225740982}
   - {fileID: 2056183420}
   - {fileID: 1907614769}
+  - {fileID: 1755831807}
