@@ -1,42 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CarCam : MonoBehaviour
 {
-    private float moveSmoothness;
-    private float rotSmoothness;
 
-    private Vector3 moveOffset;
-    private Vector3 rotOffset;
+    private Vector2 lastMousePos;
+    private float mouseX;
+    private float mouseY;
+    private float rotX = 0f;
+    private float rotY;
 
-    public Transform target;
+    public float sensitivity;
+    public Transform car;
 
 
+
+    void Start()
+    {
+        lastMousePos = Mouse.current.position.ReadValue();
+    }
     // Update is called once per frame
     void Update()
     {
-        //CameraMove();
-        //CameraRot();
-
-        this.transform.position = this.target.position;
+        CarLook();
     }
 
-    void CameraMove()
+    void CarLook()
     {
-        Vector3 targetPos = new Vector3();
-        targetPos = target.transform.TransformPoint(moveOffset);
+        this.transform.position = this.car.position;
+        Vector2 delta = Mouse.current.delta.ReadValue() * sensitivity;
 
-        transform.position = Vector3.Lerp(transform.position, targetPos, moveSmoothness * Time.deltaTime);
-    }
+        mouseX = delta.x;
+        mouseY = delta.y;
 
-    void CameraRot()
-    {
-        var dir = target.transform.position - transform.position;
-        var rot = new Quaternion();
+        rotY += mouseX;
+        rotY = Mathf.Clamp(rotY, -90f, 90f);
 
-        rot = Quaternion.LookRotation(dir + rotOffset, Vector3.up);
+        transform.localRotation = Quaternion.Euler(0f, rotY, 0f);
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, rotSmoothness * Time.deltaTime);
+        car.Rotate(Vector3.up * mouseY);
     }
 }

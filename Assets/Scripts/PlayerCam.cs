@@ -8,12 +8,12 @@ public class PlayerCam : MonoBehaviour
 
     private Vector2 lastMousePos;
 
-    public float mouseX;
-    public float mouseY;
-    public float rotX = 0f;
-    public float rotY;
-    public float sensitivity = 400f;
+    private float mouseX;
+    private float mouseY;
+    private float rotX = 0f;
+    private float rotY;
 
+    public float sensitivity;
     public Transform playerTr;
 
     void Start()
@@ -22,12 +22,12 @@ public class PlayerCam : MonoBehaviour
     }
     void Update()
     {
-        transform.position = playerTr.position;
         FirstPersonLook();
     }
     
     void FirstPersonLook()
     {
+        transform.position = playerTr.position;
         Vector2 delta = Mouse.current.delta.ReadValue() * sensitivity;
 
         mouseX = delta.x;

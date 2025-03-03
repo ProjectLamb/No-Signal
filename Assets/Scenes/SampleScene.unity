@@ -705,11 +705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d7ac7f9df302e4d815e9d8f25c08a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseX: 0
-  mouseY: 0
-  rotX: 0
-  rotY: 0
-  sensitivity: 2
+  sensitivity: 0.5
   playerTr: {fileID: 225740982}
 --- !u!1 &330585543
 GameObject:
@@ -867,7 +863,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53f03f388cd25584690752541e57d051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1615850242}
+  sensitivity: 0.2
+  car: {fileID: 1615850242}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,7 +1687,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1615850242}
   m_Layer: 0
-  m_Name: CarTransform
+  m_Name: CarTr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5407,8 +5404,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.1501749, z: 3.9075751}
-  m_Center: {x: 0, y: 0.8, z: 0.14338803}
+  m_Size: {x: 1.507771, y: 1.1501749, z: 2.519987}
+  m_Center: {x: 0.0042436123, y: 0.8000001, z: -0.22291708}
 --- !u!4 &8879528568316162615
 Transform:
   m_ObjectHideFlags: 0

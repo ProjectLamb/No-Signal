@@ -11,6 +11,7 @@ public class CarRide : MonoBehaviour
     public GameObject carEnterUI;
 
     private bool IsCanDrive;
+    private bool IsRide;
     void Start()
     {
         CarController.enabled = false;
@@ -19,12 +20,12 @@ public class CarRide : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsCanDrive) carEnterUI.SetActive(true);
-        else carEnterUI.SetActive(false);
-
-        if(Input.GetKeyDown(KeyCode.E) && IsCanDrive)
+        if(Input.GetKeyDown(KeyCode.E) && IsCanDrive && !IsRide)
         {
+            IsRide = true;
+            //차 타는소리 재생
             AudioManager.instance.PlayOneShot(carEntered,this.transform.position);
+
             player.transform.SetParent(this.transform);
             player.gameObject.SetActive(false);
 
@@ -37,7 +38,7 @@ public class CarRide : MonoBehaviour
             CarController.enabled = false;
             player.gameObject.SetActive(true);
             carCam.enabled = false;
-            IsCanDrive = false;
+            IsRide = false;
         }
     }
     
@@ -45,9 +46,8 @@ public class CarRide : MonoBehaviour
     {
         if(col.gameObject.tag == "Player")
         {
-            Debug.Log("충돌");
+            carEnterUI.SetActive(true);
             IsCanDrive = true;   
-            //CarController.enabled = true;
         }
     }
 
@@ -55,6 +55,7 @@ public class CarRide : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
+            carEnterUI.SetActive(false);
             IsCanDrive = false;
         }
     }
