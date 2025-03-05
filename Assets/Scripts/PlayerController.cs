@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigid;
     private float moveSpeed = 4f;
     private Animator playerAnim;
+    private Vector2 input2;
 
 
     void Awake()
@@ -20,21 +21,10 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
-        // if (input != null)
-        // {
-        //     moveDirection = new Vector3(input.x, 0f, input.y);
-        // }
 
         if (input != Vector2.zero)
         {
-            //카메라의 전방과 우측 벡터 가져오기 (y축 이동 제거)
-            Vector3 forward = Camera.main.transform.forward;
-            Vector3 right = Camera.main.transform.right;
-            forward.y = 0f;
-            right.y = 0f;
-
-            // 입력 벡터를 카메라 기준으로 변환
-            moveDirection = (forward * input.y + right * input.x).normalized;
+            input2 = input;
         }
         else
         {
@@ -46,15 +36,26 @@ public class PlayerController : MonoBehaviour
     {
         if (moveDirection != Vector3.zero)
         {
-            // myRigid.velocity = moveDirection * moveSpeed + Vector3.up * Time.deltaTime;
             myRigid.velocity = moveDirection * moveSpeed + Vector3.up * myRigid.velocity.y;
             playerAnim.SetBool("IsWalk", true);
         }
         else playerAnim.SetBool("IsWalk", false);
     }
 
+    void Look()
+    {
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 right = Camera.main.transform.right;
+        forward.y = 0f;
+        right.y = 0f;
+
+        // 입력 벡터를 카메라 기준으로 변환
+        moveDirection = (forward * input2.y + right * input2.x).normalized;
+    }
+
     void FixedUpdate()
     {
         Move();
+        Look();
     }
 }
