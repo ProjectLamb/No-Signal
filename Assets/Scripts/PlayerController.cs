@@ -21,12 +21,9 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
-
-        if (input != Vector2.zero)
-        {
-            input2 = input;
-        }
-        else
+        input2 = input;
+        
+        if(input2 == Vector2.zero)
         {
             moveDirection = Vector3.zero;
         }
@@ -39,7 +36,10 @@ public class PlayerController : MonoBehaviour
             myRigid.velocity = moveDirection * moveSpeed + Vector3.up * myRigid.velocity.y;
             playerAnim.SetBool("IsWalk", true);
         }
-        else playerAnim.SetBool("IsWalk", false);
+        else 
+        {
+            playerAnim.SetBool("IsWalk", false);
+        }
     }
 
     void Look()
@@ -49,10 +49,15 @@ public class PlayerController : MonoBehaviour
         forward.y = 0f;
         right.y = 0f;
 
+
         // 입력 벡터를 카메라 기준으로 변환
         moveDirection = (forward * input2.y + right * input2.x).normalized;
-    }
 
+        if (input2 == Vector2.zero)
+        {
+            moveDirection = Vector3.zero;
+        }
+    }
     void FixedUpdate()
     {
         Move();
