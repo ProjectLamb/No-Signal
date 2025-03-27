@@ -34,7 +34,7 @@ public class MiniCam : MonoBehaviour
 
         rotY += mouseX;
 
-        transform.localRotation = Quaternion.Euler(90f,rotY,0f);
+        transform.localRotation = Quaternion.Euler(90f,rotY + 180f,0f);
 
         //카메라 플레이어 추적
         transform.position = new Vector3(playerTr.position.x , 30f, playerTr.position.z);
