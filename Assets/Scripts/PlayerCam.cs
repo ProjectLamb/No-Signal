@@ -26,7 +26,7 @@ public class PlayerCam : MonoBehaviour
     
     void FirstPersonLook()
     {
-        transform.position = playerTr.position;
+        transform.position = new Vector3(playerTr.position.x, playerTr.position.y + 1.3f, playerTr.position.z);
         Vector2 delta = Mouse.current.delta.ReadValue() * sensitivity;
 
         mouseX = delta.x;
