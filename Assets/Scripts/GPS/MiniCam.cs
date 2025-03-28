@@ -9,7 +9,6 @@ public class MiniCam : MonoBehaviour
     private Vector2 lastMousePos;
     private float mouseX;
     private float mouseY;
-    private float rotX = 0f;
     private float rotY;
 
     public float sensitivity;

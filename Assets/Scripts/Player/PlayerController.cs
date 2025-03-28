@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FMOD.Studio;
+
 public class PlayerController : MonoBehaviour
 {
-    private bool IsMove;
     private Vector3 moveDirection;
     private Rigidbody myRigid;
+
     private float moveSpeed = 4f;
+    private bool IsMove;
+
     private Animator playerAnim;
     private Vector2 input2;
+
+    private EventInstance playerFootsteps;
 
 
     void Awake()
@@ -18,12 +24,24 @@ public class PlayerController : MonoBehaviour
         playerAnim = GetComponentInChildren<Animator>();
     }
 
+    void Start()
+    {
+        playerFootsteps = AudioManager.instance.CreateInstance(FMODEvents.instance.playerFootSteps);
+    }
+
+    void FixedUpdate()
+    {
+        Move();
+        Look();
+        UpdateSound();
+    }
+
     void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
         input2 = input;
-        
-        if(input2 == Vector2.zero)
+
+        if (input2 == Vector2.zero)
         {
             moveDirection = Vector3.zero;
         }
@@ -36,7 +54,7 @@ public class PlayerController : MonoBehaviour
             myRigid.velocity = moveDirection * moveSpeed + Vector3.up * myRigid.velocity.y;
             playerAnim.SetBool("IsWalk", true);
         }
-        else 
+        else
         {
             playerAnim.SetBool("IsWalk", false);
         }
@@ -58,9 +76,22 @@ public class PlayerController : MonoBehaviour
             moveDirection = Vector3.zero;
         }
     }
-    void FixedUpdate()
+
+    private void UpdateSound()
     {
-        Move();
-        Look();
+        if (input2 != Vector2.zero)
+        {
+            PLAYBACK_STATE playbackState;
+            playerFootsteps.getPlaybackState(out playbackState);
+            if (playbackState.Equals(PLAYBACK_STATE.STOPPED))
+            {
+                playerFootsteps.start();
+            }
+        }
+        else
+        {
+            playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+        }
     }
+
 }

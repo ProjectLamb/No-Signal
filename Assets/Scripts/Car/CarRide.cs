@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using FMODUnity;
 public class CarRide : MonoBehaviour
 {
-    [SerializeField] private EventReference carEntered;
     public MonoBehaviour CarController;
     public Camera carCam;
     public GameObject player;
@@ -24,7 +22,7 @@ public class CarRide : MonoBehaviour
         {
             IsRide = true;
             //차 타는소리 재생
-            AudioManager.instance.PlayOneShot(carEntered,this.transform.position);
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carRide,this.transform.position);
 
             player.transform.SetParent(this.transform);
             player.gameObject.SetActive(false);
