@@ -39,4 +39,5 @@ public class PlayerCam : MonoBehaviour
 
         playerTr.Rotate(Vector3.up * mouseX);
     }
+    
 }

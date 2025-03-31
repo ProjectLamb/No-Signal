@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
         if (input2 == Vector2.zero)
         {
+            myRigid.angularVelocity = Vector3.zero;
             moveDirection = Vector3.zero;
         }
     }
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             playerAnim.SetBool("IsWalk", false);
+            myRigid.angularVelocity = Vector3.zero;
         }
     }
 
@@ -91,6 +93,18 @@ public class PlayerController : MonoBehaviour
         else
         {
             playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+        }
+    }
+
+    void OnTriggerStay(Collider col)
+    {
+        if(col.gameObject.tag == "Car")
+        {
+            playerFootsteps.stop(STOP_MODE.IMMEDIATE);
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+            }
         }
     }
 

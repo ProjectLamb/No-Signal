@@ -9,7 +9,7 @@ public class CarRide : MonoBehaviour
     public GameObject carEnterUI;
 
     private bool IsCanDrive;
-    private bool IsRide;
+    public static bool IsRide;
     void Start()
     {
         CarController.enabled = false;
