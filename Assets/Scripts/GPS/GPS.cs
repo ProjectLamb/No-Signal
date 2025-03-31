@@ -8,6 +8,6 @@ public class GPS : MonoBehaviour
 
     void Update()
     {
-        transform.position = new Vector3(playerTr.position.x, 2f, playerTr.position.z + 1f);
+        transform.position = new Vector3(playerTr.position.x + 0.7f, 1f, playerTr.position.z + 0.9f);
     }
 }

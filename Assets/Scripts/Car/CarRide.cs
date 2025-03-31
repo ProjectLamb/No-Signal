@@ -29,6 +29,7 @@ public class CarRide : MonoBehaviour
 
             carCam.enabled = true;
             CarController.enabled = true;
+            carEnterUI.SetActive(false);
         }
 
         if(Input.GetKeyDown(KeyCode.F) && IsCanDrive)
