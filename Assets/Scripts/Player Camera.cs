@@ -10,14 +10,15 @@ public class PlayerCamera : MonoBehaviour
 
     void Start()
     {
-        transform.rotation = Quaternion.Euler(25f, 0, 0);
+        transform.rotation = Quaternion.Euler(30f, 0, 0);
     }
     // void Update()
+
     // {
         
     // }
     void LateUpdate()
     {
-        transform.position = new Vector3(target.position.x, target.position.y + 1.5f ,target.position.z -3f);
+        transform.position = new Vector3(target.position.x, target.position.y + 2.7f ,target.position.z -2f);
     }
 }
