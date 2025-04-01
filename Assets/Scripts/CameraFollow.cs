@@ -21,7 +21,6 @@ public class CameraFollow : MonoBehaviour
     {
         HandleMovement();
         HandleRotation();
-
     }
 
     void HandleMovement()
