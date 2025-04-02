@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using FMOD.Studio;
 
 public class Player : MonoBehaviour
 {
@@ -9,22 +10,21 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-
-        // animator.SetFloat("New Float", 3.1f);
-        // animator.SetInteger("New Int", 1);
-        // animator.SetBool("New Bool", true);
-        // animator.SetTrigger("New Trigger");
     }
     public float speed;
     public float rotationSpeed = 10f;
+
     float hAxis;
     float vAxis;
+
     private Vector3 lastMoveVec = Vector3.forward;
     Vector3 moveVec;
 
+    private EventInstance playerFootsteps;
+
     void Start()
     {
-        
+        playerFootsteps = AudioManager.instance.CreateInstance(FMODEvents.instance.playerFootSteps);
     }
 
     void Update()
@@ -36,10 +36,6 @@ public class Player : MonoBehaviour
         bool isMove = moveVec.magnitude > 0;
         bool isLastMove = lastMoveVec.magnitude > 0;
         animator.SetBool("IsMove", isMove);
-        
-        // if (isMove){
-        //     animator.transform.forward = moveVec;
-        // }
 
         if (isMove)
         {
@@ -48,8 +44,39 @@ public class Player : MonoBehaviour
         }
         if (isLastMove)
         {
-        Quaternion targetRotation = Quaternion.LookRotation(lastMoveVec);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(lastMoveVec);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        UpdateSound();
+    }
+
+    private void UpdateSound()
+    {
+        if (moveVec.magnitude > 0)
+        {
+            PLAYBACK_STATE playbackState;
+            playerFootsteps.getPlaybackState(out playbackState);
+            if (playbackState.Equals(PLAYBACK_STATE.STOPPED))
+            {
+                playerFootsteps.start();
+            }
+        }
+        else
+        {
+            playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+        }
+    }
+
+    void OnTriggerStay(Collider col)
+    {
+        if(col.gameObject.tag == "Car")
+        {
+            playerFootsteps.stop(STOP_MODE.IMMEDIATE);
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+            }
         }
     }
        
