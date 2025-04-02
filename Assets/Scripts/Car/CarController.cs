@@ -52,11 +52,12 @@ public class CarController : MonoBehaviour
         AnimateWheels();
     }
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         Move();
         Steer();
         Brake();
+        Debug.Log(maxAcceleration);
     }
 
     void GetInputs()
