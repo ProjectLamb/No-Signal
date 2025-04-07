@@ -450,6 +450,7 @@ GameObject:
   - component: {fileID: 144629142}
   - component: {fileID: 144629146}
   - component: {fileID: 144629147}
+  - component: {fileID: 144629147}
   m_Layer: 0
   m_Name: MinimapCamera
   m_TagString: Untagged
@@ -8200,11 +8201,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e8f5f5f5c525a44ba9d35399a9b5d04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSmoothness: 200
-  rotSmoothness: 0
-  moveOffset: {x: 0, y: 0, z: 0}
-  rotOffset: {x: 0, y: 0, z: 0}
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
   carTarget: {fileID: 1059011416242313484}
+  mouseSensitivity: 1.5
 --- !u!23 &7561006081626498224
 MeshRenderer:
   m_ObjectHideFlags: 0
