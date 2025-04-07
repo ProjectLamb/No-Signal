@@ -4,40 +4,36 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public float moveSmoothness;
-    public float rotSmoothness;
-
-    public Vector3 moveOffset;
-    public Vector3 rotOffset;
-
+    public Vector3 positionOffset;
+    public Vector3 rotationOffset;
     public Transform carTarget;
 
-    void FixedUpdate()
+    public float mouseSensitivity = 2f;
+    private float mouseX = 0f;
+
+    void LateUpdate()
     {
         FollowTarget();
     }
 
     void FollowTarget()
     {
-        HandleMovement();
+        HandlePosition();
         HandleRotation();
     }
 
-    void HandleMovement()
+    void HandlePosition()
     {
-        Vector3 targetPos = new Vector3();
-        targetPos = carTarget.TransformPoint(moveOffset);
-
-        transform.position = Vector3.Lerp(transform.position, targetPos, moveSmoothness * Time.deltaTime);
+        transform.position = carTarget.TransformPoint(positionOffset);
     }
 
     void HandleRotation()
     {
-        var direction = carTarget.position - transform.position;
-        var rotation = new Quaternion();
+        mouseX += Input.GetAxis("Mouse X") * mouseSensitivity;
 
-        rotation = Quaternion.LookRotation(direction + rotOffset, Vector3.up);
+        Quaternion baseRot = carTarget.rotation * Quaternion.Euler(rotationOffset);
+        Quaternion mouseRot = Quaternion.Euler(0f, mouseX, 0f);
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, rotSmoothness * Time.deltaTime);
+        transform.rotation = baseRot * mouseRot;
     }
 }
