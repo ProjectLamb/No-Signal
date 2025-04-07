@@ -8,6 +8,7 @@ public class EventDot : MonoBehaviour
 {
 
     [SerializeField] private ParticleSystem wave;
+    public GameObject target;
 
     private StudioEventEmitter emitter;
     void Start()
@@ -15,6 +16,11 @@ public class EventDot : MonoBehaviour
         StartCoroutine("WaveCoroutine");
         emitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.radar, this.gameObject);
         emitter.Play();
+    }
+
+    void FixedUpdate()
+    {
+        this.transform.position = target.transform.position;
     }
 
     IEnumerator WaveCoroutine()

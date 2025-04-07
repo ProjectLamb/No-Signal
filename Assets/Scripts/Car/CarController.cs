@@ -57,7 +57,6 @@ public class CarController : MonoBehaviour
         Move();
         Steer();
         Brake();
-        Debug.Log(maxAcceleration);
     }
 
     void GetInputs()
