@@ -27,7 +27,7 @@ public class CarController : MonoBehaviour
     public Vector3 _centerOfMass;
 
     public List<Wheel> wheels;
-    public GameObject steeringWheel; //ÇÚµé
+    public GameObject steeringWheel; //ï¿½Úµï¿½
     private Quaternion initialSteeringRotation;
 
     float moveInput;
@@ -40,9 +40,9 @@ public class CarController : MonoBehaviour
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 
-        if (steeringWheel != null) //ÇÚµé
+        if (steeringWheel != null) //ï¿½Úµï¿½
         {
-            initialSteeringRotation = steeringWheel.transform.localRotation; // ÃÊ±â È¸Àü°ª ÀúÀå
+            initialSteeringRotation = steeringWheel.transform.localRotation; // ï¿½Ê±ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
 
@@ -52,7 +52,7 @@ public class CarController : MonoBehaviour
         AnimateWheels();
     }
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         Move();
         Steer();
