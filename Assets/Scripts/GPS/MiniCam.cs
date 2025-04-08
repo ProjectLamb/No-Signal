@@ -12,7 +12,8 @@ public class MiniCam : MonoBehaviour
     private float rotY;
 
     public float sensitivity;
-    public Transform playerTr;
+    public Transform target;
+    public GameObject minimapMark;
 
     void Start()
     {
@@ -33,9 +34,11 @@ public class MiniCam : MonoBehaviour
 
         rotY += mouseX;
 
-        transform.localRotation = Quaternion.Euler(90f,rotY + 180f,0f);
+        //transform.rotation = Quaternion.Euler(0f,0f,0f);
+        minimapMark.transform.rotation = Quaternion.Euler(0f,rotY + 180f,0f);
+        
 
         //카메라 플레이어 추적
-        transform.position = new Vector3(playerTr.position.x , 30f, playerTr.position.z);
+        transform.position = new Vector3(target.position.x , target.position.y + 100f, target.position.z);
     }
 }
