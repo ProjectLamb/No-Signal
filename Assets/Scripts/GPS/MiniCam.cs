@@ -13,7 +13,6 @@ public class MiniCam : MonoBehaviour
 
     public float sensitivity;
     public Transform target;
-    public GameObject minimapMark;
 
     void Start()
     {
@@ -32,13 +31,9 @@ public class MiniCam : MonoBehaviour
         mouseX = delta.x;
         mouseY = delta.y;
 
-        rotY += mouseX;
-
-        //transform.rotation = Quaternion.Euler(0f,0f,0f);
-        minimapMark.transform.rotation = Quaternion.Euler(0f,rotY + 180f,0f);
-        
+        rotY += mouseX;   
 
         //카메라 플레이어 추적
-        transform.position = new Vector3(target.position.x , target.position.y + 100f, target.position.z);
+        transform.position = new Vector3(target.position.x , target.position.y + 250f, target.position.z);
     }
 }

@@ -129,4 +129,14 @@ public class CarController : MonoBehaviour
             wheel.wheelModel.transform.rotation = rot;
         }
     }
+
+    void OnTriggerStay(Collider col)
+    {
+        if (col.gameObject.tag == "CrowEvent")
+        {
+            EventManager.Instance.SetEvent(0);
+            EventManager.Instance.PlayEvent();
+        }
+    }
+    
 }
