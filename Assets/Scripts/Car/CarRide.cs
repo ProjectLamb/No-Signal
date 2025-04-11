@@ -9,6 +9,7 @@ public class CarRide : MonoBehaviour
     public GameObject player;
     public GameObject playerBody;
     public GameObject carEnterUI;
+    public GameObject drivingBody;
 
     private bool IsCanDrive;
     public bool IsRide;
@@ -32,6 +33,7 @@ public class CarRide : MonoBehaviour
             carCam.enabled = true;
             CarController.enabled = true;
             carEnterUI.SetActive(false);
+            drivingBody.SetActive(true);
         }
 
         if (Input.GetKeyDown(KeyCode.F) && IsCanDrive)
@@ -39,6 +41,7 @@ public class CarRide : MonoBehaviour
             CarController.enabled = false;
             playerBody.transform.SetParent(player.transform);
             playerBody.gameObject.SetActive(true);
+            drivingBody.SetActive(false);
             carCam.enabled = false;
             IsRide = false;
         }

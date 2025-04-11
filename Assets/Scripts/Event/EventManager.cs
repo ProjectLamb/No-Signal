@@ -5,14 +5,14 @@ using UnityEngine.Playables;
 
 public class EventManager : MonoBehaviour
 {
-    public static EventManager instance;
+    private static EventManager instance;
     public static EventManager Instance
     {
         get
         {
             if(instance == null)
             {
-                instance = new EventManager();
+                instance = FindObjectOfType<EventManager>();
             }
             return instance;
         }
