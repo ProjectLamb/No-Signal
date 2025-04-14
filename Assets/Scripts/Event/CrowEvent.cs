@@ -112,5 +112,6 @@ public class CrowEvent : MonoBehaviour
         transform.position = finalDestination.position;
 
         StopCoroutine("FlyToTheDest");
+        
     }
 }
