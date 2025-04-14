@@ -12,7 +12,7 @@ public class MiniCam : MonoBehaviour
     private float rotY;
 
     public float sensitivity;
-    public Transform playerTr;
+    public Transform target;
 
     void Start()
     {
@@ -31,11 +31,9 @@ public class MiniCam : MonoBehaviour
         mouseX = delta.x;
         mouseY = delta.y;
 
-        rotY += mouseX;
-
-        transform.localRotation = Quaternion.Euler(90f,rotY + 180f,0f);
+        rotY += mouseX;   
 
         //카메라 플레이어 추적
-        transform.position = new Vector3(playerTr.position.x , 30f, playerTr.position.z);
+        transform.position = new Vector3(target.position.x , target.position.y + 250f, target.position.z);
     }
 }
