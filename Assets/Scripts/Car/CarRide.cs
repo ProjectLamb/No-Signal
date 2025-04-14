@@ -47,6 +47,13 @@ public class CarRide : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "CrowEvent")
+        {
+            CrowEvent.IsEventStart = true;
+        }
+    }
     void OnTriggerStay(Collider col)
     {
         if (col.gameObject.tag == "Player")

@@ -130,13 +130,5 @@ public class CarController : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.tag == "CrowEvent")
-        {
-            EventManager.Instance.SetEvent(0);
-            EventManager.Instance.PlayEvent();
-        }
-    }
     
 }
