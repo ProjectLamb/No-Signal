@@ -6,20 +6,28 @@ public class CameraFollow : MonoBehaviour
 {
     public Vector3 positionOffset;
     public Vector3 rotationOffset;
-    public Transform carTarget;
+    public static Transform carTarget;
 
     public float mouseSensitivity = 2f;
     private float mouseX = 0f;
 
+    void Start()
+    {
+        carTarget = GameObject.Find("CarTr").transform;
+    }
+    
     void LateUpdate()
     {
         FollowTarget();
     }
 
     void FollowTarget()
-    {
+    {   
+        
+        if(!BoomGateEventTrigger.isBoomEvent){
         HandlePosition();
         HandleRotation();
+        }
     }
 
     void HandlePosition()
