@@ -9,38 +9,54 @@ public class BoomGateEventTrigger : MonoBehaviour
     // public Camera Camera;
     // private Transform CarCamTr;
     public static bool isBoomEvent = false;
-    
+    private Transform carCamTr;
+
+    void Start()
+    {
+        GameObject carObj = GameObject.Find("Car_Nosignal_01");
+        if (carObj != null)
+        {
+            carCamTr = carObj.transform.Find("CarCam");
+        }
+    }
     void OnTriggerEnter(Collider collider)
     {
         Debug.Log(collider.gameObject.name);
         if(collider.gameObject.name == "Car_Nosignal_01")
         //리팩터링 필요
         {   
+
             Rigidbody carRb = collider.gameObject.GetComponent<Rigidbody>();
+            
+        Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;
                 if (carRb != null)
             {   
-                StartCoroutine(SmoothStop(carRb));           
+                StartCoroutine(SmoothStop(carRb, carCam));           
             }
         };
         //EventTrigger collider를 지나간 gameObject의 name을 콘솔에 출력
     }
-    IEnumerator SmoothStop(Rigidbody carRb)
+    IEnumerator SmoothStop(Rigidbody carRb, Camera carCam)
     {
-        float duration = 2.0f;
+        float duration = 1.0f;
         float elapsed = 0f;
         Vector3 initialVelocity = carRb.velocity;
-        Quaternion initialRotation = CameraFollow.carTarget.rotation;
+        // Quaternion initialRotation = CameraFollow.carTarget.rotation;
+        Quaternion initialCamRotation = carCam.transform.rotation;
+        Quaternion targetRotation = Quaternion.Euler(0, 180, 0); 
+        CameraFollow.isEvent = true;
+        isBoomEvent = true;
+        carRb.angularVelocity = Vector3.zero;
 
-        while (elapsed < duration)
-        {   carRb.velocity = Vector3.Lerp(initialVelocity, Vector3.zero, elapsed / duration);
-            CameraFollow.carTarget.rotation = Quaternion.Slerp(initialRotation, Quaternion.Euler(0,180,0), elapsed / duration);
-            //근데 이거 적용이 안됌..
+        while (elapsed < duration){
+        carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetRotation, elapsed / duration);
+
             //속도 점차 줄여서 0으로
             elapsed += Time.deltaTime;
-             
+            
             yield return null;
         }
-            isBoomEvent = true;
+            
             Debug.Log("이벤트 켜짐");
             PlayableDirector.gameObject.SetActive(true);
             PlayableDirector.Play();
@@ -50,20 +66,5 @@ public class BoomGateEventTrigger : MonoBehaviour
             
                 
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {   
-       
-        // if(Input.GetKeyDown(KeyCode.P))
-    //     {
-    //     PlayableDirector.gameObject.SetActive(true);
-    //     PlayableDirector.Play();
-    // }
-    }
 }
+
