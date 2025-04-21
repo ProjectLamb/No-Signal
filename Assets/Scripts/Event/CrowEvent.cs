@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class CrowEvent : MonoBehaviour
 {
-    public Transform target;        // 쫓을 대상 (차)
+    public Transform carLandSpot;
     public Transform finalDestination;
     public float speed = 5f;       // 이동 속도
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
-
     private bool IsStayCar = false;
 
     private Animator anim;
-    Vector3 targetPosition;
 
 
     void Awake()
@@ -22,6 +20,9 @@ public class CrowEvent : MonoBehaviour
     }
     void Update()
     {
+
+        if (IsStayCar) StayOnCar();
+
         if (IsEventStart)
         {
             // 여기가 까마귀 이벤트의 시작
@@ -29,30 +30,25 @@ public class CrowEvent : MonoBehaviour
             anim.SetBool("flying", true);
             StartCoroutine("FollowTarget");
         }
-
-        if (IsStayCar) StayOnCar();
     }
 
     IEnumerator FollowTarget()
     {
         while (true)
         {
-            // 충돌 하기 전, 디스턴스 비교해서 일정 디스턴스 아래면 stayoncar 실행하게끔 수정하기
-
-            targetPosition = target.position;
             // 현재 위치에서 대상 위치로 이동
-            transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, carLandSpot.position, speed);
 
             // 대상 방향으로 회전
-            Vector3 direction = (targetPosition - transform.position).normalized;
+            Vector3 direction = (carLandSpot.position - transform.position).normalized;
             if (direction != Vector3.zero)
             {
                 Quaternion toRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
             }
 
-            float distance = Vector3.Distance(transform.position, target.position);
-            if (distance < 0.05f)
+            float distance = Vector3.Distance(transform.position, carLandSpot.position);
+            if (distance < 0.1f)
             {
                 IsStayCar = true;
                 anim.SetBool("landing", true);
@@ -62,7 +58,6 @@ public class CrowEvent : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         anim.SetBool("landing", false);
-
         EventManager.Instance.SetEvent(0);
         EventManager.Instance.PlayEvent();
     }
@@ -70,8 +65,8 @@ public class CrowEvent : MonoBehaviour
     public void StayOnCar()
     {
         StopCoroutine("FollowTarget");
-        transform.position = target.position;
-        this.transform.rotation = target.rotation * Quaternion.Euler(0, 180f, 0);
+        transform.position = carLandSpot.position;
+        this.transform.rotation = carLandSpot.rotation * Quaternion.Euler(0, 180f, 0);
     }
 
     public void FlyAway()
@@ -86,21 +81,20 @@ public class CrowEvent : MonoBehaviour
         anim.SetBool("flying", true);
         while (true)
         {
-
-            targetPosition = finalDestination.position;
             // 현재 위치에서 대상 위치로 이동
-            transform.position = Vector3.Lerp(transform.position, targetPosition, 0.02f * Time.deltaTime);
+            //transform.position = Vector3.Lerp(transform.position, finalDestination.position, 0.0005f);
+             transform.position = Vector3.MoveTowards(transform.position, finalDestination.position, speed * 0.5f);
 
             // 대상 방향으로 회전
-            Vector3 direction = (targetPosition - transform.position).normalized;
+            Vector3 direction = (finalDestination.position - transform.position).normalized;
             if (direction != Vector3.zero)
             {
                 Quaternion toRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
             }
 
-            float distance = Vector3.Distance(transform.position, target.position);
-            if (distance < 0.01f)
+            float distance = Vector3.Distance(transform.position, finalDestination.position);
+            if (distance < 0.1f)
             {
                 break;
             }
