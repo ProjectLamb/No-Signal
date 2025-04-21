@@ -10,6 +10,7 @@ public class CrowEvent : MonoBehaviour
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
     private bool IsStayCar = false;
+    private bool IsFlyAway = false;
 
     private Animator anim;
 
@@ -30,6 +31,8 @@ public class CrowEvent : MonoBehaviour
             anim.SetBool("flying", true);
             StartCoroutine("FollowTarget");
         }
+
+        if(IsFlyAway) FlyToTheDest();
     }
 
     IEnumerator FollowTarget()
@@ -73,39 +76,29 @@ public class CrowEvent : MonoBehaviour
     {
         IsStayCar = false;
         anim.SetBool("landing", true);
-        StartCoroutine("FlyToTheDest");
+        IsFlyAway = true;
     }
 
-    IEnumerator FlyToTheDest()
+    private void FlyToTheDest()
     {
-        anim.SetBool("flying", true);
-        while (true)
+        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, speed * Time.deltaTime * 0.3f);
+
+        // 대상 방향으로 회전
+        Vector3 direction = (finalDestination.position - transform.position).normalized;
+        if (direction != Vector3.zero)
         {
-            // 현재 위치에서 대상 위치로 이동
-            //transform.position = Vector3.Lerp(transform.position, finalDestination.position, 0.0005f);
-             transform.position = Vector3.MoveTowards(transform.position, finalDestination.position, speed * 0.5f);
-
-            // 대상 방향으로 회전
-            Vector3 direction = (finalDestination.position - transform.position).normalized;
-            if (direction != Vector3.zero)
-            {
-                Quaternion toRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
-            }
-
-            float distance = Vector3.Distance(transform.position, finalDestination.position);
-            if (distance < 0.1f)
-            {
-                break;
-            }
-            yield return new WaitForSeconds(0.01f);
+            Quaternion toRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
-        anim.SetBool("flying", false);
-        anim.SetBool("landing", false);
 
-        transform.position = finalDestination.position;
+        float distance = Vector3.Distance(transform.position, finalDestination.position);
+        if (distance < 0.1f)
+        {
+            anim.SetBool("flying", false);
+            anim.SetBool("landing", false);
+            transform.position = finalDestination.position;
 
-        StopCoroutine("FlyToTheDest");
-        
+            IsFlyAway = false;
+        }
     }
 }
