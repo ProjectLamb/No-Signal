@@ -48,15 +48,21 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if(!BoomGateEventTrigger.isBoomEvent)
+        {
         GetInputs();
+        }
         AnimateWheels();
     }
 
     void FixedUpdate()
-    {
+    {  
+        if(!BoomGateEventTrigger.isBoomEvent)
+        {
         Move();
         Steer();
         Brake();
+        }
     }
 
     void GetInputs()
