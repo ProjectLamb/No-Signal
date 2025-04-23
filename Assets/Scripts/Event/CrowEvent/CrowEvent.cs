@@ -81,7 +81,7 @@ public class CrowEvent : MonoBehaviour
     private void FlyToTheDest()
     {
         anim.SetBool("flying", true);
-        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, speed * Time.deltaTime * 0.5f);
+        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, speed * Time.deltaTime * 0.1f);
         // 대상 방향으로 회전
         Vector3 direction = (finalDestination.position - transform.position).normalized;
         if (direction != Vector3.zero)
