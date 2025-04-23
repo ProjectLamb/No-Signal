@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     Vector3 moveVec;
 
     private EventInstance playerFootsteps;
+    private bool IsCarContact;
 
     void Start()
     {
@@ -53,7 +54,7 @@ public class Player : MonoBehaviour
 
     private void UpdateSound()
     {
-        if (moveVec.magnitude > 0)
+        if (moveVec.magnitude > 0 && !IsCarContact)
         {
             PLAYBACK_STATE playbackState;
             playerFootsteps.getPlaybackState(out playbackState);
@@ -64,18 +65,28 @@ public class Player : MonoBehaviour
         }
         else
         {
-            playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+            playerFootsteps.stop(STOP_MODE.IMMEDIATE);
         }
     }
 
+
+    void OnTriggerEnter(Collider col)
+    {
+        if(col.gameObject.tag == "Car")
+        {
+            IsCarContact = true;
+            playerFootsteps.stop(STOP_MODE.IMMEDIATE);
+        }
+    }
     void OnTriggerStay(Collider col)
     {
         if(col.gameObject.tag == "Car")
         {
+            IsCarContact = true;
             playerFootsteps.stop(STOP_MODE.IMMEDIATE);
             if(Input.GetKeyDown(KeyCode.E))
             {
-                playerFootsteps.stop(STOP_MODE.ALLOWFADEOUT);
+                playerFootsteps.stop(STOP_MODE.IMMEDIATE);
             }
         }
     }
