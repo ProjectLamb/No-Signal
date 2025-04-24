@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class EventMove : MonoBehaviour
 {
     public Transform target;       // BoomGate의 Transform
-
+    public GameObject light;
     public float speed = 4f;       // 이동 속도
     private Coroutine moveRoutine;
 
@@ -30,11 +30,15 @@ public class EventMove : MonoBehaviour
         yield return new WaitForSecondsRealtime(3f); // 3초 기다림
 
         // 2. 회전
+        yield return StartCoroutine(BGEvent_Lightoff());
+        yield return new WaitForSecondsRealtime(1f);
         yield return StartCoroutine(BGEvent_Rotate());
+        yield return StartCoroutine(BGEvent_Lightblink(3));
+        
         // 3. 복귀
         yield return StartCoroutine(BGEvent_Return(startPos));
     }
-        private IEnumerator BGEvent_Move(Vector3 destination){
+    private IEnumerator BGEvent_Move(Vector3 destination){
         while (Vector3.Distance(transform.position, destination) > 0.15f)
         {
             Vector3 dir = (destination - transform.position).normalized;
@@ -43,7 +47,7 @@ public class EventMove : MonoBehaviour
             yield return null;
         }
         }
-        private IEnumerator BGEvent_Rotate(){
+    private IEnumerator BGEvent_Rotate(){
         Quaternion startRot = transform.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, 180, 0);
         float elapsed = 0f;
@@ -57,11 +61,32 @@ public class EventMove : MonoBehaviour
         }
         transform.rotation = endRot;
         }
-        private IEnumerator BGEvent_Return(Vector3 startPos){
+    private IEnumerator BGEvent_Return(Vector3 startPos){
         while (Vector3.Distance(transform.position, startPos) > 0.1f)
         {
         transform.position = Vector3.MoveTowards(transform.position, startPos, speed * Time.deltaTime);
         yield return null;
         }
         }
+
+    private IEnumerator BGEvent_Lightoff()
+    {
+        light.SetActive(false);
+        yield return null;
+    }
+
+    private IEnumerator BGEvent_Lightblink(int num)
+    {   
+        int i = 0;
+
+        while (i < num)
+        {
+        i++;
+        light.SetActive(false);
+        yield return new WaitForSecondsRealtime(0.1f);
+        light.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.1f);
+        }
+        //num 만큼 반복
+    }
 }
