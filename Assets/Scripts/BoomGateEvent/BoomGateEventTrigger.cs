@@ -27,29 +27,32 @@ public class BoomGateEventTrigger : MonoBehaviour
         {   
 
             Rigidbody carRb = collider.gameObject.GetComponent<Rigidbody>();
-            
+            Transform carTr = collider.gameObject.GetComponent<Transform>();
         Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;
                 if (carRb != null)
             {   
-                StartCoroutine(SmoothStop(carRb, carCam));           
+                StartCoroutine(SmoothStop(carRb, carTr, carCam));           
             }
         };
         //EventTrigger collider를 지나간 gameObject의 name을 콘솔에 출력
     }
-    IEnumerator SmoothStop(Rigidbody carRb, Camera carCam)
+    IEnumerator SmoothStop(Rigidbody carRb, Transform carTr, Camera carCam)
     {
         float duration = 1.0f;
         float elapsed = 0f;
         Vector3 initialVelocity = carRb.velocity;
-        // Quaternion initialRotation = CameraFollow.carTarget.rotation;
+
+        Quaternion initialCarRotation = carTr.transform.rotation;
         Quaternion initialCamRotation = carCam.transform.rotation;
         Quaternion targetRotation = Quaternion.Euler(0, 180, 0); 
         CameraFollow.isEvent = true;
         isBoomEvent = true;
         carRb.angularVelocity = Vector3.zero;
+        
 
         while (elapsed < duration){
-        carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetRotation, elapsed / duration);
+            carTr.transform.rotation = Quaternion.Slerp(initialCarRotation, targetRotation, elapsed / duration);
+            carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetRotation, elapsed / duration);
 
             //속도 점차 줄여서 0으로
             elapsed += Time.deltaTime;

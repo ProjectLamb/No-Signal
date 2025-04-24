@@ -1,76 +1,67 @@
 using UnityEngine;
 using UnityEngine.Playables;
+using System.Collections;
+using System.Collections.Generic;
 
 public class EventMove : MonoBehaviour
 {
     public Transform target;       // BoomGate의 Transform
-    public PlayableDirector timeline;
+
     public float speed = 4f;       // 이동 속도
-    private bool isMoving = false;
-    private bool isTurning = false;
-    private bool isBackMoving = false;
-    private Vector3 startPos;
-    private Vector3 destination;
-    
-    float duration = 1.0f;
-    float elapsed = 0f;
+    private Coroutine moveRoutine;
 
-    void Update()
+    public void MoveToTarget()
     {
-        if (isMoving && target != null)
+        if (moveRoutine != null)
+            StopCoroutine(moveRoutine);
+
+        moveRoutine = StartCoroutine(MoveRoutine());
+    }
+
+
+    private IEnumerator MoveRoutine()
+    {
+
+        Vector3 destination = target.position;
+        Vector3 startPos = transform.position;
+
+        // 1. 이동
+        yield return StartCoroutine(BGEvent_Move(destination));
+        yield return new WaitForSecondsRealtime(3f); // 3초 기다림
+
+        // 2. 회전
+        yield return StartCoroutine(BGEvent_Rotate());
+        // 3. 복귀
+        yield return StartCoroutine(BGEvent_Return(startPos));
+    }
+        private IEnumerator BGEvent_Move(Vector3 destination){
+        while (Vector3.Distance(transform.position, destination) > 0.15f)
         {
+            Vector3 dir = (destination - transform.position).normalized;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
             transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
-
-            // 일정 거리 도달하면 정지 (원하면 조건 추가)
-            if (Vector3.Distance(transform.position, destination) < 0.3f)
-            {
-                isMoving = false;
-                isTurning = true;
-
-                // timeline.Resume(); 
-                //도착 후 타임라인 재생
-            }
+            yield return null;
         }
-        else if (isTurning && target != null)
-    {
-        
-        elapsed += Time.deltaTime;
-        float t = Mathf.Clamp01(elapsed / duration); // 0~1 사이 비율
+        }
+        private IEnumerator BGEvent_Rotate(){
         Quaternion startRot = transform.rotation;
-        Quaternion targetRot = Quaternion.Euler(0, 0, 0);
+        Quaternion endRot = startRot * Quaternion.Euler(0, 180, 0);
+        float elapsed = 0f;
+        float turnDuration = 1.0f;
 
-        transform.rotation = Quaternion.Slerp(startRot, targetRot, t);
-
-        if (elapsed >= duration)
+        while (elapsed < turnDuration)
         {
-         isTurning = false;
-         isBackMoving = true;
-         }
+            transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
-        else if(isBackMoving && target != null)
+        transform.rotation = endRot;
+        }
+        private IEnumerator BGEvent_Return(Vector3 startPos){
+        while (Vector3.Distance(transform.position, startPos) > 0.1f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, startPos, speed * Time.deltaTime);
-
-            // 일정 거리 도달하면 정지 (원하면 조건 추가)
-            if (Vector3.Distance(transform.position, startPos) < 0.3f)
-            {
-                isBackMoving = false;
-                // timeline.Resume(); 
-                //도착 후 타임라인 재생
-            }
+        transform.position = Vector3.MoveTowards(transform.position, startPos, speed * Time.deltaTime);
+        yield return null;
         }
-    }
-    public void MoveToTargetAndPauseTimeline()
-    {
-        startPos = transform.position;
-        destination = target.position;
-        isMoving = true;
-
-        timeline.Pause();   // 이동하는 동안 타임라인 멈춤
-    }
+        }
 }
-    // public void TriggerMove()
-    // {   
-    //     Debug.Log("시그널 들어가는중");
-    //     isMoving = true;
-    // }
