@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class GPS : MonoBehaviour
 {
-    public Transform playerTr;
+    public Transform playerBody;
+    public GameObject car;
+    public GameObject minimapMark;
+    public CarRide carRideSystem;
 
     void Update()
     {
-        transform.position = new Vector3(playerTr.position.x + 0.7f, 1f, playerTr.position.z + 0.9f);
+        if(carRideSystem.IsRide)
+        {
+            minimapMark.transform.SetParent(car.transform);
+            minimapMark.transform.position = new Vector3(car.transform.position.x, car.transform.position.y + 20f, car.transform.position.z);
+            minimapMark.transform.rotation = car.transform.rotation;
+        }
+        else if(!carRideSystem.IsRide)
+        {
+            minimapMark.transform.SetParent(playerBody);
+            minimapMark.transform.position = new Vector3(playerBody.position.x, playerBody.position.y + 20f, playerBody.position.z);
+            minimapMark.transform.rotation = playerBody.rotation;
+        }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class MiniCam : MonoBehaviour
 {
@@ -12,7 +13,39 @@ public class MiniCam : MonoBehaviour
     private float rotY;
 
     public float sensitivity;
-    public Transform playerTr;
+    public Transform target;
+
+    private Camera cam;
+
+    private void OnEnable()
+    {
+        cam = GetComponent<Camera>();
+        RenderPipelineManager.beginCameraRendering += BeginRender;
+        RenderPipelineManager.endCameraRendering += EndRender;
+    }
+
+    private void OnDisable()
+    {
+        RenderPipelineManager.beginCameraRendering -= BeginRender;
+        RenderPipelineManager.endCameraRendering -= EndRender;
+    }
+
+    private void BeginRender(ScriptableRenderContext context, Camera renderingCamera)
+    {
+        if (renderingCamera == cam)
+        {
+            RenderSettings.fog = false;
+        }
+    }
+
+    private void EndRender(ScriptableRenderContext context, Camera renderingCamera)
+    {
+        if (renderingCamera == cam)
+        {
+            RenderSettings.fog = true;
+        }
+    }
+
 
     void Start()
     {
@@ -22,7 +55,7 @@ public class MiniCam : MonoBehaviour
     {
         MiniCamFollow();
     }
-    
+
     void MiniCamFollow()
     {
         //카메라 회전
@@ -33,9 +66,7 @@ public class MiniCam : MonoBehaviour
 
         rotY += mouseX;
 
-        transform.localRotation = Quaternion.Euler(90f,rotY + 180f,0f);
-
         //카메라 플레이어 추적
-        transform.position = new Vector3(playerTr.position.x , 30f, playerTr.position.z);
+        transform.position = new Vector3(target.position.x, target.position.y + 250f, target.position.z);
     }
 }

@@ -13,6 +13,7 @@ public class EventDot : MonoBehaviour
     private StudioEventEmitter emitter;
     void Start()
     {
+        this.transform.position = target.transform.position;
         StartCoroutine("WaveCoroutine");
         emitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.radar, this.gameObject);
         emitter.Play();
@@ -30,6 +31,7 @@ public class EventDot : MonoBehaviour
             if (wave != null)
             {
                 Instantiate(wave, transform.position, Quaternion.Euler(90f,0,0));
+                wave.transform.position = target.transform.position;
                 // 생성될때 소리 재생
                 //AudioManager.instance.PlayOneShot(FMODEvents.instance.radar, this.transform.position);
             }
