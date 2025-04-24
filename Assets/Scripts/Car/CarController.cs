@@ -25,6 +25,7 @@ public class CarController : MonoBehaviour
     public float maxSteerAngle = 30.0f;
 
     public Vector3 _centerOfMass;
+    public Transform cheatTr;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
@@ -53,6 +54,10 @@ public class CarController : MonoBehaviour
         GetInputs();
         }
         AnimateWheels();
+        if(Input.GetKeyDown(KeyCode.RightControl))
+        {
+            this.transform.position = cheatTr.position;
+        }
     }
 
     void FixedUpdate()

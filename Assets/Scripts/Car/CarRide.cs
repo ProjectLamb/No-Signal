@@ -33,11 +33,12 @@ public class CarRide : MonoBehaviour
             carCam.enabled = true;
             CarController.enabled = true;
             carEnterUI.SetActive(false);
-            drivingBody.SetActive(true);
+            //drivingBody.SetActive(true);
         }
 
         if (Input.GetKeyDown(KeyCode.F) && IsCanDrive)
         {
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carRide, this.transform.position);
             CarController.enabled = false;
             playerBody.transform.SetParent(player.transform);
             playerBody.gameObject.SetActive(true);
