@@ -2041,7 +2041,7 @@ PlayableDirector:
   - key: {fileID: 4911089358960054009, guid: 439df2caa2fb6a84bbe591fe66e6e4b1, type: 2}
     value: {fileID: 1331084394}
   - key: {fileID: 7568686005248471770, guid: 439df2caa2fb6a84bbe591fe66e6e4b1, type: 2}
-    value: {fileID: 1331084401}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - 6224b4cd56dc0e84692f837eadcbc9d9: {fileID: 1331084394}
@@ -3692,17 +3692,6 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 9500000, guid: 3a5320db60c4f694f9724f4273599524, type: 3}
   m_PrefabInstance: {fileID: 1914240976}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1331084401 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 732374565909658431, guid: 3a5320db60c4f694f9724f4273599524, type: 3}
-  m_PrefabInstance: {fileID: 1914240976}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1331084394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1333238741 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -77129158492192521, guid: f4ae0977c6cc98a49938745212640266, type: 3}
@@ -6553,12 +6542,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5785328893922390592}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.15, y: 1.2871974, z: 7.51438}
+  m_LocalRotation: {x: -0, y: 0.99990433, z: -0, w: -0.013835406}
+  m_LocalPosition: {x: 6.9420333, y: 1.2871974, z: -13.5156555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8538308311286873886}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2194544007953240495
 MeshFilter:
@@ -7569,6 +7558,7 @@ MonoBehaviour:
   rotationOffset: {x: 0, y: 0, z: 0}
   carTarget: {fileID: 7995123889385503075}
   mouseSensitivity: 1.5
+  maxYawAngle: 10
 --- !u!4 &5024644235329979023
 Transform:
   m_ObjectHideFlags: 0
@@ -8774,7 +8764,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2116626887492437011}
   - {fileID: 7995123889385503075}
   - {fileID: 309566287}
   - {fileID: 636893272552590444}
@@ -9054,6 +9043,7 @@ SceneRoots:
   - {fileID: 1907614769}
   - {fileID: 1735897759}
   - {fileID: 1159701629}
+  - {fileID: 2116626887492437011}
   - {fileID: 8538308311286873886}
   - {fileID: 2135109927}
   - {fileID: 1782187068}

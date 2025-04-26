@@ -9,7 +9,9 @@ public class CameraFollow : MonoBehaviour
     public Transform carTarget;
 
     public float mouseSensitivity = 2f;
-    private float mouseX = 0f;
+    public float maxYawAngle = 10f;
+
+    private float currentYaw = 0f; // 현재 회전 각도
 
     void LateUpdate()
     {
@@ -29,11 +31,12 @@ public class CameraFollow : MonoBehaviour
 
     void HandleRotation()
     {
-        mouseX += Input.GetAxis("Mouse X") * mouseSensitivity;
+        float deltaX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        currentYaw = Mathf.Clamp(currentYaw + deltaX, -maxYawAngle, maxYawAngle+40); // 누적 + 제한
 
         Quaternion baseRot = carTarget.rotation * Quaternion.Euler(rotationOffset);
-        Quaternion mouseRot = Quaternion.Euler(0f, mouseX, 0f);
+        Quaternion yawRot = Quaternion.Euler(0f, currentYaw, 0f);
 
-        transform.rotation = baseRot * mouseRot;
+        transform.rotation = baseRot * yawRot;
     }
 }

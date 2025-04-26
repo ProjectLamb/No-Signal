@@ -35,7 +35,7 @@ public class CarCam : MonoBehaviour
         mouseY = delta.y;
 
         rotY += mouseX;
-        rotY = Mathf.Clamp(rotY, -45f, 45f);
+        rotY = Mathf.Clamp(rotY, -10f, 10f);
 
         transform.localRotation = Quaternion.Euler(0f, rotY, 0f);
 
