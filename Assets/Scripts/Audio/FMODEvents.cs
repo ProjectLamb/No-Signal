@@ -15,6 +15,8 @@ public class FMODEvents : MonoBehaviour
 
     [Header("Car SFX")]
     [field: SerializeField] public EventReference carRide { get; private set; }
+    [field: SerializeField] public EventReference carDrive { get; private set; }
+    [field: SerializeField] public EventReference carCrash { get; private set; }
 
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
