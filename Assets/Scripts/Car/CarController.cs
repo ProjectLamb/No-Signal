@@ -67,12 +67,12 @@ public class CarController : MonoBehaviour
         AnimateWheels();
 
         //Cheat
-        if(Input.GetKeyDown(KeyCode.O))
+        if(Input.GetKeyDown(KeyCode.Keypad8))
         {
             this.transform.position = cheatTr.position;
         }
 
-        if(Input.GetKeyDown(KeyCode.P))
+        if(Input.GetKeyDown(KeyCode.Keypad9))
         {
             this.transform.position = cheatTr2.position;
         }
