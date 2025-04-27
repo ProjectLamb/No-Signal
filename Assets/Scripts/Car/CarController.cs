@@ -20,7 +20,6 @@ public class CarController : MonoBehaviour
         public WheelCollider wheelCollider;
         public Axel axel;
     }
-    public Transform cheatTr;
     public float maxAcceleration = 30.0f;
     public float brakeAcceleration = 50.0f;
 
@@ -30,6 +29,7 @@ public class CarController : MonoBehaviour
     public Vector3 _centerOfMass;
     public Transform cheatTr;
     public Transform cheatTr2;
+    public Transform cheatTr3;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
@@ -72,9 +72,15 @@ public class CarController : MonoBehaviour
             this.transform.position = cheatTr.position;
             this.transform.rotation = cheatTr.rotation;
         }
-        if(Input.GetKeyDown(KeyCode.Keypad9))
+
+        if(Input.GetKeyDown(KeyCode.Keypad8))
         {
             this.transform.position = cheatTr2.position;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            this.transform.position = cheatTr3.position;
         }
 
     }
@@ -202,6 +208,8 @@ public class CarController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         deerBlack.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        deerBlack.gameObject.SetActive(false);
     }
 
     
