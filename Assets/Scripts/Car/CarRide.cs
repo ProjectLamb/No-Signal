@@ -53,6 +53,7 @@ public class CarRide : MonoBehaviour
         if (col.gameObject.tag == "CrowEvent")
         {
             CrowEvent.IsEventStart = true;
+            Destroy(col.gameObject);
         }
     }
     void OnTriggerStay(Collider col)
