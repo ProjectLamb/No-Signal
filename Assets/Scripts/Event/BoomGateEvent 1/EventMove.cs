@@ -9,6 +9,7 @@ public class EventMove : MonoBehaviour
     public Transform target;       // BoomGate의 Transform
     public Transform boomgatebar;
     public GameObject light;
+    public GameObject BGEventWave;
     public float speed = 4f;       // 이동 속도
     private Coroutine moveRoutine;
 
@@ -36,13 +37,17 @@ public class EventMove : MonoBehaviour
         
 
         // 2. 회전 및 헤드라이트 off
+        StartCoroutine(BGEvent_WaveActive());
         yield return StartCoroutine(BGEvent_Lightoff());
         yield return new WaitForSecondsRealtime(1.0f);
 
         animator.SetInteger("Movement", 2);
         yield return StartCoroutine(BGEvent_Rotate());
+        yield return new WaitForSecondsRealtime(2.0f);
         // 3. 헤드라이트 점등
         yield return StartCoroutine(BGEvent_Lightblink(3));
+        yield return StartCoroutine(BGEvent_WaveInactive());
+        yield return new WaitForSecondsRealtime(1.5f);
         yield return StartCoroutine(BGEvent_Rotate());
         animator.SetInteger("Movement", 3);
         yield return new WaitForSecondsRealtime(1.0f);
@@ -53,7 +58,6 @@ public class EventMove : MonoBehaviour
         yield return StartCoroutine(BGEvent_Rotate());
         animator.SetInteger("Movement", 5);
         yield return StartCoroutine(BGEvent_Return(startPos));
-        // yield return StartCoroutine(BGEvent_End());
     }
     private IEnumerator BGEvent_Move(Vector3 destination){
         while (Vector3.Distance(transform.position, destination) > 0.45f)
@@ -114,7 +118,7 @@ public class EventMove : MonoBehaviour
         Quaternion startRot = boomgatebar.transform.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, 0, -90);
         float elapsed = 0f;
-        float turnDuration = 1.0f;
+        float turnDuration = 8.0f;
 
         while (elapsed < turnDuration)
         {
@@ -126,8 +130,16 @@ public class EventMove : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1.0f);
     }
-    // private IEnumerator BGEvent_End()
-    // {
-
-    // }
+    private IEnumerator BGEvent_WaveActive()
+    {   
+        BGEventWave.gameObject.SetActive(true);
+        BGEventDotFollowTarget.isWaveActived = true;
+        yield return null;
+    }
+    private IEnumerator BGEvent_WaveInactive()
+    {
+        BGEventWave.gameObject.SetActive(false);
+        BGEventDotFollowTarget.isWaveActived = false;
+        yield return null;
+    }
 }

@@ -6,8 +6,6 @@ using UnityEngine.Playables;
 public class BoomGateEventTrigger : MonoBehaviour
 {
     public PlayableDirector PlayableDirector;
-    // public Camera Camera;
-    // private Transform CarCamTr;
     public static bool isBoomEvent = false;
     private Transform carCamTr;
 
@@ -62,11 +60,15 @@ public class BoomGateEventTrigger : MonoBehaviour
             PlayableDirector.gameObject.SetActive(true);
             PlayableDirector.Play();
             carRb.isKinematic = true; 
-            yield return new WaitForSecondsRealtime(18f);
+            //물리적 움직임 차단
+            yield return new WaitForSecondsRealtime(28f);
             CameraFollow.isEvent = false;
             isBoomEvent = false;
+            gameObject.SetActive(false);
+            //BoomGateEventTrigger off
             carRb.isKinematic = false;
-            //물리적 움직임 차단
+            //25초후 움직임 다시 원래대로
+            
                 
             
                 
