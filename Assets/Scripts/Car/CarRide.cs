@@ -55,6 +55,12 @@ public class CarRide : MonoBehaviour
             CrowEvent.IsEventStart = true;
             Destroy(col.gameObject);
         }
+
+        if (col.gameObject.tag == "DeerEvent")
+        {
+            DeerEvent.IsEventStart = true;
+            Destroy(col.gameObject);
+        }
     }
     void OnTriggerStay(Collider col)
     {

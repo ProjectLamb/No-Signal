@@ -6,6 +6,7 @@ public class CrowEvent : MonoBehaviour
 {
     public Transform carLandSpot;
     public Transform finalDestination;
+    public GameObject crowDot;
     public float speed = 5f;       // 이동 속도
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
@@ -81,7 +82,7 @@ public class CrowEvent : MonoBehaviour
     private void FlyToTheDest()
     {
         anim.SetBool("flying", true);
-        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, speed * Time.deltaTime * 0.1f);
+        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, speed * Time.deltaTime * 0.5f);
         // 대상 방향으로 회전
         Vector3 direction = (finalDestination.position - transform.position).normalized;
         if (direction != Vector3.zero)
@@ -91,12 +92,13 @@ public class CrowEvent : MonoBehaviour
         }
 
         float distance = Vector3.Distance(transform.position, finalDestination.position);
-        if (distance < 0.1f)
+        if (distance < 2f)
         {
             anim.SetBool("flying", false);
             anim.SetBool("landing", false);
             transform.position = finalDestination.position;
 
+            crowDot.SetActive(false);
             IsFlyAway = false;
         }
     }
