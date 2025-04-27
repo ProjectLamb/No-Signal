@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD.Studio;
 
 public class CarController : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class CarController : MonoBehaviour
 
     public Vector3 _centerOfMass;
     public Transform cheatTr;
+    public Transform cheatTr2;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
@@ -33,13 +35,16 @@ public class CarController : MonoBehaviour
 
     float moveInput;
     float steerInput;
-
+    
     private Rigidbody carRb;
+    private EventInstance carDrive;
 
     void Start()
     {
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
+
+        carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
 
         if (steeringWheel != null) //�ڵ�
         {
@@ -54,10 +59,19 @@ public class CarController : MonoBehaviour
         GetInputs();
         }
         AnimateWheels();
+
+        //Cheat
         if(Input.GetKeyDown(KeyCode.RightControl))
         {
             this.transform.position = cheatTr.position;
         }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            this.transform.position = cheatTr2.position;
+        }
+        
+        //UpdateSound();
     }
 
     void FixedUpdate()
@@ -138,6 +152,24 @@ public class CarController : MonoBehaviour
             wheel.wheelCollider.GetWorldPose(out pos, out rot);
             wheel.wheelModel.transform.position = pos;
             wheel.wheelModel.transform.rotation = rot;
+        }
+    }
+
+    private void UpdateSound()
+    {
+        if (moveInput != 0)
+        {
+            Debug.Log("어 형이야");
+            PLAYBACK_STATE playbackState;
+            carDrive.getPlaybackState(out playbackState);
+            if (carDrive.Equals(PLAYBACK_STATE.STOPPED))
+            {
+                carDrive.start();
+            }
+        }
+        else
+        {
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
         }
     }
 
