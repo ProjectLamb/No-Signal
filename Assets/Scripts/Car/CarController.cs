@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using FMOD.Studio;
 
 public class CarController : MonoBehaviour
@@ -31,6 +32,8 @@ public class CarController : MonoBehaviour
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
+    public Image deerBlack;
+
     private Quaternion initialSteeringRotation;
 
     float moveInput;
@@ -38,9 +41,11 @@ public class CarController : MonoBehaviour
     
     private Rigidbody carRb;
     private EventInstance carDrive;
+    private bool IsCanDrive;
 
     void Start()
     {
+        IsCanDrive = true;
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 
@@ -170,6 +175,26 @@ public class CarController : MonoBehaviour
         else
         {
             carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+        }
+    }
+
+    
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "CrowEvent")
+        {
+            CrowEvent.IsEventStart = true;
+            Destroy(col.gameObject);
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Deer")
+        {
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+            IsCanDrive = false;
+            deerBlack.gameObject.SetActive(true);
         }
     }
 

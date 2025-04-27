@@ -45,7 +45,15 @@ public class DeerEvent : MonoBehaviour
                 anim.SetBool("IsRun", false);
                 break;
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if(col.gameObject.tag == "Car")
+        {
+            Destroy(this.gameObject);
         }
     }
 }

@@ -11,6 +11,7 @@ TagManager:
   - CrowEvent
   - Entity
   - DeerEvent
+  - Deer
   layers:
   - Default
   - TransparentFX
