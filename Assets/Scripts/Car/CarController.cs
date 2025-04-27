@@ -17,7 +17,7 @@ public class CarController : MonoBehaviour
         public WheelCollider wheelCollider;
         public Axel axel;
     }
-
+    public Transform cheatTr;
     public float maxAcceleration = 30.0f;
     public float brakeAcceleration = 50.0f;
 
@@ -51,8 +51,15 @@ public class CarController : MonoBehaviour
         if(!BoomGateEventTrigger.isBoomEvent)
         {
         GetInputs();
-        }
+        
         AnimateWheels();
+        }
+        if(Input.GetKeyDown(KeyCode.RightControl))
+        {
+            this.transform.position = cheatTr.position;
+            this.transform.rotation = cheatTr.rotation;
+        }
+
     }
 
     void FixedUpdate()

@@ -4,11 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class EventMove : MonoBehaviour
-{
+{   
+    public Animator animator;
     public Transform target;       // BoomGate의 Transform
+    public Transform boomgatebar;
     public GameObject light;
     public float speed = 4f;       // 이동 속도
     private Coroutine moveRoutine;
+
 
     public void MoveToTarget()
     {
@@ -21,25 +24,39 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator MoveRoutine()
     {
-
+        animator = GetComponent<Animator>();
         Vector3 destination = target.position;
         Vector3 startPos = transform.position;
 
         // 1. 이동
-        yield return StartCoroutine(BGEvent_Move(destination));
+        animator.SetInteger("Movement", 0);
+        yield return StartCoroutine(BGEvent_Move(destination)); // 차단바까지 이동
+        animator.SetInteger("Movement", 1); // 차단바 주섬주섬 애니메이션
         yield return new WaitForSecondsRealtime(3f); // 3초 기다림
-
-        // 2. 회전
-        yield return StartCoroutine(BGEvent_Lightoff());
-        yield return new WaitForSecondsRealtime(1f);
-        yield return StartCoroutine(BGEvent_Rotate());
-        yield return StartCoroutine(BGEvent_Lightblink(3));
         
-        // 3. 복귀
+
+        // 2. 회전 및 헤드라이트 off
+        yield return StartCoroutine(BGEvent_Lightoff());
+        yield return new WaitForSecondsRealtime(1.0f);
+
+        animator.SetInteger("Movement", 2);
+        yield return StartCoroutine(BGEvent_Rotate());
+        // 3. 헤드라이트 점등
+        yield return StartCoroutine(BGEvent_Lightblink(3));
+        yield return StartCoroutine(BGEvent_Rotate());
+        animator.SetInteger("Movement", 3);
+        yield return new WaitForSecondsRealtime(1.0f);
+        yield return StartCoroutine(BGEvent_BoomGateOpen());
+
+        // 4. 복귀
+        animator.SetInteger("Movement", 4);
+        yield return StartCoroutine(BGEvent_Rotate());
+        animator.SetInteger("Movement", 5);
         yield return StartCoroutine(BGEvent_Return(startPos));
+        // yield return StartCoroutine(BGEvent_End());
     }
     private IEnumerator BGEvent_Move(Vector3 destination){
-        while (Vector3.Distance(transform.position, destination) > 0.15f)
+        while (Vector3.Distance(transform.position, destination) > 0.45f)
         {
             Vector3 dir = (destination - transform.position).normalized;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
@@ -88,5 +105,29 @@ public class EventMove : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.1f);
         }
         //num 만큼 반복
+
     }
+
+    private IEnumerator BGEvent_BoomGateOpen()
+    {   
+       
+        Quaternion startRot = boomgatebar.transform.rotation;
+        Quaternion endRot = startRot * Quaternion.Euler(0, 0, -90);
+        float elapsed = 0f;
+        float turnDuration = 1.0f;
+
+        while (elapsed < turnDuration)
+        {
+            boomgatebar.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        boomgatebar.transform.rotation = endRot;
+
+        yield return new WaitForSecondsRealtime(1.0f);
+    }
+    // private IEnumerator BGEvent_End()
+    // {
+
+    // }
 }

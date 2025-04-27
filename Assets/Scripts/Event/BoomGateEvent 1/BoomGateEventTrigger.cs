@@ -13,7 +13,7 @@ public class BoomGateEventTrigger : MonoBehaviour
 
     void Start()
     {
-        GameObject carObj = GameObject.Find("Car_Nosignal_01");
+        GameObject carObj = GameObject.Find("Car");
         if (carObj != null)
         {
             carCamTr = carObj.transform.Find("CarCam");
@@ -21,8 +21,7 @@ public class BoomGateEventTrigger : MonoBehaviour
     }
     void OnTriggerEnter(Collider collider)
     {
-        Debug.Log(collider.gameObject.name);
-        if(collider.gameObject.name == "Car_Nosignal_01")
+        if(collider.gameObject.name == "Car")
         //리팩터링 필요
         {   
 
@@ -38,13 +37,13 @@ public class BoomGateEventTrigger : MonoBehaviour
     }
     IEnumerator SmoothStop(Rigidbody carRb, Transform carTr, Camera carCam)
     {
-        float duration = 1.0f;
+        float duration = 1.5f;
         float elapsed = 0f;
-        Vector3 initialVelocity = carRb.velocity;
+        // Vector3 initialVelocity = carRb.velocity;
 
         Quaternion initialCarRotation = carTr.transform.rotation;
         Quaternion initialCamRotation = carCam.transform.rotation;
-        Quaternion targetRotation = Quaternion.Euler(0, 180, 0); 
+        Quaternion targetRotation = Quaternion.Euler(0, 270, 0); 
         CameraFollow.isEvent = true;
         isBoomEvent = true;
         carRb.angularVelocity = Vector3.zero;
@@ -60,10 +59,13 @@ public class BoomGateEventTrigger : MonoBehaviour
             yield return null;
         }
             
-            Debug.Log("이벤트 켜짐");
             PlayableDirector.gameObject.SetActive(true);
             PlayableDirector.Play();
             carRb.isKinematic = true; 
+            yield return new WaitForSecondsRealtime(18f);
+            CameraFollow.isEvent = false;
+            isBoomEvent = false;
+            carRb.isKinematic = false;
             //물리적 움직임 차단
                 
             
