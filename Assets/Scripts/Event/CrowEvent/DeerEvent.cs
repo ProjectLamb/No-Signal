@@ -6,6 +6,7 @@ public class DeerEvent : MonoBehaviour
 {
     Animator anim;
     public Transform rushTr;
+    public GameObject deerDot;
     private float deerSpeed = 1f;
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
@@ -51,8 +52,9 @@ public class DeerEvent : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        if(col.gameObject.tag == "Car")
+        if (col.gameObject.tag == "Car")
         {
+            Destroy(deerDot.gameObject);
             Destroy(this.gameObject);
         }
     }

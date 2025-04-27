@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -192,10 +193,16 @@ public class CarController : MonoBehaviour
     {
         if(collision.gameObject.tag == "Deer")
         {
+            StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             IsCanDrive = false;
-            deerBlack.gameObject.SetActive(true);
         }
+    }
+
+    IEnumerator WaitForDeer()
+    {
+        yield return new WaitForSeconds(0.1f);
+        deerBlack.gameObject.SetActive(true);
     }
 
     
