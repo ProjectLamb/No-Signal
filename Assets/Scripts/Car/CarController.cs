@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using FMOD.Studio;
 
 public class CarController : MonoBehaviour
 {
@@ -25,20 +28,29 @@ public class CarController : MonoBehaviour
     public float maxSteerAngle = 30.0f;
 
     public Vector3 _centerOfMass;
+    public Transform cheatTr;
+    public Transform cheatTr2;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
+    public Image deerBlack;
+
     private Quaternion initialSteeringRotation;
 
     float moveInput;
     float steerInput;
-
+    
     private Rigidbody carRb;
+    private EventInstance carDrive;
+    private bool IsCanDrive;
 
     void Start()
     {
+        IsCanDrive = true;
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
+
+        carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
 
         if (steeringWheel != null) //�ڵ�
         {
@@ -53,6 +65,19 @@ public class CarController : MonoBehaviour
         GetInputs();
         }
         AnimateWheels();
+
+        //Cheat
+        if(Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            this.transform.position = cheatTr.position;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            this.transform.position = cheatTr2.position;
+        }
+        
+        //UpdateSound();
     }
 
     void FixedUpdate()
@@ -134,6 +159,50 @@ public class CarController : MonoBehaviour
             wheel.wheelModel.transform.position = pos;
             wheel.wheelModel.transform.rotation = rot;
         }
+    }
+
+    private void UpdateSound()
+    {
+        if (moveInput != 0)
+        {
+            Debug.Log("어 형이야");
+            PLAYBACK_STATE playbackState;
+            carDrive.getPlaybackState(out playbackState);
+            if (carDrive.Equals(PLAYBACK_STATE.STOPPED))
+            {
+                carDrive.start();
+            }
+        }
+        else
+        {
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+        }
+    }
+
+    
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "CrowEvent")
+        {
+            CrowEvent.IsEventStart = true;
+            Destroy(col.gameObject);
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Deer")
+        {
+            StartCoroutine("WaitForDeer");
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+            IsCanDrive = false;
+        }
+    }
+
+    IEnumerator WaitForDeer()
+    {
+        yield return new WaitForSeconds(0.1f);
+        deerBlack.gameObject.SetActive(true);
     }
 
     
