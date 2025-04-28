@@ -35,10 +35,18 @@ public class CarController : MonoBehaviour
 
     private Rigidbody carRb;
 
+    public Light leftHeadlight;
+    public Light rightHeadlight;
+
+    private bool headlightsOn = false;
+
     void Start()
     {
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
+
+        leftHeadlight.enabled = false;
+        rightHeadlight.enabled = false;
 
         if (steeringWheel != null) //�ڵ�
         {
@@ -50,6 +58,11 @@ public class CarController : MonoBehaviour
     {
         GetInputs();
         AnimateWheels();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ToggleHeadlights();
+        }
     }
 
     void FixedUpdate()
@@ -130,5 +143,13 @@ public class CarController : MonoBehaviour
         }
     }
 
-    
+    void ToggleHeadlights()
+    {
+        headlightsOn = !headlightsOn;
+
+        leftHeadlight.enabled = headlightsOn;
+        rightHeadlight.enabled = headlightsOn;
+    }
+
+
 }
