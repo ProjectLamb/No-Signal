@@ -44,6 +44,11 @@ public class CarController : MonoBehaviour
     private EventInstance carDrive;
     private bool IsCanDrive;
 
+    public Light leftHeadlight;
+    public Light rightHeadlight;
+
+    private bool headlightsOn = false;
+
     void Start()
     {
         IsCanDrive = true;
@@ -51,6 +56,9 @@ public class CarController : MonoBehaviour
         carRb.centerOfMass = _centerOfMass;
 
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
+
+        leftHeadlight.enabled = false;
+        rightHeadlight.enabled = false;
 
         if (steeringWheel != null) //�ڵ�
         {
@@ -83,6 +91,11 @@ public class CarController : MonoBehaviour
             this.transform.position = cheatTr3.position;
         }
 
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ToggleHeadlights();
+        }
     }
 
     void FixedUpdate()
@@ -138,7 +151,7 @@ public class CarController : MonoBehaviour
 
     void Brake()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             foreach(var wheel in wheels)
             {
@@ -212,5 +225,13 @@ public class CarController : MonoBehaviour
         deerBlack.gameObject.SetActive(false);
     }
 
-    
+    void ToggleHeadlights()
+    {
+        headlightsOn = !headlightsOn;
+
+        leftHeadlight.enabled = headlightsOn;
+        rightHeadlight.enabled = headlightsOn;
+    }
+
+
 }
