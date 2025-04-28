@@ -32,8 +32,6 @@ public class EventDot : MonoBehaviour
             {
                 Instantiate(wave, transform.position, Quaternion.Euler(90f,0,0));
                 wave.transform.position = target.transform.position;
-                // 생성될때 소리 재생
-                //AudioManager.instance.PlayOneShot(FMODEvents.instance.radar, this.transform.position);
             }
             yield return new WaitForSeconds(1.0f);
         }

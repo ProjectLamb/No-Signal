@@ -9,6 +9,9 @@ TagManager:
   - lb_groundTarget
   - lb_perchTarget
   - CrowEvent
+  - Entity
+  - DeerEvent
+  - Deer
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Water
   - UI
   - Minimap
-  - 
+  - Fogs
   - 
   - 
   - 

@@ -22,7 +22,8 @@ public class CarCam : MonoBehaviour
     }
     // Update is called once per frame
     void Update()
-    {
+    {   
+        
         CarLook();
     }
 

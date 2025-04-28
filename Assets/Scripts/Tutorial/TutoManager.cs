@@ -2,13 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class signal : MonoBehaviour
+public class TutoManager : MonoBehaviour
 {
-
-    public void ReceiveSignal()
-    {
-        Debug.Log("시그널");
-    }
     // Start is called before the first frame update
     void Start()
     {
