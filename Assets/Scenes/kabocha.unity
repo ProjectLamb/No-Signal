@@ -49396,6 +49396,8 @@ MonoBehaviour:
     axel: 1
   steeringWheel: {fileID: 3507186075150727355}
   deerBlack: {fileID: 267183948}
+  leftHeadlight: {fileID: 383783665}
+  rightHeadlight: {fileID: 1384838209}
 --- !u!1 &2348470265726957789
 GameObject:
   m_ObjectHideFlags: 0
@@ -55306,7 +55308,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positionOffset: {x: 0, y: 0, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0}
-  mouseSensitivity: 0.05
+  mouseSensitivity: 0.5
+  maxYawAngle: 20
 --- !u!4 &5787911304080818965
 Transform:
   m_ObjectHideFlags: 0

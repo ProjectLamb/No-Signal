@@ -39,11 +39,9 @@ public class CarController : MonoBehaviour
 
     float moveInput;
     float steerInput;
-    
+
     private Rigidbody carRb;
     private EventInstance carDrive;
-    private bool IsCanDrive;
-
     public Light leftHeadlight;
     public Light rightHeadlight;
 
@@ -51,7 +49,6 @@ public class CarController : MonoBehaviour
 
     void Start()
     {
-        IsCanDrive = true;
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 
@@ -68,29 +65,27 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if(!BoomGateEventTrigger.isBoomEvent)
+        if (!BoomGateEventTrigger.isBoomEvent)
         {
-        GetInputs();
-        
-        AnimateWheels();
+            GetInputs();
+            AnimateWheels();
         }
-        
-        if(Input.GetKeyDown(KeyCode.P))
+
+        if (Input.GetKeyDown(KeyCode.P))
         {
             this.transform.position = cheatTr.position;
             this.transform.rotation = cheatTr.rotation;
         }
 
-        if(Input.GetKeyDown(KeyCode.Keypad8))
+        if (Input.GetKeyDown(KeyCode.Keypad8))
         {
             this.transform.position = cheatTr2.position;
         }
 
-        if(Input.GetKeyDown(KeyCode.Keypad9))
+        if (Input.GetKeyDown(KeyCode.Keypad9))
         {
             this.transform.position = cheatTr3.position;
         }
-
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -99,12 +94,12 @@ public class CarController : MonoBehaviour
     }
 
     void FixedUpdate()
-    {  
-        if(!BoomGateEventTrigger.isBoomEvent)
+    {
+        if (!BoomGateEventTrigger.isBoomEvent)
         {
-        Move();
-        Steer();
-        Brake();
+            Move();
+            Steer();
+            Brake();
         }
     }
 
@@ -153,14 +148,14 @@ public class CarController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            foreach(var wheel in wheels)
+            foreach (var wheel in wheels)
             {
                 wheel.wheelCollider.brakeTorque = 300 * brakeAcceleration * Time.deltaTime;
             }
         }
         else
         {
-            foreach( var wheel in wheels)
+            foreach (var wheel in wheels)
             {
                 wheel.wheelCollider.brakeTorque = 0;
             }
@@ -169,7 +164,7 @@ public class CarController : MonoBehaviour
 
     void AnimateWheels()
     {
-        foreach(var wheel in wheels)
+        foreach (var wheel in wheels)
         {
             Quaternion rot;
             Vector3 pos;
@@ -197,7 +192,7 @@ public class CarController : MonoBehaviour
         }
     }
 
-    
+
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "CrowEvent")
@@ -209,11 +204,10 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Deer")
+        if (collision.gameObject.tag == "Deer")
         {
             StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
-            IsCanDrive = false;
         }
     }
 
@@ -228,7 +222,6 @@ public class CarController : MonoBehaviour
     void ToggleHeadlights()
     {
         headlightsOn = !headlightsOn;
-
         leftHeadlight.enabled = headlightsOn;
         rightHeadlight.enabled = headlightsOn;
     }
