@@ -9,11 +9,8 @@ public class CameraFollow : MonoBehaviour
     public Vector3 rotationOffset;
     public static Transform carTarget;
 
-    public float mouseSensitivity = 2f;
-    private float mouseX = 0f;
-    private float mouseY = 0f;
-    private float rotY;
-    public float maxYawAngle = 10f;
+    public float mouseSensitivity = 0.5f;
+    public float maxYawAngle = 20f;
 
     private float currentYaw = 0f;
 
@@ -37,8 +34,7 @@ public class CameraFollow : MonoBehaviour
     void FollowTarget()
     {
         HandlePosition();
-        //HandleRotation();
-        CarCamRotate();
+        HandleRotation();
     }
 
     void HandlePosition()
@@ -55,20 +51,5 @@ public class CameraFollow : MonoBehaviour
         Quaternion yawRot = Quaternion.Euler(0f, currentYaw, 0f);
 
         transform.rotation = baseRot * yawRot;
-    }
-
-    void CarCamRotate()
-    {
-        Vector2 delta = Mouse.current.delta.ReadValue() * mouseSensitivity;
-
-        mouseX = delta.x;
-        mouseY = delta.y;
-
-        rotY += mouseX;
-        rotY = Mathf.Clamp(rotY, -30f, 30f);
-
-        transform.localRotation = Quaternion.Euler(0f, rotY, 0f);
-
-        carTarget.Rotate(Vector3.up * mouseY);
     }
 }
