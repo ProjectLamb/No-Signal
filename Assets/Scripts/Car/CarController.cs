@@ -42,6 +42,7 @@ public class CarController : MonoBehaviour
 
     private Rigidbody carRb;
     private EventInstance carDrive;
+
     public Light leftHeadlight;
     public Light rightHeadlight;
 
@@ -198,6 +199,12 @@ public class CarController : MonoBehaviour
         if (col.gameObject.tag == "CrowEvent")
         {
             CrowEvent.IsEventStart = true;
+            Destroy(col.gameObject);
+        }
+
+        if (col.gameObject.tag == "DeerEvent")
+        {
+            DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
         }
     }
