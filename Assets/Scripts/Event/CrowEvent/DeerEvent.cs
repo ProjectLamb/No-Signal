@@ -10,6 +10,7 @@ public class DeerEvent : MonoBehaviour
     private float deerSpeed = 1f;
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
+    public Vector3 relativeSpawnPos = new Vector3(-50, 0, 100); //new location of deer
 
     void Awake()
     {
@@ -21,6 +22,13 @@ public class DeerEvent : MonoBehaviour
         if (IsEventStart)
         {
             IsEventStart = false;
+
+            if (rushTr != null)
+            {
+                Vector3 worldSpawnPos = rushTr.TransformPoint(relativeSpawnPos);
+                transform.position = worldSpawnPos;
+            }
+
             anim.SetBool("IsRun", true);
             StartCoroutine("RushToCar");
         }
