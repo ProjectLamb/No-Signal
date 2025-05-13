@@ -89,11 +89,6 @@ public class CarController : MonoBehaviour
             GetInputs();
             AnimateWheels();
         }
-        // 차량 헤드라이트 ON,OFF
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ToggleHeadlights();
-        }
 
         // 엔진사운드 시스템
         EngineSound();
