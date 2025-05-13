@@ -47,6 +47,9 @@ public class CarController : MonoBehaviour
 
     private bool headlightsOn = false;
 
+    float maxSpeed = 8f;
+    bool hasReachedMaxSpeed = false;
+
     void Start()
     {
         carRb = GetComponent<Rigidbody>();
@@ -87,7 +90,7 @@ public class CarController : MonoBehaviour
             this.transform.position = cheatTr3.position;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.L))
         {
             ToggleHeadlights();
         }
@@ -100,6 +103,27 @@ public class CarController : MonoBehaviour
             Move();
             Steer();
             Brake();
+
+
+            float currentSpeed = carRb.velocity.magnitude;
+            Debug.Log("현재 속도: " + currentSpeed.ToString("F2") + " m/s");
+            float currentSpeedKmh = currentSpeed * 3.6f;
+            Debug.Log("현재 속도: " + currentSpeedKmh.ToString("F2") + " km/h");
+
+            if (currentSpeed > maxSpeed)
+            {
+                carRb.velocity = carRb.velocity.normalized * maxSpeed;
+
+                if (!hasReachedMaxSpeed)
+                {
+                    Debug.Log("최고 속도 도달");
+                    hasReachedMaxSpeed = true;
+                }
+            }
+            else
+            {
+                hasReachedMaxSpeed = false;
+            }
         }
     }
 
