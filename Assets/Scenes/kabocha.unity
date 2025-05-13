@@ -13289,13 +13289,6 @@ MonoBehaviour:
       Data3: -1885535565
       Data4: 1934801909
     Path: event:/FootSteps
-  <music>k__BackingField:
-    Guid:
-      Data1: 1582706690
-      Data2: 1163039967
-      Data3: -1594537831
-      Data4: 2064396033
-    Path: event:/Yarin Primak - Special Vibe
   <carRide>k__BackingField:
     Guid:
       Data1: -460018071
@@ -13305,10 +13298,10 @@ MonoBehaviour:
     Path: event:/CarRide
   <carDrive>k__BackingField:
     Guid:
-      Data1: 1836811035
-      Data2: 1080136189
-      Data3: -1868454239
-      Data4: 928544457
+      Data1: 582844120
+      Data2: 1259037148
+      Data3: 417514649
+      Data4: -762480310
     Path: event:/CarEngine
   <carCrash>k__BackingField:
     Guid:
@@ -46944,10 +46937,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1139c90f9098a14aa0c7f9d50b65065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBody: {fileID: 1402282315}
   car: {fileID: 8587597560651656464}
   minimapMark: {fileID: 150730250}
-  carRideSystem: {fileID: 0}
 --- !u!23 &724878849907224270
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -49360,6 +49351,7 @@ MonoBehaviour:
   brakeAcceleration: 100
   turnSensitivity: 0.3
   maxSteerAngle: 30
+  maxSpeed: 350
   _centerOfMass: {x: 0, y: 0, z: 0}
   cheatTr: {fileID: 1419127662}
   cheatTr2: {fileID: 1888721895}
