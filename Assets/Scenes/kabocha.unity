@@ -1286,15 +1286,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139508534}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.8620349, z: 0, w: -0.506849}
-  m_LocalPosition: {x: 321.82925, y: 22.881239, z: -1139.5465}
+  m_LocalRotation: {x: -0, y: 0.8660255, z: -0, w: 0.49999997}
+  m_LocalPosition: {x: -401.3436, y: 496.24976, z: -150.81561}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1390381551}
   - {fileID: 1497888366}
   - {fileID: 179969519}
-  m_Father: {fileID: 1159701629}
+  m_Father: {fileID: 2084812512}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &142402476
 MeshCollider:
@@ -13145,11 +13145,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b686701a0fe2d784b82006c1548f4fbe, type: 3}
   m_PrefabInstance: {fileID: 866236843}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &866236845 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b686701a0fe2d784b82006c1548f4fbe, type: 3}
-  m_PrefabInstance: {fileID: 866236843}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &873866495
 GameObject:
   m_ObjectHideFlags: 0
@@ -13303,10 +13298,10 @@ MonoBehaviour:
     Path: event:/CarRide
   <carDrive>k__BackingField:
     Guid:
-      Data1: 1836811035
-      Data2: 1080136189
-      Data3: -1868454239
-      Data4: 928544457
+      Data1: 582844120
+      Data2: 1259037148
+      Data3: 417514649
+      Data4: -762480310
     Path: event:/CarEngine
   <carCrash>k__BackingField:
     Guid:
@@ -25219,7 +25214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1159701629
 Transform:
   m_ObjectHideFlags: 0
@@ -25235,7 +25230,6 @@ Transform:
   m_Children:
   - {fileID: 150730251}
   - {fileID: 1402282315}
-  - {fileID: 139508535}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 360.908, z: 0}
 --- !u!1 &1162765450 stripped
@@ -44945,6 +44939,7 @@ Transform:
   - {fileID: 1918400044}
   - {fileID: 1419127662}
   - {fileID: 1968246998}
+  - {fileID: 139508535}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &2096714108
@@ -45520,25 +45515,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5225244292213645906}
   m_Mesh: {fileID: 5389778189489885304, guid: f60e1f5919a327940abb2894643a7e7f, type: 3}
---- !u!114 &32117360310241280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8587597560651656464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a17ae046dac3d4043bb7a8f556d95a84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CarController: {fileID: 2346393574617726641}
-  carCam: {fileID: 2111547724229889394}
-  player: {fileID: 1159701628}
-  playerBody: {fileID: 1402282316}
-  carEnterUI: {fileID: 43666977}
-  drivingBody: {fileID: 866236845}
-  IsRide: 0
 --- !u!4 &38105699492663057
 Transform:
   m_ObjectHideFlags: 0
@@ -46961,10 +46937,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1139c90f9098a14aa0c7f9d50b65065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBody: {fileID: 1402282315}
   car: {fileID: 8587597560651656464}
   minimapMark: {fileID: 150730250}
-  carRideSystem: {fileID: 32117360310241280}
 --- !u!23 &724878849907224270
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -48984,7 +48958,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2880084122459382639}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
@@ -49368,7 +49342,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8587597560651656464}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76db2168967ba684da84a0fac1d60898, type: 3}
   m_Name: 
@@ -49377,6 +49351,7 @@ MonoBehaviour:
   brakeAcceleration: 100
   turnSensitivity: 0.3
   maxSteerAngle: 30
+  maxSpeed: 350
   _centerOfMass: {x: 0, y: 0, z: 0}
   cheatTr: {fileID: 1419127662}
   cheatTr2: {fileID: 1888721895}
@@ -60442,7 +60417,6 @@ GameObject:
   - component: {fileID: 2143491799739068349}
   - component: {fileID: 2346393574617726641}
   - component: {fileID: 92895851860279875}
-  - component: {fileID: 32117360310241280}
   - component: {fileID: 2758576398463752150}
   m_Layer: 0
   m_Name: Car
