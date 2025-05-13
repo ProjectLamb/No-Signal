@@ -30,6 +30,7 @@ public class CarController : MonoBehaviour
     public Transform cheatTr;
     public Transform cheatTr2;
     public Transform cheatTr3;
+    public Transform trafficLightCheatTr;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
@@ -83,6 +84,11 @@ public class CarController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Keypad8))
         {
             this.transform.position = cheatTr2.position;
+        }
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            this.transform.position = trafficLightCheatTr.position;
+            this.transform.rotation = trafficLightCheatTr.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
