@@ -29,6 +29,7 @@ public class CarController : MonoBehaviour
     public Vector3 _centerOfMass;
     public Transform cheatTr;
     public Transform cheatTr2;
+    public Transform cheatTr3;
     public Transform trafficLightCheatTr;
 
     public List<Wheel> wheels;
@@ -39,18 +40,26 @@ public class CarController : MonoBehaviour
 
     float moveInput;
     float steerInput;
-    
+
     private Rigidbody carRb;
     private EventInstance carDrive;
-    private bool IsCanDrive;
+    public Light leftHeadlight;
+    public Light rightHeadlight;
+
+    private bool headlightsOn = false;
+
+    float maxSpeed = 8f;
+    bool hasReachedMaxSpeed = false;
 
     void Start()
     {
-        IsCanDrive = true;
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
+
+        leftHeadlight.enabled = false;
+        rightHeadlight.enabled = false;
 
         if (steeringWheel != null) //�ڵ�
         {
@@ -60,19 +69,19 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if(!BoomGateEventTrigger.isBoomEvent)
+        if (!BoomGateEventTrigger.isBoomEvent)
         {
-        GetInputs();
-        
-        AnimateWheels();
+            GetInputs();
+            AnimateWheels();
         }
-        
-        if(Input.GetKeyDown(KeyCode.P))
+
+        if (Input.GetKeyDown(KeyCode.P))
         {
             this.transform.position = cheatTr.position;
             this.transform.rotation = cheatTr.rotation;
         }
-        if(Input.GetKeyDown(KeyCode.Keypad9))
+
+        if (Input.GetKeyDown(KeyCode.Keypad8))
         {
             this.transform.position = cheatTr2.position;
         }
@@ -82,15 +91,45 @@ public class CarController : MonoBehaviour
             this.transform.rotation = trafficLightCheatTr.rotation;
         }
 
+        if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            this.transform.position = cheatTr3.position;
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            ToggleHeadlights();
+        }
     }
 
     void FixedUpdate()
-    {  
-        if(!BoomGateEventTrigger.isBoomEvent)
+    {
+        if (!BoomGateEventTrigger.isBoomEvent)
         {
-        Move();
-        Steer();
-        Brake();
+            Move();
+            Steer();
+            Brake();
+
+
+            float currentSpeed = carRb.velocity.magnitude;
+            Debug.Log("현재 속도: " + currentSpeed.ToString("F2") + " m/s");
+            float currentSpeedKmh = currentSpeed * 3.6f;
+            Debug.Log("현재 속도: " + currentSpeedKmh.ToString("F2") + " km/h");
+
+            if (currentSpeed > maxSpeed)
+            {
+                carRb.velocity = carRb.velocity.normalized * maxSpeed;
+
+                if (!hasReachedMaxSpeed)
+                {
+                    Debug.Log("최고 속도 도달");
+                    hasReachedMaxSpeed = true;
+                }
+            }
+            else
+            {
+                hasReachedMaxSpeed = false;
+            }
         }
     }
 
@@ -137,16 +176,16 @@ public class CarController : MonoBehaviour
 
     void Brake()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            foreach(var wheel in wheels)
+            foreach (var wheel in wheels)
             {
                 wheel.wheelCollider.brakeTorque = 300 * brakeAcceleration * Time.deltaTime;
             }
         }
         else
         {
-            foreach( var wheel in wheels)
+            foreach (var wheel in wheels)
             {
                 wheel.wheelCollider.brakeTorque = 0;
             }
@@ -155,7 +194,7 @@ public class CarController : MonoBehaviour
 
     void AnimateWheels()
     {
-        foreach(var wheel in wheels)
+        foreach (var wheel in wheels)
         {
             Quaternion rot;
             Vector3 pos;
@@ -183,7 +222,7 @@ public class CarController : MonoBehaviour
         }
     }
 
-    
+
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "CrowEvent")
@@ -195,11 +234,10 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Deer")
+        if (collision.gameObject.tag == "Deer")
         {
             StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
-            IsCanDrive = false;
         }
     }
 
@@ -207,7 +245,16 @@ public class CarController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         deerBlack.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        deerBlack.gameObject.SetActive(false);
     }
 
-    
+    void ToggleHeadlights()
+    {
+        headlightsOn = !headlightsOn;
+        leftHeadlight.enabled = headlightsOn;
+        rightHeadlight.enabled = headlightsOn;
+    }
+
+
 }
