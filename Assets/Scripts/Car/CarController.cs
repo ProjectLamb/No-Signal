@@ -25,7 +25,7 @@ public class CarController : MonoBehaviour
     public float brakeAcceleration = 50.0f;
     public float turnSensitivity = 1.0f;
     public float maxSteerAngle = 30.0f;
-    public float maxSpeed = 350f;
+    public float maxSpeedRatio = 350f;
 
     private float speed;
     private float rpm;
@@ -180,14 +180,8 @@ public class CarController : MonoBehaviour
     {
         for (int i = 0; i < wheels.Count; i++)
         {
-            if (speed < maxSpeed)
-            {
-                wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
-            }
-            else if (speed > maxSpeed)
-            {
-                //wheels[i].wheelCollider.motorTorque = 0;
-            }
+            wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
+            
             if (wheels[i].wheelCollider.motorTorque <= 0)
             {
                 IsEngineStart = false;
@@ -296,9 +290,8 @@ public class CarController : MonoBehaviour
 
     void EngineSound()
     {
-        Debug.Log(wheels[0].wheelCollider.motorTorque);
         speed = wheels[0].wheelCollider.rpm * 2f * Mathf.PI / 10f;
-        speedRatio = speed * Mathf.Clamp(moveInput, 0.5f, 1f) / maxSpeed;
+        speedRatio = speed * Mathf.Clamp(moveInput, 0.5f, 1f) / maxSpeedRatio;
         pitch = Mathf.Lerp(0.3f, 1f, speedRatio);
         carDrive.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
         carDrive.setPitch(pitch);
