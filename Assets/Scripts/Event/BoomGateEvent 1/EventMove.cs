@@ -29,8 +29,10 @@ public class EventMove : MonoBehaviour
         Vector3 destination = target.position;
         Vector3 startPos = transform.position;
 
+        
         // 1. 이동
         animator.SetInteger("Movement", 0);
+        yield return StartCoroutine(BGEvent_Lighton()); // 이벤트 진입 시 헤드라이트 on
         yield return StartCoroutine(BGEvent_Move(destination)); // 차단바까지 이동
         animator.SetInteger("Movement", 1); // 차단바 주섬주섬 애니메이션
         yield return new WaitForSecondsRealtime(3f); // 3초 기다림
@@ -90,6 +92,12 @@ public class EventMove : MonoBehaviour
         }
         }
 
+    private IEnumerator BGEvent_Lighton()
+    {   
+        light.SetActive(true);
+        yield return null;
+    }
+    
     private IEnumerator BGEvent_Lightoff()
     {
         light.SetActive(false);
