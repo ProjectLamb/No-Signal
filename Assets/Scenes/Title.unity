@@ -563,7 +563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b686701a0fe2d784b82006c1548f4fbe, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12745,6 +12745,51 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 9064988467824917999, guid: 31052cc99a592b648979b51f42a229ea, type: 3}
+--- !u!1 &464555268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 464555270}
+  - component: {fileID: 464555269}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &464555269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464555268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80969095a40bcb048b8d492e3e2bbccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &464555270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464555268}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.69053024, y: 1.3198236, z: 0.65349364}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2064088752}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &464601524
 GameObject:
   m_ObjectHideFlags: 0
@@ -25237,7 +25282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &977862367
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25270,7 +25315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -55824,6 +55869,92 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062965015}
   m_Mesh: {fileID: -3392155244197057827, guid: f60e1f5919a327940abb2894643a7e7f, type: 3}
+--- !u!1 &2064088751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2064088752}
+  - component: {fileID: 2064088753}
+  m_Layer: 0
+  m_Name: FMODEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2064088752
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064088751}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 464555270}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2064088753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064088751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd9218ea98f9db54d8f5689da8547801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <playerFootSteps>k__BackingField:
+    Guid:
+      Data1: 19097160
+      Data2: 1291094142
+      Data3: -1885535565
+      Data4: 1934801909
+    Path: event:/FootSteps
+  <carRide>k__BackingField:
+    Guid:
+      Data1: -460018071
+      Data2: 1085905425
+      Data3: -1806250071
+      Data4: 947613836
+    Path: event:/CarRide
+  <carDrive>k__BackingField:
+    Guid:
+      Data1: 582844120
+      Data2: 1259037148
+      Data3: 417514649
+      Data4: -762480310
+    Path: event:/CarEngine
+  <carCrash>k__BackingField:
+    Guid:
+      Data1: -397009009
+      Data2: 1293432732
+      Data3: -496757333
+      Data4: -680774541
+    Path: event:/Car_crash
+  <radar>k__BackingField:
+    Guid:
+      Data1: -1102353971
+      Data2: 1220581761
+      Data3: 1480971935
+      Data4: -51844725
+    Path: event:/Radar
+  <title>k__BackingField:
+    Guid:
+      Data1: 1962918721
+      Data2: 1326161491
+      Data3: -659457617
+      Data4: 805671374
+    Path: event:/Title
 --- !u!64 &2068236663
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -57053,6 +57184,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 207530894}
+  - {fileID: 464555270}
   - {fileID: 89237222}
   - {fileID: 836967665}
   - {fileID: 1513343998}
