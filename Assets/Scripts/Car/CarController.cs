@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using FMOD.Studio;
+using FMODUnity;
 
 public class CarController : MonoBehaviour
 {
@@ -22,14 +23,20 @@ public class CarController : MonoBehaviour
     }
     public float maxAcceleration = 30.0f;
     public float brakeAcceleration = 50.0f;
-
     public float turnSensitivity = 1.0f;
     public float maxSteerAngle = 30.0f;
+    public float maxSpeedRatio = 350f;
+
+    private float speed;
+    private float rpm;
+    private float pitch;
+    private float speedRatio;
 
     public Vector3 _centerOfMass;
     public Transform cheatTr;
     public Transform cheatTr2;
     public Transform cheatTr3;
+    public Transform trafficLightCheatTr;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
@@ -41,21 +48,30 @@ public class CarController : MonoBehaviour
     float steerInput;
 
     private Rigidbody carRb;
+
     private EventInstance carDrive;
+
     public Light leftHeadlight;
     public Light rightHeadlight;
 
-    private bool headlightsOn = false;
-
+    private bool IsHeadlightsOn = false;
+    private bool IsEngineStart = false;
+    
     float maxSpeed = 8f;
     bool hasReachedMaxSpeed = false;
-
+    
+    void Awake()
+    {
+        carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
+    }
+    
     void Start()
     {
+        rpm = 0;
+        carDrive.getPitch(out pitch);
+
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
-
-        carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
 
         leftHeadlight.enabled = false;
         rightHeadlight.enabled = false;
@@ -74,18 +90,35 @@ public class CarController : MonoBehaviour
             AnimateWheels();
         }
 
+        // 엔진사운드 시스템
+        EngineSound();
+
+        if (Input.GetKeyDown(KeyCode.W) && !IsEngineStart)
+        {
+            carDrive.start();
+            IsEngineStart = true;
+        }
+
+
+        // 치트코드1
         if (Input.GetKeyDown(KeyCode.P))
         {
             this.transform.position = cheatTr.position;
             this.transform.rotation = cheatTr.rotation;
         }
-
-        if (Input.GetKeyDown(KeyCode.Keypad8))
+        // 치트코드2
+        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8))
         {
             this.transform.position = cheatTr2.position;
         }
+        
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            this.transform.position = trafficLightCheatTr.position;
+            this.transform.rotation = trafficLightCheatTr.rotation;
+        }
 
-        if (Input.GetKeyDown(KeyCode.Keypad9))
+        if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9))
         {
             this.transform.position = cheatTr3.position;
         }
@@ -133,9 +166,22 @@ public class CarController : MonoBehaviour
         steerInput = Input.GetAxis("Horizontal");
     }
 
+    void GetSpeedRatio()
+    {
+
+    }
+
     void Move()
     {
-        foreach (var wheel in wheels) { wheel.wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime; }
+        for (int i = 0; i < wheels.Count; i++)
+        {
+            wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
+            
+            if (wheels[i].wheelCollider.motorTorque <= 0)
+            {
+                IsEngineStart = false;
+            }
+        }
     }
     /*
     void Steer()
@@ -198,30 +244,17 @@ public class CarController : MonoBehaviour
         }
     }
 
-    private void UpdateSound()
-    {
-        if (moveInput != 0)
-        {
-            Debug.Log("어 형이야");
-            PLAYBACK_STATE playbackState;
-            carDrive.getPlaybackState(out playbackState);
-            if (carDrive.Equals(PLAYBACK_STATE.STOPPED))
-            {
-                carDrive.start();
-            }
-        }
-        else
-        {
-            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
-        }
-    }
-
-
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "CrowEvent")
         {
             CrowEvent.IsEventStart = true;
+            Destroy(col.gameObject);
+        }
+
+        if (col.gameObject.tag == "DeerEvent")
+        {
+            DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
         }
     }
@@ -245,10 +278,34 @@ public class CarController : MonoBehaviour
 
     void ToggleHeadlights()
     {
-        headlightsOn = !headlightsOn;
-        leftHeadlight.enabled = headlightsOn;
-        rightHeadlight.enabled = headlightsOn;
+        IsHeadlightsOn = !IsHeadlightsOn;
+        leftHeadlight.enabled = IsHeadlightsOn;
+        rightHeadlight.enabled = IsHeadlightsOn;
     }
 
+    void EngineSound()
+    {
+        speed = wheels[0].wheelCollider.rpm * 2f * Mathf.PI / 10f;
+        speedRatio = speed * Mathf.Clamp(moveInput, 0.5f, 1f) / maxSpeedRatio;
+        pitch = Mathf.Lerp(0.3f, 1f, speedRatio);
+        carDrive.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
+        carDrive.setPitch(pitch);
+
+        if (speed > 0.1f)
+        {
+            rpm += 0.1f;
+            carDrive.setParameterByName("RPM", rpm);
+        }
+        else
+        {
+            rpm -= 0.1f;
+            carDrive.setParameterByName("RPM", rpm);
+        }
+
+        if (speed < 0.1f && speed > -0.1f)
+        {
+            IsEngineStart = false;
+        }
+    }
 
 }
