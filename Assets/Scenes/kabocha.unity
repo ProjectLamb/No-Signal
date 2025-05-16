@@ -13931,6 +13931,13 @@ MonoBehaviour:
       Data3: 1480971935
       Data4: -51844725
     Path: event:/Radar
+  <title>k__BackingField:
+    Guid:
+      Data1: 1962918721
+      Data2: 1326161491
+      Data3: -659457617
+      Data4: 805671374
+    Path: event:/Title
 --- !u!1 &876831375 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6325575977505613431, guid: 31052cc99a592b648979b51f42a229ea, type: 3}
