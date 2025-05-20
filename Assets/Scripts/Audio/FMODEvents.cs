@@ -21,6 +21,9 @@ public class FMODEvents : MonoBehaviour
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
 
+    [Header("OST")]
+    [field: SerializeField] public EventReference title { get; private set; }
+
     private void Awake()
     {
         if(instance != null)
