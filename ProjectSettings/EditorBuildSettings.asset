@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/kabocha.unity
-    guid: 01864070c5108244eb9e49542f4d5543
-  - enabled: 1
     path: Assets/Scenes/Title.unity
     guid: ec1173e34a3764b4fb8dbe2770791575
+  - enabled: 1
+    path: Assets/Scenes/kabocha.unity
+    guid: 01864070c5108244eb9e49542f4d5543
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
