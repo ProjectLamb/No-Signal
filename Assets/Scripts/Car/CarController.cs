@@ -105,7 +105,7 @@ public class CarController : MonoBehaviour
             this.transform.rotation = cheatTr.rotation;
         }
         // 치트코드2
-        if (Input.GetKeyDown(KeyCode.Keypad8))
+        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8))
         {
             this.transform.position = cheatTr2.position;
         }
@@ -116,7 +116,7 @@ public class CarController : MonoBehaviour
             this.transform.rotation = trafficLightCheatTr.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad9))
+        if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9))
         {
             this.transform.position = cheatTr3.position;
         }
