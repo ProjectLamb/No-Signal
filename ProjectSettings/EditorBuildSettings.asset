@@ -12,5 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/kabocha.unity
     guid: 01864070c5108244eb9e49542f4d5543
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 6d9ba37cb6a5fdb42aee66133ebc873e, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

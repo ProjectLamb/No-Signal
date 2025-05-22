@@ -57,7 +57,6 @@ public class MiniCam : MonoBehaviour
     }
 
     void MiniCamFollow()
-
     {
         //카메라 회전
         Vector2 delta = Mouse.current.delta.ReadValue() * sensitivity;

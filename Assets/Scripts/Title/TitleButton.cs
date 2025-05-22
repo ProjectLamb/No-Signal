@@ -25,6 +25,11 @@ public class TitleButton : MonoBehaviour
         SceneManager.LoadScene("kabocha");
     }
 
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
     public void FadeIn()
     {
         title.stop(STOP_MODE.ALLOWFADEOUT);
