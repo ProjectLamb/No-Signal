@@ -69,3 +69,4 @@ public class BoomGateEventTrigger : MonoBehaviour
             carRb.isKinematic = true;          
     }
 }
+
