@@ -15,13 +15,20 @@ public class EventMove : MonoBehaviour
 
 
     public void MoveToTarget()
-    {
+    {   this.gameObject.SetActive(true);
         if (moveRoutine != null)
             StopCoroutine(moveRoutine);
 
         moveRoutine = StartCoroutine(MoveRoutine());
     }
 
+    public void PlayerActiveOff(){
+    CameraFollow.isEvent = false;
+    BoomGateEventTrigger.isBoomEvent = false;
+    this.gameObject.SetActive(false);
+            //BoomGateEventTrigger off
+
+   }
 
     private IEnumerator MoveRoutine()
     {
