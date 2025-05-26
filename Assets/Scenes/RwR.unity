@@ -39085,8 +39085,6 @@ PlayableDirector:
     value: {fileID: 2096777801}
   - key: {fileID: -428438004098499993, guid: 836b9c8164df3f542b1b757443d82fdf, type: 2}
     value: {fileID: 1709091364}
-  - key: {fileID: 976495434295519425, guid: 836b9c8164df3f542b1b757443d82fdf, type: 2}
-    value: {fileID: 2096777807}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &1151658677
@@ -49609,7 +49607,6 @@ GameObject:
   - component: {fileID: 1709091361}
   - component: {fileID: 1709091360}
   - component: {fileID: 1709091364}
-  - component: {fileID: 1709091363}
   m_Layer: 0
   m_Name: Car
   m_TagString: Car
@@ -49728,19 +49725,6 @@ MonoBehaviour:
   steeringWheel: {fileID: 1555299206}
   deerBlack: {fileID: 957451564}
   HeadLight: {fileID: 993956657}
---- !u!114 &1709091363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1709091358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 957973a024524ac4cb5b32095f5b287e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Rigidbody: {fileID: 1709091361}
 --- !u!114 &1709091364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49759,10 +49743,10 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1709091363}
-          m_TargetAssemblyTypeName: ISKInematic, Assembly-CSharp
-          m_MethodName: IsKinematicOff
-          m_Mode: 1
+        - m_Target: {fileID: 1709091361}
+          m_TargetAssemblyTypeName: UnityEngine.Rigidbody, UnityEngine
+          m_MethodName: set_isKinematic
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -62040,12 +62024,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4300d0d8a4a8e9c479cf824075a21b26, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2096777802}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4300d0d8a4a8e9c479cf824075a21b26, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2096777807}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4300d0d8a4a8e9c479cf824075a21b26, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2096777806}
   m_SourcePrefab: {fileID: 100100000, guid: 4300d0d8a4a8e9c479cf824075a21b26, type: 3}
 --- !u!4 &2096777800 stripped
 Transform:
@@ -62124,49 +62102,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &2096777806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2096777801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5774fc65be23e034aa16bf270e270239, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayableDirector: {fileID: 1149631699}
---- !u!114 &2096777807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2096777801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: 17e3aabc661112640b64258c649037a2, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2096777802}
-          m_TargetAssemblyTypeName: EventMove, Assembly-CSharp
-          m_MethodName: PlayerActiveOff
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1 &2102089003
 GameObject:
   m_ObjectHideFlags: 0

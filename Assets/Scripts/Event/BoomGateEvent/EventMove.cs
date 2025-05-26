@@ -22,13 +22,10 @@ public class EventMove : MonoBehaviour
         moveRoutine = StartCoroutine(MoveRoutine());
     }
 
-    public void PlayerActiveOff(){
-    CameraFollow.isEvent = false;
-    BoomGateEventTrigger.isBoomEvent = false;
-    this.gameObject.SetActive(false);
-            //BoomGateEventTrigger off
+//     public void PlayerActiveOff(){
+    
 
-   }
+//    }
 
     private IEnumerator MoveRoutine()
     {
@@ -67,6 +64,12 @@ public class EventMove : MonoBehaviour
         yield return StartCoroutine(BGEvent_Rotate());
         animator.SetInteger("Movement", 5);
         yield return StartCoroutine(BGEvent_Return(startPos));
+        this.gameObject.SetActive(false);
+        CameraFollow.isEvent = false;
+        BoomGateEventTrigger.isBoomEvent = false;
+        
+        //BoomGateEventTrigger off
+
     }
     private IEnumerator BGEvent_Move(Vector3 destination){
         while (Vector3.Distance(transform.position, destination) > 0.45f)
