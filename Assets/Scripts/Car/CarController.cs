@@ -57,7 +57,7 @@ public class CarController : MonoBehaviour
     private bool IsHeadlightsOn = false;
     private bool IsEngineStart = false;
     
-    float maxSpeed = 8f;
+    float maxSpeed = 100f;
     bool hasReachedMaxSpeed = false;
     
     void Awake()

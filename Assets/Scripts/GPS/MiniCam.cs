@@ -67,6 +67,6 @@ public class MiniCam : MonoBehaviour
         rotY += mouseX;
 
         //카메라 플레이어 추적
-        transform.position = new Vector3(target.position.x, target.position.y + 250f, target.position.z);
+        transform.position = new Vector3(target.position.x, target.position.y + 150f, target.position.z);
     }
 }

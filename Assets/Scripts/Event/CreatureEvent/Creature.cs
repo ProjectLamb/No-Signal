@@ -10,6 +10,8 @@ public class Creature : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private EventInstance creatureSound;
     public Transform targetTr;
+    public Transform creatureTr;
+    public float rotSpeed = 3f;
 
     void Awake()
     {
@@ -27,5 +29,15 @@ public class Creature : MonoBehaviour
     {
         creatureSound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
         navMeshAgent.destination = targetTr.position;
+        LookTarget();
+    }
+
+    void LookTarget()
+    {
+        Quaternion creatureRot = Quaternion.LookRotation(targetTr.position - transform.position);
+        this.transform.rotation = creatureRot;
+
+        creatureRot.eulerAngles = new Vector3(0, creatureRot.eulerAngles.y, 0);
+        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, creatureRot, Time.deltaTime * rotSpeed);
     }
 }
