@@ -99,7 +99,6 @@ public class CarController : MonoBehaviour
             IsEngineStart = true;
         }
 
-
         // 치트코드1
         if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -151,9 +150,9 @@ public class CarController : MonoBehaviour
 
 
             float currentSpeed = carRb.velocity.magnitude;
-            Debug.Log("현재 속도: " + currentSpeed.ToString("F2") + " m/s");
+            //Debug.Log("현재 속도: " + currentSpeed.ToString("F2") + " m/s");
             float currentSpeedKmh = currentSpeed * 3.6f;
-            Debug.Log("현재 속도: " + currentSpeedKmh.ToString("F2") + " km/h");
+            //Debug.Log("현재 속도: " + currentSpeedKmh.ToString("F2") + " km/h");
 
             if (currentSpeed > maxSpeed)
             {
@@ -176,11 +175,6 @@ public class CarController : MonoBehaviour
     {
         moveInput = Input.GetAxis("Vertical");
         steerInput = Input.GetAxis("Horizontal");
-    }
-
-    void GetSpeedRatio()
-    {
-
     }
 
     void Move()

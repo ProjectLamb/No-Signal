@@ -32892,6 +32892,7 @@ MonoBehaviour:
   boomgatebar: {fileID: 179969519}
   light: {fileID: 1229591938}
   BGEventWave: {fileID: 1838579051}
+  CarRb: {fileID: 92895851860279875}
   speed: 4
 --- !u!114 &2067758140
 MonoBehaviour:
