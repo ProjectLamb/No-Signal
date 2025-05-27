@@ -7,7 +7,7 @@ public class DeerEvent : MonoBehaviour
     Animator anim;
     public Transform rushTr;
     public GameObject deerDot;
-    private float deerSpeed = 1f;
+    public float deerSpeed = 2f;
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
     public Vector3 relativeSpawnPos = new Vector3(-50, 0, 100); //new location of deer

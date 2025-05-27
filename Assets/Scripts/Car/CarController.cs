@@ -110,9 +110,10 @@ public class CarController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8))
         {
             this.transform.position = cheatTr2.position;
+            this.transform.rotation = cheatTr2.rotation;
         }
-        
-        if(Input.GetKeyDown(KeyCode.O))
+
+        if (Input.GetKeyDown(KeyCode.O))
         {
             this.transform.position = trafficLightCheatTr.position;
             this.transform.rotation = trafficLightCheatTr.rotation;
@@ -121,11 +122,16 @@ public class CarController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9))
         {
             this.transform.position = cheatTr3.position;
+            this.transform.rotation = cheatTr3.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
             ToggleHeadlights();
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
         }
     }
 
