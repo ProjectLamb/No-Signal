@@ -33,10 +33,12 @@ public class CarController : MonoBehaviour
     private float speedRatio;
 
     public Vector3 _centerOfMass;
-    public Transform cheatTr;
-    public Transform cheatTr2;
-    public Transform cheatTr3;
-    public Transform trafficLightCheatTr;
+    public Transform crowCheat;
+    public Transform boomgateCheat;
+    public Transform deerCheat;
+    public Transform trafficLightcrowCheat;
+    public Transform creatureCheat;
+    public GameObject creature;
 
     public List<Wheel> wheels;
     public GameObject steeringWheel; //�ڵ�
@@ -56,7 +58,7 @@ public class CarController : MonoBehaviour
     private bool IsHeadlightsOn = false;
     private bool IsEngineStart = false;
     
-    float maxSpeed = 8f;
+    float maxSpeed = 100f;
     bool hasReachedMaxSpeed = false;
     
     void Awake()
@@ -99,31 +101,43 @@ public class CarController : MonoBehaviour
 
 
         // 치트코드1
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
         {
-            this.transform.position = cheatTr.position;
-            this.transform.rotation = cheatTr.rotation;
+            this.transform.position = crowCheat.position;
+            this.transform.rotation = crowCheat.rotation;
         }
         // 치트코드2
-        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8))
+        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
         {
-            this.transform.position = cheatTr2.position;
-        }
-        
-        if(Input.GetKeyDown(KeyCode.O))
-        {
-            this.transform.position = trafficLightCheatTr.position;
-            this.transform.rotation = trafficLightCheatTr.rotation;
+            this.transform.position = boomgateCheat.position;
+            this.transform.rotation = boomgateCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9))
+        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
         {
-            this.transform.position = cheatTr3.position;
+            this.transform.position = deerCheat.position;
+            this.transform.rotation = deerCheat.rotation;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            this.transform.position = trafficLightcrowCheat.position;
+            this.transform.rotation = trafficLightcrowCheat.rotation;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            this.transform.position = creatureCheat.position;
+            this.transform.rotation = creatureCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
             ToggleHeadlights();
+        }
+        if (Input.GetKeyDown(KeyCode.R)) // 어디 꼈을때 위치 재조정
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
         }
     }
 
@@ -253,6 +267,12 @@ public class CarController : MonoBehaviour
         if (col.gameObject.tag == "DeerEvent")
         {
             DeerEvent.IsEventStart = true;
+            Destroy(col.gameObject);
+        }
+
+        if (col.gameObject.tag == "Creature")
+        {
+            creature.SetActive(true);
             Destroy(col.gameObject);
         }
     }
