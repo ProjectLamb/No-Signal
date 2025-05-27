@@ -16,7 +16,7 @@ public class Creature : MonoBehaviour
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        creatureSound = AudioManager.instance.CreateInstance(FMODEvents.instance.creature);
+        //creatureSound = AudioManager.instance.CreateInstance(FMODEvents.instance.creature);
     }
     // Start is called before the first frame update
     void Start()
@@ -27,7 +27,7 @@ public class Creature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        creatureSound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
+        //creatureSound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
         navMeshAgent.destination = targetTr.position;
         LookTarget();
     }
