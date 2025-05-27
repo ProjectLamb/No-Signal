@@ -21,14 +21,13 @@ public class Creature : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        creatureSound.start();
+        navMeshAgent.destination = targetTr.position;
     }
 
     // Update is called once per frame
     void Update()
     {
         //creatureSound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
-        navMeshAgent.destination = targetTr.position;
         LookTarget();
     }
 
