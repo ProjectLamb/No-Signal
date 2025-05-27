@@ -15,13 +15,17 @@ public class EventMove : MonoBehaviour
 
 
     public void MoveToTarget()
-    {
+    {   this.gameObject.SetActive(true);
         if (moveRoutine != null)
             StopCoroutine(moveRoutine);
 
         moveRoutine = StartCoroutine(MoveRoutine());
     }
 
+//     public void PlayerActiveOff(){
+    
+
+//    }
 
     private IEnumerator MoveRoutine()
     {
@@ -29,8 +33,10 @@ public class EventMove : MonoBehaviour
         Vector3 destination = target.position;
         Vector3 startPos = transform.position;
 
+        
         // 1. 이동
         animator.SetInteger("Movement", 0);
+        yield return StartCoroutine(BGEvent_Lighton()); // 이벤트 진입 시 헤드라이트 on
         yield return StartCoroutine(BGEvent_Move(destination)); // 차단바까지 이동
         animator.SetInteger("Movement", 1); // 차단바 주섬주섬 애니메이션
         yield return new WaitForSecondsRealtime(3f); // 3초 기다림
@@ -58,6 +64,12 @@ public class EventMove : MonoBehaviour
         yield return StartCoroutine(BGEvent_Rotate());
         animator.SetInteger("Movement", 5);
         yield return StartCoroutine(BGEvent_Return(startPos));
+        this.gameObject.SetActive(false);
+        CameraFollow.isEvent = false;
+        BoomGateEventTrigger.isBoomEvent = false;
+        
+        //BoomGateEventTrigger off
+
     }
     private IEnumerator BGEvent_Move(Vector3 destination){
         while (Vector3.Distance(transform.position, destination) > 0.45f)
@@ -90,6 +102,12 @@ public class EventMove : MonoBehaviour
         }
         }
 
+    private IEnumerator BGEvent_Lighton()
+    {   
+        light.SetActive(true);
+        yield return null;
+    }
+    
     private IEnumerator BGEvent_Lightoff()
     {
         light.SetActive(false);

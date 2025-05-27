@@ -6,6 +6,7 @@ using UnityEngine.Playables;
 public class BoomGateEventTrigger : MonoBehaviour
 {
     public PlayableDirector PlayableDirector;
+    public EventMove EventMove;
     public static bool isBoomEvent = false;
     private Transform carCamTr;
 
@@ -28,10 +29,16 @@ public class BoomGateEventTrigger : MonoBehaviour
         Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;
                 if (carRb != null)
             {   
-                StartCoroutine(SmoothStop(carRb, carTr, carCam));           
+               StartCoroutine(HandleEventSequence(carRb, carTr, carCam));     
             }
+            
+            
         };
         //EventTrigger collider를 지나간 gameObject의 name을 콘솔에 출력
+   
+    } IEnumerator HandleEventSequence(Rigidbody carRb, Transform carTr, Camera carCam){
+       yield return StartCoroutine(SmoothStop(carRb, carTr, carCam));
+       EventMove.MoveToTarget();
     }
     IEnumerator SmoothStop(Rigidbody carRb, Transform carTr, Camera carCam)
     {
@@ -59,19 +66,7 @@ public class BoomGateEventTrigger : MonoBehaviour
             
             PlayableDirector.gameObject.SetActive(true);
             PlayableDirector.Play();
-            carRb.isKinematic = true; 
-            //물리적 움직임 차단
-            yield return new WaitForSecondsRealtime(28f);
-            CameraFollow.isEvent = false;
-            isBoomEvent = false;
-            gameObject.SetActive(false);
-            //BoomGateEventTrigger off
-            carRb.isKinematic = false;
-            //25초후 움직임 다시 원래대로
-            
-                
-            
-                
+            carRb.isKinematic = true;          
     }
 }
 

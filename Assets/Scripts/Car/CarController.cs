@@ -53,8 +53,7 @@ public class CarController : MonoBehaviour
 
     private EventInstance carDrive;
 
-    public Light leftHeadlight;
-    public Light rightHeadlight;
+    public GameObject HeadLight;
 
     private bool IsHeadlightsOn = false;
     private bool IsEngineStart = false;
@@ -75,8 +74,7 @@ public class CarController : MonoBehaviour
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 
-        leftHeadlight.enabled = false;
-        rightHeadlight.enabled = false;
+        HeadLight.SetActive(false);
 
         if (steeringWheel != null) //�ڵ�
         {
@@ -299,8 +297,7 @@ public class CarController : MonoBehaviour
     void ToggleHeadlights()
     {
         IsHeadlightsOn = !IsHeadlightsOn;
-        leftHeadlight.enabled = IsHeadlightsOn;
-        rightHeadlight.enabled = IsHeadlightsOn;
+        HeadLight.SetActive(IsHeadlightsOn);
     }
 
     void EngineSound()
