@@ -9,6 +9,7 @@ TagManager:
   - Entity
   - DeerEvent
   - Creature
+  - Deer
   layers:
   - Default
   - TransparentFX
