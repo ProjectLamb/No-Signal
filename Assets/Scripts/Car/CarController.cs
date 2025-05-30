@@ -52,6 +52,7 @@ public class CarController : MonoBehaviour
     private Rigidbody carRb;
 
     private EventInstance carDrive;
+    private EventInstance deerCrying;
 
     public GameObject HeadLight;
 
@@ -60,10 +61,11 @@ public class CarController : MonoBehaviour
     
     float maxSpeed = 100f;
     bool hasReachedMaxSpeed = false;
-    
+
     void Awake()
     {
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
+        deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
     }
     
     void Start()
@@ -262,6 +264,7 @@ public class CarController : MonoBehaviour
         {
             DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.deerCrying, this.transform.position);
         }
 
         if (col.gameObject.tag == "Creature")

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD.Studio;
 
 public class DeerEvent : MonoBehaviour
 {
@@ -12,9 +13,12 @@ public class DeerEvent : MonoBehaviour
     public static bool IsEventStart = false;
     public Vector3 relativeSpawnPos = new Vector3(-50, 0, 100); //new location of deer
 
+    private EventInstance deerFootsteps;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
+        deerFootsteps = AudioManager.instance.CreateInstance(FMODEvents.instance.deerFootsteps);
     }
 
     void Update()
@@ -30,6 +34,7 @@ public class DeerEvent : MonoBehaviour
             }
 
             anim.SetBool("IsRun", true);
+            deerFootsteps.start();
             StartCoroutine("RushToCar");
         }
     }
@@ -62,6 +67,7 @@ public class DeerEvent : MonoBehaviour
     {
         if (col.gameObject.tag == "Car")
         {
+            deerFootsteps.stop(STOP_MODE.IMMEDIATE);
             Destroy(deerDot.gameObject);
             Destroy(this.gameObject);
         }

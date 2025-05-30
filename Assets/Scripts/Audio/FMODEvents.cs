@@ -21,6 +21,10 @@ public class FMODEvents : MonoBehaviour
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
 
+    [Header("DeerEvent SFX")]
+    [field: SerializeField] public EventReference deerCrying { get; private set; }
+    [field: SerializeField] public EventReference deerFootsteps { get; private set; }
+
     [Header("Creature SFX")]
     [field: SerializeField] public EventReference creature { get; private set; }
 

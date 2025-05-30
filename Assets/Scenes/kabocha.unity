@@ -866,75 +866,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 267183946}
   m_CullTransparentMesh: 1
---- !u!1001 &271072650
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.78896254
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.67891467
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.00009515381
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.000174433
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.98
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
-      propertyPath: m_Name
-      value: NoSignal_Map_03_indicraft_tree (66)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 27385acb29d8df5449ab3d3dc3468bcf, type: 3}
 --- !u!1 &271393108
 GameObject:
   m_ObjectHideFlags: 0
@@ -2234,7 +2165,6 @@ Transform:
   m_Children:
   - {fileID: 606116686}
   - {fileID: 461944211}
-  - {fileID: 815838750}
   - {fileID: 913313690}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8440,11 +8370,11 @@ Transform:
   m_GameObject: {fileID: 815838748}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 55.90569, y: -29.304693, z: -41.567635}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalPosition: {x: 559.0569, y: -293.04694, z: -415.67633}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 420773912}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &815838751
 MonoBehaviour:
@@ -8933,6 +8863,20 @@ MonoBehaviour:
       Data3: 1480971935
       Data4: -51844725
     Path: event:/Radar
+  <deerCrying>k__BackingField:
+    Guid:
+      Data1: 2056525217
+      Data2: 1206129034
+      Data3: -799550071
+      Data4: 819001263
+    Path: event:/DeerCrying
+  <deerFootsteps>k__BackingField:
+    Guid:
+      Data1: 827829393
+      Data2: 1140777458
+      Data3: 179614627
+      Data4: -1177443663
+    Path: event:/DeerFootsteps
   <creature>k__BackingField:
     Guid:
       Data1: 1100839812
@@ -37187,4 +37131,4 @@ SceneRoots:
   - {fileID: 2084812512}
   - {fileID: 1017549940}
   - {fileID: 420773912}
-  - {fileID: 271072650}
+  - {fileID: 815838750}
