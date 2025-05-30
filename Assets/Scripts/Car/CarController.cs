@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using FMOD.Studio;
-using FMODUnity;
+//using FMODUnity;
 
 public class CarController : MonoBehaviour
 {
@@ -31,6 +31,7 @@ public class CarController : MonoBehaviour
     private float rpm;
     private float pitch;
     private float speedRatio;
+    private float radioCh;
 
     public Vector3 _centerOfMass;
     public Transform crowCheat;
@@ -52,7 +53,15 @@ public class CarController : MonoBehaviour
     private Rigidbody carRb;
 
     private EventInstance carDrive;
+    private EventInstance carLight;
     private EventInstance deerCrying;
+    private EventInstance radio;
+    private EventInstance radio2;
+    private EventInstance radio3;
+    private EventInstance radio4;
+    private EventInstance radio5;
+    private EventInstance radio6;
+    private EventInstance radio7;
 
     public GameObject HeadLight;
 
@@ -65,12 +74,22 @@ public class CarController : MonoBehaviour
     void Awake()
     {
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
+        carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
         deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
+
+        radio = AudioManager.instance.CreateInstance(FMODEvents.instance.radio);
+        radio2 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio2);
+        radio3 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio3);
+        radio4 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio4);
+        radio5 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio5);
+        radio6 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio6);
+        radio7 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio7);
     }
     
     void Start()
     {
         rpm = 0;
+        radioCh = 0;
         carDrive.getPitch(out pitch);
 
         carRb = GetComponent<Rigidbody>();
@@ -134,8 +153,16 @@ public class CarController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
+            if (BoomGateEventTrigger.isBoomEvent) return;
             ToggleHeadlights();
         }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (BoomGateEventTrigger.isBoomEvent) return;
+            TurnRadio();
+        }
+        
         if (Input.GetKeyDown(KeyCode.R)) // 어디 꼈을때 위치 재조정
         {
             this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
@@ -293,8 +320,54 @@ public class CarController : MonoBehaviour
 
     void ToggleHeadlights()
     {
+        AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
+    }
+
+    void TurnRadio()
+    {
+        switch (radioCh)
+        {
+            case 0:
+                radio.start();
+                radioCh++;
+                break;
+            case 1:
+                radio.stop(STOP_MODE.IMMEDIATE);
+                radio2.start();
+                radioCh++;
+                break;
+            case 2:
+                radio2.stop(STOP_MODE.IMMEDIATE);
+                radio3.start();
+                radioCh++;
+                break;
+            case 3:
+                radio3.stop(STOP_MODE.IMMEDIATE);
+                radio4.start();
+                radioCh++;
+                break;
+            case 4:
+                radio4.stop(STOP_MODE.IMMEDIATE);
+                radio5.start();
+                radioCh++;
+                break;
+            case 5:
+                radio5.stop(STOP_MODE.IMMEDIATE);
+                radio6.start();
+                radioCh++;
+                break;
+            case 6:
+                radio6.stop(STOP_MODE.IMMEDIATE);
+                radio7.start();
+                radioCh++;
+                break;
+            case 7:
+                radio7.stop(STOP_MODE.IMMEDIATE);
+                radioCh = 0;
+                break;
+        }
     }
 
     void EngineSound()

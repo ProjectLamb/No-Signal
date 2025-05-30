@@ -355,6 +355,7 @@ MonoBehaviour:
   boomgatebar: {fileID: 0}
   light: {fileID: 1579708297}
   BGEventWave: {fileID: 0}
+  CarRb: {fileID: 0}
   speed: 4
 --- !u!114 &40984095
 MonoBehaviour:
@@ -7374,21 +7375,28 @@ MonoBehaviour:
       Data2: 1085905425
       Data3: -1806250071
       Data4: 947613836
-    Path: event:/CarRide
+    Path: event:/Car/CarRide
   <carDrive>k__BackingField:
     Guid:
       Data1: 582844120
       Data2: 1259037148
       Data3: 417514649
       Data4: -762480310
-    Path: event:/CarEngine
+    Path: event:/Car/CarEngine
   <carCrash>k__BackingField:
     Guid:
       Data1: -397009009
       Data2: 1293432732
       Data3: -496757333
       Data4: -680774541
-    Path: event:/Car_crash
+    Path: event:/Car/Car_crash
+  <carLight>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   <radar>k__BackingField:
     Guid:
       Data1: -1102353971
@@ -7396,6 +7404,20 @@ MonoBehaviour:
       Data3: 1480971935
       Data4: -51844725
     Path: event:/Radar
+  <deerCrying>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <deerFootsteps>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   <creature>k__BackingField:
     Guid:
       Data1: 1100839812

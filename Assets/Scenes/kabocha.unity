@@ -8841,21 +8841,28 @@ MonoBehaviour:
       Data2: 1085905425
       Data3: -1806250071
       Data4: 947613836
-    Path: event:/CarRide
+    Path: event:/Car/CarRide
   <carDrive>k__BackingField:
     Guid:
       Data1: 582844120
       Data2: 1259037148
       Data3: 417514649
       Data4: -762480310
-    Path: event:/CarEngine
+    Path: event:/Car/CarEngine
   <carCrash>k__BackingField:
     Guid:
       Data1: -397009009
       Data2: 1293432732
       Data3: -496757333
       Data4: -680774541
-    Path: event:/Car_crash
+    Path: event:/Car/Car_crash
+  <carLight>k__BackingField:
+    Guid:
+      Data1: -1790084659
+      Data2: 1280293280
+      Data3: -94662227
+      Data4: 466045498
+    Path: event:/Car/CarLight
   <radar>k__BackingField:
     Guid:
       Data1: -1102353971
@@ -8869,14 +8876,14 @@ MonoBehaviour:
       Data2: 1206129034
       Data3: -799550071
       Data4: 819001263
-    Path: event:/DeerCrying
+    Path: event:/Deer/DeerCrying
   <deerFootsteps>k__BackingField:
     Guid:
       Data1: 827829393
       Data2: 1140777458
       Data3: 179614627
       Data4: -1177443663
-    Path: event:/DeerFootsteps
+    Path: event:/Deer/DeerFootsteps
   <creature>k__BackingField:
     Guid:
       Data1: 1100839812
@@ -8884,6 +8891,55 @@ MonoBehaviour:
       Data3: -14648157
       Data4: -373838690
     Path: event:/Creature
+  <radio>k__BackingField:
+    Guid:
+      Data1: -1065768975
+      Data2: 1160958282
+      Data3: 1353548448
+      Data4: 867367486
+    Path: event:/Radio/Radio
+  <radio2>k__BackingField:
+    Guid:
+      Data1: -1674139705
+      Data2: 1134530836
+      Data3: -402917451
+      Data4: -1819125762
+    Path: event:/Radio/Radio 2
+  <radio3>k__BackingField:
+    Guid:
+      Data1: -2134214371
+      Data2: 1296504474
+      Data3: -1880830322
+      Data4: 267159035
+    Path: event:/Radio/Radio 3
+  <radio4>k__BackingField:
+    Guid:
+      Data1: 545351585
+      Data2: 1218052314
+      Data3: -461547624
+      Data4: 306255377
+    Path: event:/Radio/Radio 4
+  <radio5>k__BackingField:
+    Guid:
+      Data1: -1748489966
+      Data2: 1217371145
+      Data3: 1568444583
+      Data4: 2102058454
+    Path: event:/Radio/Radio 5
+  <radio6>k__BackingField:
+    Guid:
+      Data1: 940592449
+      Data2: 1092947199
+      Data3: -313770827
+      Data4: -2116241319
+    Path: event:/Radio/Radio 6
+  <radio7>k__BackingField:
+    Guid:
+      Data1: 1930655076
+      Data2: 1210398274
+      Data3: -1436398683
+      Data4: 1464108729
+    Path: event:/Radio/Radio 7
   <title>k__BackingField:
     Guid:
       Data1: 1962918721

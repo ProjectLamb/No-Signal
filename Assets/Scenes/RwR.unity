@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.02945411, g: 0.03892285, b: 0.04757055, a: 1}
+  m_IndirectSpecularColor: {r: 0.18788266, g: 0.21779579, b: 0.241581, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -42964,21 +42964,28 @@ MonoBehaviour:
       Data2: 1085905425
       Data3: -1806250071
       Data4: 947613836
-    Path: event:/CarRide
+    Path: event:/Car/CarRide
   <carDrive>k__BackingField:
     Guid:
       Data1: 582844120
       Data2: 1259037148
       Data3: 417514649
       Data4: -762480310
-    Path: event:/CarEngine
+    Path: event:/Car/CarEngine
   <carCrash>k__BackingField:
     Guid:
       Data1: -397009009
       Data2: 1293432732
       Data3: -496757333
       Data4: -680774541
-    Path: event:/Car_crash
+    Path: event:/Car/Car_crash
+  <carLight>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   <radar>k__BackingField:
     Guid:
       Data1: -1102353971
@@ -42986,6 +42993,27 @@ MonoBehaviour:
       Data3: 1480971935
       Data4: -51844725
     Path: event:/Radar
+  <deerCrying>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <deerFootsteps>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <creature>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   <title>k__BackingField:
     Guid:
       Data1: 1962918721
@@ -49705,10 +49733,12 @@ MonoBehaviour:
   maxSteerAngle: 30
   maxSpeedRatio: 350
   _centerOfMass: {x: 0, y: 0, z: 0}
-  cheatTr: {fileID: 2140890697}
-  cheatTr2: {fileID: 573122416}
-  cheatTr3: {fileID: 681295081}
-  trafficLightCheatTr: {fileID: 224135351}
+  crowCheat: {fileID: 0}
+  boomgateCheat: {fileID: 0}
+  deerCheat: {fileID: 0}
+  trafficLightcrowCheat: {fileID: 0}
+  creatureCheat: {fileID: 0}
+  creature: {fileID: 0}
   wheels:
   - wheelModel: {fileID: 263501255}
     wheelCollider: {fileID: 1235974870}
@@ -62052,6 +62082,7 @@ MonoBehaviour:
   boomgatebar: {fileID: 1642550229}
   light: {fileID: 993956657}
   BGEventWave: {fileID: 1544969204}
+  CarRb: {fileID: 0}
   speed: 4
 --- !u!95 &2096777804
 Animator:
