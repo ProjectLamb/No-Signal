@@ -121,31 +121,31 @@ public class CarController : MonoBehaviour
         }
 
         // 치트코드1
-        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.F1))
         {
             this.transform.position = crowCheat.position;
             this.transform.rotation = crowCheat.rotation;
         }
         // 치트코드2
-        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.F2))
         {
             this.transform.position = boomgateCheat.position;
             this.transform.rotation = boomgateCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.F3))
         {
             this.transform.position = deerCheat.position;
             this.transform.rotation = deerCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4))
+        if (Input.GetKeyDown(KeyCode.F4))
         {
             this.transform.position = trafficLightcrowCheat.position;
             this.transform.rotation = trafficLightcrowCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5))
+        if (Input.GetKeyDown(KeyCode.F5))
         {
             this.transform.position = creatureCheat.position;
             this.transform.rotation = creatureCheat.rotation;
@@ -157,13 +157,13 @@ public class CarController : MonoBehaviour
             ToggleHeadlights();
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             if (BoomGateEventTrigger.isBoomEvent) return;
             TurnRadio();
         }
         
-        if (Input.GetKeyDown(KeyCode.R)) // 어디 꼈을때 위치 재조정
+        if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
         {
             this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
         }
