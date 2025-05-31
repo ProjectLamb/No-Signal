@@ -393,6 +393,12 @@ public class CarController : MonoBehaviour
         {
             IsEngineStart = false;
         }
+
+        if (carRb.isKinematic == true)
+        {
+            rpm = 0;
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+        }
     }
 
 }
