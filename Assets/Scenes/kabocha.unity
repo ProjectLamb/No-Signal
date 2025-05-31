@@ -72875,7 +72875,9 @@ MonoBehaviour:
   turnSensitivity: 0.3
   maxSteerAngle: 30
   maxSpeedRatio: 350
+  maxSpeed: 100
   _centerOfMass: {x: 0, y: 0, z: 0}
+  modelTr: {fileID: 5787911304080818965}
   crowCheat: {fileID: 1888721895}
   boomgateCheat: {fileID: 1419127662}
   deerCheat: {fileID: 1307022230}

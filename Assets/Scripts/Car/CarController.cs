@@ -26,14 +26,22 @@ public class CarController : MonoBehaviour
     public float turnSensitivity = 1.0f;
     public float maxSteerAngle = 30.0f;
     public float maxSpeedRatio = 350f;
+    public float maxSpeed = 100f;
 
     private float speed;
     private float rpm;
     private float pitch;
     private float speedRatio;
     private float radioCh;
+    private float vibeSpeed = 1f;
+    private float intensity = 0.001f;
+
+    private bool IsHeadlightsOn = false;
+    private bool IsEngineStart = false;
+    private bool hasReachedMaxSpeed = false;
 
     public Vector3 _centerOfMass;
+    public Transform modelTr;
     public Transform crowCheat;
     public Transform boomgateCheat;
     public Transform deerCheat;
@@ -65,12 +73,6 @@ public class CarController : MonoBehaviour
 
     public GameObject HeadLight;
 
-    private bool IsHeadlightsOn = false;
-    private bool IsEngineStart = false;
-    
-    float maxSpeed = 100f;
-    bool hasReachedMaxSpeed = false;
-
     void Awake()
     {
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
@@ -85,7 +87,7 @@ public class CarController : MonoBehaviour
         radio6 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio6);
         radio7 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio7);
     }
-    
+
     void Start()
     {
         rpm = 0;
@@ -113,6 +115,7 @@ public class CarController : MonoBehaviour
 
         // 엔진사운드 시스템
         EngineSound();
+        Vibrate();
 
         if (Input.GetKeyDown(KeyCode.W) && !IsEngineStart)
         {
@@ -162,7 +165,7 @@ public class CarController : MonoBehaviour
             if (BoomGateEventTrigger.isBoomEvent) return;
             TurnRadio();
         }
-        
+
         if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
         {
             this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
@@ -211,7 +214,7 @@ public class CarController : MonoBehaviour
         for (int i = 0; i < wheels.Count; i++)
         {
             wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
-            
+
             if (wheels[i].wheelCollider.motorTorque <= 0)
             {
                 IsEngineStart = false;
@@ -399,6 +402,13 @@ public class CarController : MonoBehaviour
             rpm = 0;
             carDrive.stop(STOP_MODE.ALLOWFADEOUT);
         }
+    }
+    void Vibrate()
+    {
+        modelTr.localPosition = intensity * new Vector3(
+            Mathf.PerlinNoise(speed * Time.time, 1),
+            Mathf.PerlinNoise(speed * Time.time, 2),
+            Mathf.PerlinNoise(speed * Time.time, 3));
     }
 
 }
