@@ -32,7 +32,7 @@ public class TitleCar : MonoBehaviour
 
     IEnumerator LightOnOff()
     {
-        litRange = Random.Range(5, 20);
+        litRange = Random.Range(3, 10);
         passedTime = 0;
         while (true)
         {
@@ -47,7 +47,7 @@ public class TitleCar : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
                 LightOn();
                 yield return new WaitForSeconds(0.1f);
-                litRange = Random.Range(5, 20);
+                litRange = Random.Range(3, 10);
                 passedTime = 0;
             }
             yield return new WaitForSeconds(0.001f);
