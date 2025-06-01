@@ -11991,7 +11991,7 @@ GameObject:
   - component: {fileID: 461944211}
   m_Layer: 0
   m_Name: CheatCreature
-  m_TagString: Creature
+  m_TagString: CreatureEvent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17394,7 +17394,7 @@ GameObject:
   - component: {fileID: 606116687}
   m_Layer: 0
   m_Name: CreatureEventTrigger
-  m_TagString: Creature
+  m_TagString: CreatureEvent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22900,7 +22900,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.14999999
+  m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: bb5ae2f228950af44b9c7430aeb8ceec, type: 2}
   m_BuildHeightMesh: 0
@@ -28457,6 +28457,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6b0387a75da68bd4a9944cbf5a713d26, type: 3}
+      propertyPath: m_TagString
+      value: Creature
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -28507,7 +28511,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &913313689
 MonoBehaviour:
@@ -28523,7 +28527,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTr: {fileID: 1138593393389054592}
   creatureTr: {fileID: 913313690}
-  rotSpeed: 3
+  rotSpeed: 10
 --- !u!4 &913313690 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6b0387a75da68bd4a9944cbf5a713d26, type: 3}
@@ -28539,7 +28543,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 30
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

@@ -10,6 +10,7 @@ TagManager:
   - DeerEvent
   - Creature
   - Deer
+  - CreatureEvent
   layers:
   - Default
   - TransparentFX

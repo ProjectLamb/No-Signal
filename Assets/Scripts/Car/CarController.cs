@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using FMOD.Studio;
 //using FMODUnity;
 
@@ -297,7 +298,7 @@ public class CarController : MonoBehaviour
             AudioManager.instance.PlayOneShot(FMODEvents.instance.deerCrying, this.transform.position);
         }
 
-        if (col.gameObject.tag == "Creature")
+        if (col.gameObject.tag == "CreatureEvent")
         {
             creature.SetActive(true);
             Destroy(col.gameObject);
@@ -310,6 +311,10 @@ public class CarController : MonoBehaviour
         {
             StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+        }
+        if (collision.gameObject.tag == "Creature")
+        {
+            SceneManager.LoadScene("Clear");
         }
     }
 
