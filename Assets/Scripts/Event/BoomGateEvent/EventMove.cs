@@ -11,7 +11,7 @@ public class EventMove : MonoBehaviour
     public GameObject light;
     public GameObject BGEventWave;
     public Rigidbody CarRb;
-    public float speed = 4f;       // 이동 속도
+    public float speed = 2f;       // 이동 속도
     private Coroutine moveRoutine;
 
 
@@ -23,10 +23,6 @@ public class EventMove : MonoBehaviour
         moveRoutine = StartCoroutine(MoveRoutine());
     }
 
-    //     public void PlayerActiveOff(){
-
-
-    //    }
 
     private IEnumerator MoveRoutine()
     {
@@ -65,6 +61,7 @@ public class EventMove : MonoBehaviour
         yield return StartCoroutine(BGEvent_Rotate());
         animator.SetInteger("Movement", 5);
         yield return StartCoroutine(BGEvent_Return(startPos));
+        yield return new WaitForSecondsRealtime(1.0f);
         this.gameObject.SetActive(false);
         CameraFollow.isEvent = false;
         CarRb.isKinematic = false;
@@ -135,9 +132,9 @@ public class EventMove : MonoBehaviour
     {   
        
         Quaternion startRot = boomgatebar.transform.rotation;
-        Quaternion endRot = startRot * Quaternion.Euler(0, 0, -90);
+        Quaternion endRot = startRot * Quaternion.Euler(0, -90, 0);
         float elapsed = 0f;
-        float turnDuration = 8.0f;
+        float turnDuration = 5.0f;
 
         while (elapsed < turnDuration)
         {
