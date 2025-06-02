@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/kabocha.unity
     guid: 01864070c5108244eb9e49542f4d5543
+  - enabled: 1
+    path: Assets/Scenes/Clear.unity
+    guid: d441f245f6c25aa46b1d6a3b21dada57
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6d9ba37cb6a5fdb42aee66133ebc873e, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using FMOD.Studio;
-using FMODUnity;
+//using FMODUnity;
 
 public class CarController : MonoBehaviour
 {
@@ -26,13 +27,22 @@ public class CarController : MonoBehaviour
     public float turnSensitivity = 1.0f;
     public float maxSteerAngle = 30.0f;
     public float maxSpeedRatio = 350f;
+    public float maxSpeed = 100f;
 
     private float speed;
     private float rpm;
     private float pitch;
     private float speedRatio;
+    private float radioCh;
+    private float vibeSpeed = 1f;
+    private float intensity = 0.001f;
+
+    private bool IsHeadlightsOn = false;
+    private bool IsEngineStart = false;
+    private bool hasReachedMaxSpeed = false;
 
     public Vector3 _centerOfMass;
+    public Transform modelTr;
     public Transform crowCheat;
     public Transform boomgateCheat;
     public Transform deerCheat;
@@ -52,23 +62,37 @@ public class CarController : MonoBehaviour
     private Rigidbody carRb;
 
     private EventInstance carDrive;
+    private EventInstance carLight;
+    private EventInstance deerCrying;
+    private EventInstance radio;
+    private EventInstance radio2;
+    private EventInstance radio3;
+    private EventInstance radio4;
+    private EventInstance radio5;
+    private EventInstance radio6;
+    private EventInstance radio7;
 
     public GameObject HeadLight;
 
-    private bool IsHeadlightsOn = false;
-    private bool IsEngineStart = false;
-    
-    float maxSpeed = 100f;
-    bool hasReachedMaxSpeed = false;
-    
     void Awake()
     {
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
+        carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
+        deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
+
+        radio = AudioManager.instance.CreateInstance(FMODEvents.instance.radio);
+        radio2 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio2);
+        radio3 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio3);
+        radio4 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio4);
+        radio5 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio5);
+        radio6 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio6);
+        radio7 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio7);
     }
-    
+
     void Start()
     {
         rpm = 0;
+        radioCh = 0;
         carDrive.getPitch(out pitch);
 
         carRb = GetComponent<Rigidbody>();
@@ -92,6 +116,7 @@ public class CarController : MonoBehaviour
 
         // 엔진사운드 시스템
         EngineSound();
+        Vibrate();
 
         if (Input.GetKeyDown(KeyCode.W) && !IsEngineStart)
         {
@@ -100,31 +125,31 @@ public class CarController : MonoBehaviour
         }
 
         // 치트코드1
-        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.F1))
         {
             this.transform.position = crowCheat.position;
             this.transform.rotation = crowCheat.rotation;
         }
         // 치트코드2
-        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.F2))
         {
             this.transform.position = boomgateCheat.position;
             this.transform.rotation = boomgateCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.F3))
         {
             this.transform.position = deerCheat.position;
             this.transform.rotation = deerCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4))
+        if (Input.GetKeyDown(KeyCode.F4))
         {
             this.transform.position = trafficLightcrowCheat.position;
             this.transform.rotation = trafficLightcrowCheat.rotation;
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5))
+        if (Input.GetKeyDown(KeyCode.F5))
         {
             this.transform.position = creatureCheat.position;
             this.transform.rotation = creatureCheat.rotation;
@@ -132,9 +157,17 @@ public class CarController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
+            if (BoomGateEventTrigger.isBoomEvent) return;
             ToggleHeadlights();
         }
-        if (Input.GetKeyDown(KeyCode.R)) // 어디 꼈을때 위치 재조정
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (BoomGateEventTrigger.isBoomEvent) return;
+            TurnRadio();
+        }
+
+        if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
         {
             this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
         }
@@ -182,7 +215,7 @@ public class CarController : MonoBehaviour
         for (int i = 0; i < wheels.Count; i++)
         {
             wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
-            
+
             if (wheels[i].wheelCollider.motorTorque <= 0)
             {
                 IsEngineStart = false;
@@ -262,9 +295,10 @@ public class CarController : MonoBehaviour
         {
             DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.deerCrying, this.transform.position);
         }
 
-        if (col.gameObject.tag == "Creature")
+        if (col.gameObject.tag == "CreatureEvent")
         {
             creature.SetActive(true);
             Destroy(col.gameObject);
@@ -278,6 +312,10 @@ public class CarController : MonoBehaviour
             StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
         }
+        if (collision.gameObject.tag == "Creature")
+        {
+            SceneManager.LoadScene("Clear");
+        }
     }
 
     IEnumerator WaitForDeer()
@@ -290,8 +328,54 @@ public class CarController : MonoBehaviour
 
     void ToggleHeadlights()
     {
+        AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
+    }
+
+    void TurnRadio()
+    {
+        switch (radioCh)
+        {
+            case 0:
+                radio.start();
+                radioCh++;
+                break;
+            case 1:
+                radio.stop(STOP_MODE.IMMEDIATE);
+                radio2.start();
+                radioCh++;
+                break;
+            case 2:
+                radio2.stop(STOP_MODE.IMMEDIATE);
+                radio3.start();
+                radioCh++;
+                break;
+            case 3:
+                radio3.stop(STOP_MODE.IMMEDIATE);
+                radio4.start();
+                radioCh++;
+                break;
+            case 4:
+                radio4.stop(STOP_MODE.IMMEDIATE);
+                radio5.start();
+                radioCh++;
+                break;
+            case 5:
+                radio5.stop(STOP_MODE.IMMEDIATE);
+                radio6.start();
+                radioCh++;
+                break;
+            case 6:
+                radio6.stop(STOP_MODE.IMMEDIATE);
+                radio7.start();
+                radioCh++;
+                break;
+            case 7:
+                radio7.stop(STOP_MODE.IMMEDIATE);
+                radioCh = 0;
+                break;
+        }
     }
 
     void EngineSound()
@@ -317,6 +401,19 @@ public class CarController : MonoBehaviour
         {
             IsEngineStart = false;
         }
+
+        if (carRb.isKinematic == true)
+        {
+            rpm = 0;
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+        }
+    }
+    void Vibrate()
+    {
+        modelTr.localPosition = intensity * new Vector3(
+            Mathf.PerlinNoise(speed * Time.time, 1),
+            Mathf.PerlinNoise(speed * Time.time, 2),
+            Mathf.PerlinNoise(speed * Time.time, 3));
     }
 
 }
