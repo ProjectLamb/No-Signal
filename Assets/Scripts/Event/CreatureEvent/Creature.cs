@@ -29,6 +29,7 @@ public class Creature : MonoBehaviour
     {
         //creatureSound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
         LookTarget();
+        navMeshAgent.destination = targetTr.position;
     }
 
     void LookTarget()
