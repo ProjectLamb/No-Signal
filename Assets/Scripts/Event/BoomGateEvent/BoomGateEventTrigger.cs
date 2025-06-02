@@ -45,20 +45,19 @@ public class BoomGateEventTrigger : MonoBehaviour
     }
     IEnumerator SmoothStop(Rigidbody carRb, Transform carTr, Camera carCam)
     {
-        float duration = 1.5f;
+        float duration = 2.0f;
         float elapsed = 0f;
-        // Vector3 initialVelocity = carRb.velocity;
 
+        Vector3 initialVelocity = carRb.velocity;
         Quaternion initialCarRotation = carTr.transform.rotation;
         Quaternion initialCamRotation = carCam.transform.rotation;
-        Quaternion targetRotation = Quaternion.Euler(0, 270, 0);
+        Quaternion targetRotation = Quaternion.Euler(0, 270, 0); 
         CameraFollow.isEvent = true;
         isBoomEvent = true;
         carRb.angularVelocity = Vector3.zero;
 
 
-        while (elapsed < duration)
-        {
+        while (elapsed < duration){
             carTr.transform.rotation = Quaternion.Slerp(initialCarRotation, targetRotation, elapsed / duration);
             carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetRotation, elapsed / duration);
 
@@ -67,10 +66,10 @@ public class BoomGateEventTrigger : MonoBehaviour
 
             yield return null;
         }
-
-        PlayableDirector.gameObject.SetActive(true);
-        PlayableDirector.Play();
-        carRb.isKinematic = true;
+            
+            PlayableDirector.gameObject.SetActive(true);
+            PlayableDirector.Play();
+            carRb.isKinematic = true;          
     }
 }
 
