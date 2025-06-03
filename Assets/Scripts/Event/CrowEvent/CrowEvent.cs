@@ -33,7 +33,7 @@ public class CrowEvent : MonoBehaviour
             StartCoroutine("FollowTarget");
         }
 
-        if(IsFlyAway) FlyToTheDest();
+        if (IsFlyAway) FlyToTheDest();
     }
 
     IEnumerator FollowTarget()
@@ -102,5 +102,10 @@ public class CrowEvent : MonoBehaviour
             crowDot.SetActive(false);
             IsFlyAway = false;
         }
+    }
+
+    public void Cawcaw()
+    {
+        CarController.IsCrowCaw = true;
     }
 }

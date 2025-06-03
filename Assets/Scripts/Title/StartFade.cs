@@ -15,7 +15,6 @@ public class StartFade : MonoBehaviour
 
     IEnumerator CoFadeOut()
     {
-        float fadeAlp = 1;
         Color fadeCol = startFadeImage.color;
         while (fadeCol.a > 0f)
         {

@@ -12,7 +12,7 @@ public class HeadLightController : MonoBehaviour
     {
         if (CarController.IsHeadlightsOn && IsCanUseLight)
         {
-            lightFill.fillAmount -= 0.3333f * Time.deltaTime;
+            lightFill.fillAmount -= 0.0333f * Time.deltaTime;
         }
         else if (!CarController.IsHeadlightsOn && IsCanUseLight)
         {

@@ -29,16 +29,7 @@ public class CarController : MonoBehaviour
     public float maxSpeedRatio = 350f;
     public float maxSpeed = 100f;
     public static bool IsHeadlightsOn = false;
-
-    private float speed;
-    private float rpm;
-    private float pitch;
-    private float speedRatio;
-    private float radioCh;
-    private float vibeSpeed = 1f;
-    private float intensity = 0.001f;
-    private bool IsEngineStart = false;
-    private bool hasReachedMaxSpeed = false;
+    public static bool IsCrowCaw = false;
 
     public Vector3 _centerOfMass;
     public Transform modelTr;
@@ -48,17 +39,26 @@ public class CarController : MonoBehaviour
     public Transform trafficLightcrowCheat;
     public Transform creatureCheat;
     public GameObject creature;
-
     public List<Wheel> wheels;
-    public GameObject steeringWheel; //�ڵ�
+    public GameObject steeringWheel;
+    public GameObject HeadLight;
     public Image deerBlack;
+    public Image soundFill;
 
-    private Quaternion initialSteeringRotation;
-
-    float moveInput;
-    float steerInput;
+    private float speed;
+    private float rpm;
+    private float pitch;
+    private float speedRatio;
+    private float radioCh;
+    private float moveInput;
+    private float steerInput;
+    private float vibeSpeed = 1f;
+    private float intensity = 0.001f;
+    private bool hasReachedMaxSpeed = false;
+    private bool IsEngineStart = false;
 
     private Rigidbody carRb;
+    private Quaternion initialSteeringRotation;
 
     private EventInstance carDrive;
     private EventInstance carLight;
@@ -70,8 +70,6 @@ public class CarController : MonoBehaviour
     private EventInstance radio5;
     private EventInstance radio6;
     private EventInstance radio7;
-
-    public GameObject HeadLight;
 
     void Awake()
     {
@@ -112,15 +110,15 @@ public class CarController : MonoBehaviour
             GetInputs();
             AnimateWheels();
         }
-
         // 엔진사운드 시스템
         EngineSound();
         Vibrate();
+        SoundDetect();
 
-        if (Input.GetKeyDown(KeyCode.W) && !IsEngineStart)
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
         {
-            carDrive.start();
             IsEngineStart = true;
+            carDrive.start();
         }
 
         // 치트코드1
@@ -180,7 +178,6 @@ public class CarController : MonoBehaviour
             Steer();
             Brake();
 
-
             float currentSpeed = carRb.velocity.magnitude;
             //Debug.Log("현재 속도: " + currentSpeed.ToString("F2") + " m/s");
             float currentSpeedKmh = currentSpeed * 3.6f;
@@ -214,25 +211,8 @@ public class CarController : MonoBehaviour
         for (int i = 0; i < wheels.Count; i++)
         {
             wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
-
-            if (wheels[i].wheelCollider.motorTorque <= 0)
-            {
-                IsEngineStart = false;
-            }
         }
     }
-    /*
-    void Steer()
-    {
-        foreach(var wheel in wheels)
-        {
-            if(wheel.axel == Axel.Front)
-            {
-                var _steerAngle = steerInput * turnSensitivity * maxSteerAngle;
-                wheel.wheelCollider.steerAngle = Mathf.Lerp(wheel.wheelCollider.steerAngle, _steerAngle, 0.6f);
-            }
-        }
-    }*/
     void Steer()
     {
         float _steerAngle = steerInput * turnSensitivity * maxSteerAngle;
@@ -306,6 +286,7 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        soundFill.fillAmount += 0.01f; // 사운드 소리 
         if (collision.gameObject.tag == "Deer")
         {
             StartCoroutine("WaitForDeer");
@@ -381,11 +362,13 @@ public class CarController : MonoBehaviour
     {
         speed = wheels[0].wheelCollider.rpm * 2f * Mathf.PI / 10f;
         speedRatio = speed * Mathf.Clamp(moveInput, 0.5f, 1f) / maxSpeedRatio;
+        if (speedRatio < 0) speedRatio *= -1;
         pitch = Mathf.Lerp(0.3f, 1f, speedRatio);
+
         carDrive.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
         carDrive.setPitch(pitch);
 
-        if (speed > 0.1f)
+        if (speed > 0.1f || speed < -0.1f)
         {
             rpm += 0.1f;
             carDrive.setParameterByName("RPM", rpm);
@@ -415,4 +398,23 @@ public class CarController : MonoBehaviour
             Mathf.PerlinNoise(speed * Time.time, 3));
     }
 
+    void SoundDetect()
+    {
+        //엔진 사운드 감지
+        if (IsEngineStart)
+        {
+            if (soundFill.fillAmount < 0.1f)
+            {
+                soundFill.fillAmount += 0.025f * Time.deltaTime;
+            }
+        }
+        else
+            soundFill.fillAmount -= 0.01f * Time.deltaTime;
+
+        if (IsCrowCaw)
+        {
+            IsCrowCaw = false;
+            soundFill.fillAmount += 0.005f;
+        }
+    }
 }
