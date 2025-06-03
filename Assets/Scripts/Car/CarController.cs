@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using FMOD.Studio;
-//using FMODUnity;
+using DG.Tweening;
 
 public class CarController : MonoBehaviour
 {
@@ -44,6 +44,8 @@ public class CarController : MonoBehaviour
     public GameObject HeadLight;
     public Image deerBlack;
     public Image soundFill;
+    public Image soundFrame;
+    public Canvas soundDctCanvas;
 
     private float speed;
     private float rpm;
@@ -56,6 +58,7 @@ public class CarController : MonoBehaviour
     private float intensity = 0.001f;
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
+    private bool IsSoundWarning = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -121,13 +124,13 @@ public class CarController : MonoBehaviour
             carDrive.start();
         }
 
-        // 치트코드1
+        // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F1))
         {
             this.transform.position = crowCheat.position;
             this.transform.rotation = crowCheat.rotation;
         }
-        // 치트코드2
+
         if (Input.GetKeyDown(KeyCode.F2))
         {
             this.transform.position = boomgateCheat.position;
@@ -152,12 +155,13 @@ public class CarController : MonoBehaviour
             this.transform.rotation = creatureCheat.rotation;
         }
 
+        // 헤드라이트 키
         if (Input.GetKeyDown(KeyCode.L))
         {
             if (BoomGateEventTrigger.isBoomEvent) return;
             ToggleHeadlights();
         }
-
+        // 라디오 키
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (BoomGateEventTrigger.isBoomEvent) return;
@@ -275,6 +279,7 @@ public class CarController : MonoBehaviour
             DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
             AudioManager.instance.PlayOneShot(FMODEvents.instance.deerCrying, this.transform.position);
+            soundFill.fillAmount += 0.05f;
         }
 
         if (col.gameObject.tag == "CreatureEvent")
@@ -286,14 +291,17 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        soundFill.fillAmount += 0.01f; // 사운드 소리 
+        soundFill.fillAmount += 0.05f; // 사운드 소리 
+
         if (collision.gameObject.tag == "Deer")
         {
             StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+            soundFill.fillAmount += 0.1f;
         }
         if (collision.gameObject.tag == "Creature")
         {
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             SceneManager.LoadScene("Clear");
         }
     }
@@ -311,6 +319,7 @@ public class CarController : MonoBehaviour
         AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
+        soundFill.fillAmount += 0.1f;
     }
 
     void TurnRadio()
@@ -368,6 +377,7 @@ public class CarController : MonoBehaviour
         carDrive.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
         carDrive.setPitch(pitch);
 
+        // 속도가 있으면면
         if (speed > 0.1f || speed < -0.1f)
         {
             rpm += 0.1f;
@@ -379,11 +389,13 @@ public class CarController : MonoBehaviour
             carDrive.setParameterByName("RPM", rpm);
         }
 
+        // 속도가 거의 0이면 엔진소리 off
         if (speed < 0.1f && speed > -0.1f)
         {
             IsEngineStart = false;
         }
 
+        // 차량이 움직이지 못하는 상태면 엔진 off
         if (carRb.isKinematic == true)
         {
             rpm = 0;
@@ -393,13 +405,18 @@ public class CarController : MonoBehaviour
     void Vibrate()
     {
         modelTr.localPosition = intensity * new Vector3(
-            Mathf.PerlinNoise(speed * Time.time, 1),
-            Mathf.PerlinNoise(speed * Time.time, 2),
-            Mathf.PerlinNoise(speed * Time.time, 3));
+            Mathf.PerlinNoise(vibeSpeed * Time.time, 1),
+            Mathf.PerlinNoise(vibeSpeed * Time.time, 2),
+            Mathf.PerlinNoise(vibeSpeed * Time.time, 3));
     }
 
     void SoundDetect()
     {
+        RectTransform soundFillRctr = soundFill.GetComponent<RectTransform>();
+        RectTransform soundFrameRctr = soundFrame.GetComponent<RectTransform>();
+
+        Vector2 orgSoundFill = soundFillRctr.anchoredPosition;
+        Vector2 orgSoundFrame = soundFrameRctr.anchoredPosition;
         //엔진 사운드 감지
         if (IsEngineStart)
         {
@@ -411,10 +428,64 @@ public class CarController : MonoBehaviour
         else
             soundFill.fillAmount -= 0.01f * Time.deltaTime;
 
+        // 까마귀 울음소리리
         if (IsCrowCaw)
         {
             IsCrowCaw = false;
-            soundFill.fillAmount += 0.005f;
+            soundFill.fillAmount += 0.1f;
+        }
+        // 소리바가 70퍼 이상이면
+        if (soundFill.fillAmount >= 0.7f && !IsSoundWarning)
+        {
+            IsSoundWarning = true;
+            StartCoroutine("SoundLoudWarn");
+        }
+        else if (soundFill.fillAmount < 0.7f)
+        {
+            Color soundFillCol = soundFill.color;
+            Color soundFrameCol = soundFill.color;
+            soundFillCol.a = 1;
+            soundFrameCol.a = 1;
+            soundFill.color = soundFillCol;
+            soundFrame.color = soundFrameCol;
+
+            soundFillRctr.anchoredPosition = orgSoundFill;
+            soundFrameRctr.anchoredPosition = orgSoundFrame;
+
+            IsSoundWarning = false;
+            StopCoroutine("SoundLoudWarn");
+        }
+
+        //경고중일때 진동효과
+        if (IsSoundWarning)
+        {
+            //지속시간,진폭,진동횟수
+            soundFillRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
+            soundFrameRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
+        }
+    }
+
+    IEnumerator SoundLoudWarn()
+    {
+        Color soundFillCol = soundFill.color;
+        Color soundFrameCol = soundFill.color;
+        soundFillCol.a = 0;
+        soundFrameCol.a = 0;
+        while (true)
+        {
+            soundFill.color = soundFillCol;
+            soundFrame.color = soundFrameCol;
+            yield return new WaitForSeconds(0.5f);
+
+            soundFillCol.a = 1;
+            soundFrameCol.a = 1;
+
+            soundFill.color = soundFillCol;
+            soundFrame.color = soundFrameCol;
+            yield return new WaitForSeconds(0.5f);
+
+            soundFillCol.a = 0;
+            soundFrameCol.a = 0;
         }
     }
 }
