@@ -28,6 +28,7 @@ public class CarController : MonoBehaviour
     public float maxSteerAngle = 30.0f;
     public float maxSpeedRatio = 350f;
     public float maxSpeed = 100f;
+    public static bool IsHeadlightsOn = false;
 
     private float speed;
     private float rpm;
@@ -36,8 +37,6 @@ public class CarController : MonoBehaviour
     private float radioCh;
     private float vibeSpeed = 1f;
     private float intensity = 0.001f;
-
-    private bool IsHeadlightsOn = false;
     private bool IsEngineStart = false;
     private bool hasReachedMaxSpeed = false;
 
