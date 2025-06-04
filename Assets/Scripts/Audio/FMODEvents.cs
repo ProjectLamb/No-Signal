@@ -41,6 +41,8 @@ public class FMODEvents : MonoBehaviour
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
 
+    [Header("SoundAndLight")]
+    [field: SerializeField] public EventReference soundLoud { get; private set; }
     private void Awake()
     {
         if (instance != null)

@@ -44,6 +44,7 @@ public class CarController : MonoBehaviour
     public GameObject HeadLight;
     public Image deerBlack;
     public Image soundFill;
+    public Image lightFill;
     public Image soundFrame;
     public Canvas soundDctCanvas;
 
@@ -59,6 +60,7 @@ public class CarController : MonoBehaviour
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
+    private bool IsCanUseLight = true;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -66,6 +68,7 @@ public class CarController : MonoBehaviour
     private EventInstance carDrive;
     private EventInstance carLight;
     private EventInstance deerCrying;
+    private EventInstance soundLoud;
     private EventInstance radio;
     private EventInstance radio2;
     private EventInstance radio3;
@@ -79,6 +82,7 @@ public class CarController : MonoBehaviour
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
         carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
         deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
+        soundLoud = AudioManager.instance.CreateInstance(FMODEvents.instance.soundLoud);
 
         radio = AudioManager.instance.CreateInstance(FMODEvents.instance.radio);
         radio2 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio2);
@@ -117,6 +121,7 @@ public class CarController : MonoBehaviour
         EngineSound();
         Vibrate();
         SoundDetect();
+        LightGauge();
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
         {
@@ -439,28 +444,26 @@ public class CarController : MonoBehaviour
         {
             IsSoundWarning = true;
             StartCoroutine("SoundLoudWarn");
+            soundLoud.start();
         }
         else if (soundFill.fillAmount < 0.7f)
         {
             Color soundFillCol = soundFill.color;
-            Color soundFrameCol = soundFill.color;
             soundFillCol.a = 1;
-            soundFrameCol.a = 1;
             soundFill.color = soundFillCol;
-            soundFrame.color = soundFrameCol;
 
             soundFillRctr.anchoredPosition = orgSoundFill;
             soundFrameRctr.anchoredPosition = orgSoundFrame;
 
             IsSoundWarning = false;
             StopCoroutine("SoundLoudWarn");
+            soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
         }
 
         //경고중일때 진동효과
         if (IsSoundWarning)
         {
             //지속시간,진폭,진동횟수
-            soundFillRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
             soundFrameRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
         }
     }
@@ -468,24 +471,45 @@ public class CarController : MonoBehaviour
     IEnumerator SoundLoudWarn()
     {
         Color soundFillCol = soundFill.color;
-        Color soundFrameCol = soundFill.color;
         soundFillCol.a = 0;
-        soundFrameCol.a = 0;
         while (true)
         {
             soundFill.color = soundFillCol;
-            soundFrame.color = soundFrameCol;
             yield return new WaitForSeconds(0.5f);
 
             soundFillCol.a = 1;
-            soundFrameCol.a = 1;
 
             soundFill.color = soundFillCol;
-            soundFrame.color = soundFrameCol;
             yield return new WaitForSeconds(0.5f);
 
             soundFillCol.a = 0;
-            soundFrameCol.a = 0;
         }
+    }
+
+    public void LightGauge()
+    {
+        Debug.Log(IsHeadlightsOn);
+        if (IsHeadlightsOn && IsCanUseLight)
+        {
+            lightFill.fillAmount -= 0.3333f * Time.deltaTime;
+        }
+        else if (!IsHeadlightsOn && IsCanUseLight)
+        {
+            lightFill.fillAmount += 0.02f * Time.deltaTime;
+        }
+
+        if (lightFill.fillAmount == 0 && IsCanUseLight)
+        {
+            IsCanUseLight = false;
+            IsHeadlightsOn = false;
+            HeadLight.SetActive(IsHeadlightsOn);
+            StartCoroutine("lightCool");
+        }
+    }
+
+    IEnumerator lightCool()
+    {
+        yield return new WaitForSeconds(5f);
+        IsCanUseLight = true;
     }
 }
