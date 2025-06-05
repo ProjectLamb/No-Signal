@@ -11,6 +11,7 @@ TagManager:
   - Creature
   - Deer
   - CreatureEvent
+  - Road
   layers:
   - Default
   - TransparentFX

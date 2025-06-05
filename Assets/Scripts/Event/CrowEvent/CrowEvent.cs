@@ -45,13 +45,10 @@ public class CrowEvent : MonoBehaviour
     void Update()
     {
         passedTime += Time.deltaTime;
-        Debug.Log((int)passedTime);
         if ((int)passedTime != 0 && (int)passedTime % 10 == 0)
         {
-            Debug.Log("dfdf");
             EventPsv = (int)passedTime;
             int ran = Random.Range(0, 100);
-            Debug.Log(ran);
             if (ran <= EventPsv && !RanEvent)
             {
                 RanEvent = true;

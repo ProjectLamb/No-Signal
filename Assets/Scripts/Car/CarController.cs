@@ -75,6 +75,7 @@ public class CarController : MonoBehaviour
 
     private EventInstance carDrive;
     private EventInstance carLight;
+    private EventInstance carCol;
     private EventInstance deerCrying;
     private EventInstance soundLoud;
     private EventInstance radio;
@@ -89,6 +90,7 @@ public class CarController : MonoBehaviour
     {
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
         carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
+        carCol = AudioManager.instance.CreateInstance(FMODEvents.instance.carCol);
         deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
         soundLoud = AudioManager.instance.CreateInstance(FMODEvents.instance.soundLoud);
 
@@ -308,7 +310,10 @@ public class CarController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         soundFill.fillAmount += 0.05f; // 사운드 소리 
-
+        if (collision.gameObject.tag != "Road")
+        {
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);   
+        }
         if (collision.gameObject.tag == "Deer")
         {
             StartCoroutine("WaitForDeer");
@@ -493,7 +498,9 @@ public class CarController : MonoBehaviour
             IsPrepareToDead = true;
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
 
-            Vector3 creaturePos = new Vector3(this.transform.position.x + 30f, this.transform.position.y + 10f, this.transform.position.z+30f);
+            float creatureRanX = UnityEngine.Random.Range(30, 50);
+            float creatureRanZ = UnityEngine.Random.Range(30, 50);
+            Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z+creatureRanZ);
             Vector3 creatureRot = this.transform.position - creaturePos;
             Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
             
