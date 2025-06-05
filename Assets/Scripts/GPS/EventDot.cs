@@ -13,7 +13,7 @@ public class EventDot : MonoBehaviour
     private StudioEventEmitter emitter;
     void Start()
     {
-        this.transform.position = target.transform.position;
+        this.transform.position = target.transform.position + new Vector3(0, 10f, 0);
         StartCoroutine("WaveCoroutine");
         emitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.radar, this.gameObject);
         emitter.Play();
@@ -21,7 +21,7 @@ public class EventDot : MonoBehaviour
 
     void FixedUpdate()
     {
-        this.transform.position = target.transform.position;
+        this.transform.position = target.transform.position + new Vector3(0, 10f, 0);
     }
 
     IEnumerator WaveCoroutine()

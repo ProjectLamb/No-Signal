@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using FMOD.Studio;
 using DG.Tweening;
+using VolFx;
 
 public class CarController : MonoBehaviour
 {
@@ -28,6 +31,7 @@ public class CarController : MonoBehaviour
     public float maxSteerAngle = 30.0f;
     public float maxSpeedRatio = 350f;
     public float maxSpeed = 100f;
+    public static float lightTime = 0f;
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
 
@@ -47,6 +51,8 @@ public class CarController : MonoBehaviour
     public Image soundFill;
     public Image soundFrame;
     public Canvas soundDctCanvas;
+    public Volume vhsVolume;
+    private VhsVol vvs;
 
     private float speed;
     private float rpm;
@@ -57,10 +63,12 @@ public class CarController : MonoBehaviour
     private float steerInput;
     private float vibeSpeed = 1f;
     private float intensity = 0.001f;
+    private float engineSoundFill = 0f;
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
+    private bool IsPrepareToDead = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -165,6 +173,10 @@ public class CarController : MonoBehaviour
             if (BoomGateEventTrigger.isBoomEvent) return;
             ToggleHeadlights();
         }
+
+        if (IsHeadlightsOn) lightTime += Time.deltaTime;
+        else if (!IsHeadlightsOn) lightTime = 0f;
+
         // 라디오 키
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -416,29 +428,40 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
-        RectTransform soundFillRctr = soundFill.GetComponent<RectTransform>();
-        RectTransform soundFrameRctr = soundFrame.GetComponent<RectTransform>();
+        if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
 
-        Vector2 orgSoundFill = soundFillRctr.anchoredPosition;
+        RectTransform soundFrameRctr = soundFrame.GetComponent<RectTransform>();
         Vector2 orgSoundFrame = soundFrameRctr.anchoredPosition;
         //엔진 사운드 감지
         if (IsEngineStart)
         {
-            if (soundFill.fillAmount < 0.1f)
+            if (engineSoundFill < 0.1f)
             {
                 soundFill.fillAmount += 0.025f * Time.deltaTime;
+                engineSoundFill += 0.025f * Time.deltaTime;
             }
         }
         else
+        {
             soundFill.fillAmount -= 0.01f * Time.deltaTime;
+            engineSoundFill -= 0.01f * Time.deltaTime;
+        }
 
         // 까마귀 울음소리리
-        if (IsCrowCaw)
-        {
-            IsCrowCaw = false;
-            soundFill.fillAmount += 0.1f;
-        }
+            if (IsCrowCaw)
+            {
+                IsCrowCaw = false;
+                soundFill.fillAmount += 0.1f;
+            }
         // 소리바가 70퍼 이상이면
+        if (soundFill.fillAmount >= 0.7f)
+        {
+            if (vhsVolume.profile.TryGet(out vvs))
+            {
+                if (vvs._weight.value < 0.7f)
+                    vvs._weight.value += 0.05f;
+            }
+        }
         if (soundFill.fillAmount >= 0.7f && !IsSoundWarning)
         {
             IsSoundWarning = true;
@@ -450,27 +473,33 @@ public class CarController : MonoBehaviour
             Color soundFillCol = soundFill.color;
             soundFillCol.a = 1;
             soundFill.color = soundFillCol;
-
-            soundFillRctr.anchoredPosition = orgSoundFill;
             soundFrameRctr.anchoredPosition = orgSoundFrame;
 
             IsSoundWarning = false;
             StopCoroutine("SoundLoudWarn");
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
             IsCreatureDct = false;
+
+            if (vhsVolume.profile.TryGet(out vvs))
+            {
+                if (vvs._weight.value > 0.3f)
+                    vvs._weight.value -= 0.05f;
+            }
         }
 
         if (soundFill.fillAmount > 0.99f && !IsCreatureDct)
         {
             IsCreatureDct = true;
+            IsPrepareToDead = true;
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
-            Vector3 creaturePos = new Vector3(this.transform.position.x + 10f, this.transform.position.y + 10f, this.transform.position.z);
+
+            Vector3 creaturePos = new Vector3(this.transform.position.x + 30f, this.transform.position.y + 10f, this.transform.position.z+30f);
             Vector3 creatureRot = this.transform.position - creaturePos;
             Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
+            
             creatureDct.SetActive(true);
             creatureDct.transform.position = creaturePos;
             creatureDct.transform.rotation = creatureLook;
-            Debug.Log("생성");
         }
 
         //경고중일때 진동효과

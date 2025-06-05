@@ -7,12 +7,16 @@ public class CrowEvent : MonoBehaviour
     public Transform carLandSpot;
     public Transform finalDestination;
     public GameObject crowDot;
-    public float followSpeed = 5f;       // 이동 속도
+    public float followSpeed = 5f; // 이동 속도
     public float flyAwaySpeed = 1f;
     public float rotationSpeed = 1f; // 회전 속도
+    private float passedTime = 0f;
+    private int EventPsv = 0;
     public static bool IsEventStart = false;
     private bool IsStayCar = false;
     private bool IsFlyAway = false;
+    private bool RanEvent = false;
+
 
     private Animator anim;
 
@@ -29,11 +33,32 @@ public class CrowEvent : MonoBehaviour
         {
             // 여기가 까마귀 이벤트의 시작
             IsEventStart = false;
+            crowDot.SetActive(true);
             anim.SetBool("flying", true);
+            this.transform.position = carLandSpot.position + new Vector3(50f, 30f, 50f);
             StartCoroutine("FollowTarget");
         }
 
         if (IsFlyAway) FlyToTheDest();
+    }
+
+    void Update()
+    {
+        passedTime += Time.deltaTime;
+        Debug.Log((int)passedTime);
+        if ((int)passedTime != 0 && (int)passedTime % 10 == 0)
+        {
+            Debug.Log("dfdf");
+            EventPsv = (int)passedTime;
+            int ran = Random.Range(0, 100);
+            Debug.Log(ran);
+            if (ran <= EventPsv && !RanEvent)
+            {
+                RanEvent = true;
+                passedTime = 0f;
+                IsEventStart = true;
+            }
+        }
     }
 
     IEnumerator FollowTarget()
@@ -75,13 +100,16 @@ public class CrowEvent : MonoBehaviour
 
     public void FlyAway()
     {
-        IsStayCar = false;
         anim.SetBool("landing", true);
         IsFlyAway = true;
     }
 
     private void FlyToTheDest()
     {
+
+        if (CarController.lightTime <= 3f) return;
+
+        IsStayCar = false;
         anim.SetBool("flying", true);
         this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
         // 대상 방향으로 회전
