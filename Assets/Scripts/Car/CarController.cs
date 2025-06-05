@@ -39,12 +39,12 @@ public class CarController : MonoBehaviour
     public Transform trafficLightcrowCheat;
     public Transform creatureCheat;
     public GameObject creature;
+    public GameObject creatureDct;
     public List<Wheel> wheels;
     public GameObject steeringWheel;
     public GameObject HeadLight;
     public Image deerBlack;
     public Image soundFill;
-    public Image lightFill;
     public Image soundFrame;
     public Canvas soundDctCanvas;
 
@@ -60,7 +60,7 @@ public class CarController : MonoBehaviour
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
-    private bool IsCanUseLight = true;
+    private bool IsCreatureDct = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -121,7 +121,6 @@ public class CarController : MonoBehaviour
         EngineSound();
         Vibrate();
         SoundDetect();
-        LightGauge();
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
         {
@@ -458,6 +457,20 @@ public class CarController : MonoBehaviour
             IsSoundWarning = false;
             StopCoroutine("SoundLoudWarn");
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
+            IsCreatureDct = false;
+        }
+
+        if (soundFill.fillAmount > 0.99f && !IsCreatureDct)
+        {
+            IsCreatureDct = true;
+            soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
+            Vector3 creaturePos = new Vector3(this.transform.position.x + 10f, this.transform.position.y + 10f, this.transform.position.z);
+            Vector3 creatureRot = this.transform.position - creaturePos;
+            Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
+            creatureDct.SetActive(true);
+            creatureDct.transform.position = creaturePos;
+            creatureDct.transform.rotation = creatureLook;
+            Debug.Log("생성");
         }
 
         //경고중일때 진동효과
@@ -484,32 +497,5 @@ public class CarController : MonoBehaviour
 
             soundFillCol.a = 0;
         }
-    }
-
-    public void LightGauge()
-    {
-        Debug.Log(IsHeadlightsOn);
-        if (IsHeadlightsOn && IsCanUseLight)
-        {
-            lightFill.fillAmount -= 0.3333f * Time.deltaTime;
-        }
-        else if (!IsHeadlightsOn && IsCanUseLight)
-        {
-            lightFill.fillAmount += 0.02f * Time.deltaTime;
-        }
-
-        if (lightFill.fillAmount == 0 && IsCanUseLight)
-        {
-            IsCanUseLight = false;
-            IsHeadlightsOn = false;
-            HeadLight.SetActive(IsHeadlightsOn);
-            StartCoroutine("lightCool");
-        }
-    }
-
-    IEnumerator lightCool()
-    {
-        yield return new WaitForSeconds(5f);
-        IsCanUseLight = true;
     }
 }
