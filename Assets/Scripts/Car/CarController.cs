@@ -66,6 +66,7 @@ public class CarController : MonoBehaviour
     private float vibeSpeed = 1f;
     private float intensity = 0.001f;
     private float engineSoundFill = 0f;
+    private float radioSoundFill = 0f;
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
@@ -369,7 +370,6 @@ public class CarController : MonoBehaviour
         {
             case 0:
                 radio.start();
-                soundFill.fillAmount += 0.05f;
                 radioCh++;
                 break;
             case 1:
@@ -467,7 +467,7 @@ public class CarController : MonoBehaviour
                 engineSoundFill += 0.025f * Time.deltaTime;
             }
         }
-        else
+        else if(!IsEngineStart && radioCh < 1)
         {
             soundFill.fillAmount -= 0.01f * Time.deltaTime;
             engineSoundFill -= 0.01f * Time.deltaTime;
@@ -535,6 +535,23 @@ public class CarController : MonoBehaviour
         {
             //지속시간,진폭,진동횟수
             soundFrameRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
+        }
+
+        if (radioCh == 1)
+        {
+            if (radioSoundFill < 0.1f)
+            {
+                soundFill.fillAmount += 0.01f * Time.deltaTime;
+                radioSoundFill += 0.01f * Time.deltaTime;
+            }
+        }
+        else if (radioCh == 7)
+        {
+            if (radioSoundFill > 0f)
+            {
+                soundFill.fillAmount -= 0.01f * Time.deltaTime;
+                radioSoundFill -= 0.01f * Time.deltaTime;
+            }
         }
     }
 
