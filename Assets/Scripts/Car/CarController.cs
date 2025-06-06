@@ -369,6 +369,7 @@ public class CarController : MonoBehaviour
         {
             case 0:
                 radio.start();
+                soundFill.fillAmount += 0.05f;
                 radioCh++;
                 break;
             case 1:
