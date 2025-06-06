@@ -101,7 +101,7 @@ public class CrowEvent : MonoBehaviour
 
     IEnumerator WorAndCaw()
     {
-        while (CarController.lightTime <= 3f)
+        while (CarController.lightOffTime <= 3f)
         {
             EventManager.Instance.SetEvent(0);
             EventManager.Instance.PlayEvent();
@@ -124,7 +124,7 @@ public class CrowEvent : MonoBehaviour
 
     private void FlyToTheDest()
     {
-        if (CarController.lightTime <= 3f) return;
+        if (CarController.lightOffTime <= 3f) return;
         anim.SetBool("flying", true);
         float ranDestX = Random.Range(30, 50);
         float ranDestZ = Random.Range(30, 50);

@@ -31,7 +31,7 @@ public class CarController : MonoBehaviour
     public float maxSteerAngle = 30.0f;
     public float maxSpeedRatio = 350f;
     public float maxSpeed = 100f;
-    public static float lightTime = 0f;
+    public static float lightOffTime = 0f;
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
@@ -196,8 +196,8 @@ public class CarController : MonoBehaviour
             ToggleHeadlights();
         }
 
-        if (IsHeadlightsOn) lightTime += Time.deltaTime;
-        else if (!IsHeadlightsOn) lightTime = 0f;
+        if (!IsHeadlightsOn) lightOffTime += Time.deltaTime;
+        else if (IsHeadlightsOn) lightOffTime = 0f;
 
         // 라디오 키
         if (Input.GetKeyDown(KeyCode.R))
