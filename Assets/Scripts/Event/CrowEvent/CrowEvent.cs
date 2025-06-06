@@ -124,13 +124,12 @@ public class CrowEvent : MonoBehaviour
 
     private void FlyToTheDest()
     {
-
         if (CarController.lightTime <= 3f) return;
+        anim.SetBool("flying", true);
         float ranDestX = Random.Range(30, 50);
         float ranDestZ = Random.Range(30, 50);
         finalDestination.position = this.transform.position + new Vector3(ranDestX, 20f, ranDestZ);
         IsStayCar = false;
-        anim.SetBool("flying", true);
         this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
         // 대상 방향으로 회전
         Vector3 direction = (finalDestination.position - transform.position).normalized;
