@@ -42,7 +42,6 @@ public class DctCreature : MonoBehaviour
             navMeshAgent.destination = targetTr.position;
         }
         LookTarget();
-        //this.transform.position = Vector3.MoveTowards(transform.position, targetTr.position, 2f * Time.deltaTime);
     }
 
     void LookTarget()

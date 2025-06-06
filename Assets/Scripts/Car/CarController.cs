@@ -523,10 +523,9 @@ public class CarController : MonoBehaviour
             Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z + creatureRanZ);
             Vector3 creatureRot = this.transform.position - creaturePos;
             Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
-
-            creatureDct.SetActive(true);
             creatureDct.transform.position = creaturePos;
             creatureDct.transform.rotation = creatureLook;
+            creatureDct.SetActive(true);
             AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         }
 
