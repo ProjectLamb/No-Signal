@@ -16,6 +16,7 @@ public class CrowEvent : MonoBehaviour
     private bool IsStayCar = false;
     private bool IsFlyAway = false;
     private bool RanEvent = false;
+    private bool IsPsvCheck = false;
 
 
     private Animator anim;
@@ -44,11 +45,20 @@ public class CrowEvent : MonoBehaviour
 
     void Update()
     {
+        RandomEvent();
+    }
+
+    void RandomEvent()
+    {
         passedTime += Time.deltaTime;
-        if ((int)passedTime != 0 && (int)passedTime % 10 == 0)
+
+        if ((int)passedTime != 0 && (int)passedTime % 10 == 0 && !IsPsvCheck)
         {
+            IsPsvCheck = true;
             EventPsv = (int)passedTime;
             int ran = Random.Range(0, 100);
+            Debug.Log("ran : " + ran);
+            Debug.Log("eventpsv : " + EventPsv);
             if (ran <= EventPsv && !RanEvent)
             {
                 RanEvent = true;
@@ -56,6 +66,7 @@ public class CrowEvent : MonoBehaviour
                 IsEventStart = true;
             }
         }
+        else if ((int)passedTime % 10 != 0) IsPsvCheck = false;
     }
 
     IEnumerator FollowTarget()
@@ -84,8 +95,17 @@ public class CrowEvent : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         anim.SetBool("landing", false);
-        EventManager.Instance.SetEvent(0);
-        EventManager.Instance.PlayEvent();
+        StartCoroutine("WorAndCaw");
+    }
+
+    IEnumerator WorAndCaw()
+    {
+        while (CarController.lightTime <= 3f)
+        {
+            EventManager.Instance.SetEvent(0);
+            EventManager.Instance.PlayEvent();
+            yield return new WaitForSeconds(2f);
+        }
     }
 
     public void StayOnCar()
@@ -105,7 +125,9 @@ public class CrowEvent : MonoBehaviour
     {
 
         if (CarController.lightTime <= 3f) return;
-
+        float ranDestX = Random.Range(30, 50);
+        float ranDestZ = Random.Range(30, 50);
+        finalDestination.position = this.transform.position + new Vector3(ranDestX, 20f, ranDestZ);
         IsStayCar = false;
         anim.SetBool("flying", true);
         this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
