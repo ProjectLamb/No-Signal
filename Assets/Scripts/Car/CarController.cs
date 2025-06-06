@@ -34,6 +34,7 @@ public class CarController : MonoBehaviour
     public static float lightTime = 0f;
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
+    public static bool IsGameOver = false;
 
     public Vector3 _centerOfMass;
     public Transform modelTr;
@@ -47,6 +48,7 @@ public class CarController : MonoBehaviour
     public List<Wheel> wheels;
     public GameObject steeringWheel;
     public GameObject HeadLight;
+    public GameObject gameOverPanel;
     public Image deerBlack;
     public Image soundFill;
     public Image soundFrame;
@@ -77,6 +79,7 @@ public class CarController : MonoBehaviour
     private EventInstance carLight;
     private EventInstance carCol;
     private EventInstance deerCrying;
+    private EventInstance creatureHowl;
     private EventInstance soundLoud;
     private EventInstance radio;
     private EventInstance radio2;
@@ -93,6 +96,7 @@ public class CarController : MonoBehaviour
         carCol = AudioManager.instance.CreateInstance(FMODEvents.instance.carCol);
         deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
         soundLoud = AudioManager.instance.CreateInstance(FMODEvents.instance.soundLoud);
+        creatureHowl = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureHowl);
 
         radio = AudioManager.instance.CreateInstance(FMODEvents.instance.radio);
         radio2 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio2);
@@ -122,6 +126,21 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (IsGameOver)
+        {
+            if (vhsVolume.profile.TryGet(out vvs))
+            {
+                if (vvs._weight.value < 0.99f)
+                {
+                    vvs._weight.value += 0.02f;
+                }
+                else
+                    gameOverPanel.SetActive(true);
+            }
+            return;
+        }
+
+
         if (!BoomGateEventTrigger.isBoomEvent)
         {
             GetInputs();
@@ -194,6 +213,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent)
         {
             Move();
@@ -312,7 +332,7 @@ public class CarController : MonoBehaviour
         soundFill.fillAmount += 0.05f; // 사운드 소리 
         if (collision.gameObject.tag != "Road")
         {
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);   
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
         }
         if (collision.gameObject.tag == "Deer")
         {
@@ -322,8 +342,8 @@ public class CarController : MonoBehaviour
         }
         if (collision.gameObject.tag == "Creature")
         {
+            IsGameOver = true;
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
-            SceneManager.LoadScene("Clear");
         }
     }
 
@@ -453,11 +473,11 @@ public class CarController : MonoBehaviour
         }
 
         // 까마귀 울음소리리
-            if (IsCrowCaw)
-            {
-                IsCrowCaw = false;
-                soundFill.fillAmount += 0.1f;
-            }
+        if (IsCrowCaw)
+        {
+            IsCrowCaw = false;
+            soundFill.fillAmount += 0.1f;
+        }
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
         {
@@ -500,13 +520,14 @@ public class CarController : MonoBehaviour
 
             float creatureRanX = UnityEngine.Random.Range(30, 50);
             float creatureRanZ = UnityEngine.Random.Range(30, 50);
-            Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z+creatureRanZ);
+            Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z + creatureRanZ);
             Vector3 creatureRot = this.transform.position - creaturePos;
             Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
-            
+
             creatureDct.SetActive(true);
             creatureDct.transform.position = creaturePos;
             creatureDct.transform.rotation = creatureLook;
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         }
 
         //경고중일때 진동효과

@@ -8,28 +8,39 @@ using FMODUnity;
 public class Creature : MonoBehaviour
 {
     private NavMeshAgent navMeshAgent;
-    private EventInstance creatureSound;
+    private EventInstance creatureHowl;
+    private StudioEventEmitter stepEmitter;
     public Transform targetTr;
-    public GameObject target;
+    public Transform targetForward;
     public float rotSpeed = 3f;
 
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        // creatureSound = AudioManager.instance.CreateInstance(FMODEvents.instance.creature);
+        creatureHowl = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureHowl);
     }
     // Start is called before the first frame update
     void Start()
     {
         navMeshAgent.destination = targetTr.position;
+        AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+        stepEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        stepEmitter.Play();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // creatureSound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform));
+        if (CarController.IsGameOver)
+        {
+            navMeshAgent.enabled = false;
+            this.transform.position = targetForward.position;
+        }
+        else
+        {
+            navMeshAgent.destination = targetTr.position;
+        }
         LookTarget();
-        navMeshAgent.destination = targetTr.position;
     }
 
     void LookTarget()
