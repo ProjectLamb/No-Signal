@@ -329,7 +329,7 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        soundFill.fillAmount += 0.05f; // 사운드 소리 
+        soundFill.fillAmount += 0.02f; // 사운드 소리 
         if (collision.gameObject.tag != "Road")
         {
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
@@ -360,7 +360,7 @@ public class CarController : MonoBehaviour
         AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
-        soundFill.fillAmount += 0.1f;
+        soundFill.fillAmount += 0.05f;
     }
 
     void TurnRadio()
@@ -476,7 +476,7 @@ public class CarController : MonoBehaviour
         if (IsCrowCaw)
         {
             IsCrowCaw = false;
-            soundFill.fillAmount += 0.1f;
+            soundFill.fillAmount += 0.05f;
         }
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)

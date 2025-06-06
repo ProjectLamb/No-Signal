@@ -95,7 +95,8 @@ public class CrowEvent : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         anim.SetBool("landing", false);
-        StartCoroutine("WorAndCaw");
+        EventManager.Instance.SetEvent(0);
+        EventManager.Instance.PlayEvent();
     }
 
     IEnumerator WorAndCaw()
@@ -154,5 +155,6 @@ public class CrowEvent : MonoBehaviour
     public void Cawcaw()
     {
         CarController.IsCrowCaw = true;
+        StartCoroutine("WorAndCaw");
     }
 }
