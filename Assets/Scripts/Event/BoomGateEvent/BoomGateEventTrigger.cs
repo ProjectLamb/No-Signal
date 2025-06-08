@@ -48,7 +48,7 @@ public class BoomGateEventTrigger : MonoBehaviour
         Vector3 initialVelocity = carRb.velocity;
         Quaternion initialCarRotation = carTr.transform.rotation;
         Quaternion initialCamRotation = carCam.transform.rotation;
-        Quaternion targetRotation = Quaternion.Euler(10, 300, 10); 
+        Quaternion targetRotation = Quaternion.Euler(8, 300, 2); 
         CameraFollow.isEvent = true;
         isBoomEvent = true;
         // carRb.angularVelocity = Vector3.zero;
@@ -67,7 +67,8 @@ public class BoomGateEventTrigger : MonoBehaviour
             // carRb.velocity = Vector3.zero;
             PlayableDirector.gameObject.SetActive(true);
             PlayableDirector.Play();
-            carRb.isKinematic = true;          
+            carRb.isKinematic = true;         
+            Destroy(this.gameObject); 
     }
 }
 
