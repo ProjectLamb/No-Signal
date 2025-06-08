@@ -21,9 +21,9 @@ public class DctCreature : MonoBehaviour
     void Start()
     {
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(this.transform.position, out hit, 5.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
         {
-            this.transform.position = hit.position;
+            navMeshAgent.Warp(hit.position);
         }
         stepEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
         stepEmitter.Play();
@@ -39,7 +39,16 @@ public class DctCreature : MonoBehaviour
         }
         else
         {
-            navMeshAgent.destination = targetTr.position;
+            if (navMeshAgent.isOnNavMesh)
+            {
+                navMeshAgent.destination = targetTr.position;
+            }
+            else
+            {
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
+                    navMeshAgent.Warp(hit.position);
+            }
         }
         LookTarget();
     }

@@ -537,7 +537,7 @@ public class CarController : MonoBehaviour
             soundFrameRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
         }
 
-        if (radioCh == 1)
+        if (radioCh > 0)
         {
             if (radioSoundFill < 0.1f)
             {
@@ -545,7 +545,7 @@ public class CarController : MonoBehaviour
                 radioSoundFill += 0.01f * Time.deltaTime;
             }
         }
-        else if (radioCh == 7)
+        else
         {
             if (radioSoundFill > 0f)
             {
