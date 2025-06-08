@@ -18,6 +18,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference carDrive { get; private set; }
     [field: SerializeField] public EventReference carCrash { get; private set; }
     [field: SerializeField] public EventReference carLight { get; private set; }
+    [field: SerializeField] public EventReference carCol { get; private set; }
 
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
@@ -27,7 +28,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference deerFootsteps { get; private set; }
 
     [Header("Creature SFX")]
-    [field: SerializeField] public EventReference creature { get; private set; }
+    [field: SerializeField] public EventReference creatureHowl { get; private set; }
+    [field: SerializeField] public EventReference creatureStep { get; private set; }
 
     [Header("Radio")]
     [field: SerializeField] public EventReference radio { get; private set; }
@@ -41,6 +43,8 @@ public class FMODEvents : MonoBehaviour
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
 
+    [Header("SoundAndLight")]
+    [field: SerializeField] public EventReference soundLoud { get; private set; }
     private void Awake()
     {
         if (instance != null)

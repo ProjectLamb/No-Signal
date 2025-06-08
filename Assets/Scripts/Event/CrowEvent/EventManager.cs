@@ -18,16 +18,16 @@ public class EventManager : MonoBehaviour
         }
     }
     public List<PlayableDirector> playableDirectors;
-    public PlayableDirector playableDirector;
+    public PlayableDirector currentEvent;
 
     public void SetEvent(int num)
     {
-        playableDirector = playableDirectors[num];
+        currentEvent = playableDirectors[num];
     }
     public void PlayEvent()
     {
         //playableDirector.gameObject.SetActive(true);
-        playableDirector.Play();
+        currentEvent.Play();
     }
     
 }

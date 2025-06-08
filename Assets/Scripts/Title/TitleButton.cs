@@ -39,7 +39,6 @@ public class TitleButton : MonoBehaviour
 
     IEnumerator CoFadeIn()
     {
-        float fadeAlp = 0;
         Color fadeCol = fadeImage.color;
         while (fadeCol.a < 1f)
         {
@@ -53,7 +52,6 @@ public class TitleButton : MonoBehaviour
     IEnumerator CoFadeOut()
     {
         yield return new WaitForSeconds(0.1f);
-        float fadeAlp = 1;
         Color fadeCol = fadeImage.color;
         while (fadeCol.a > 0f)
         {
