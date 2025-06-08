@@ -62,7 +62,7 @@ public class CarController : MonoBehaviour
     bool hasReachedMaxSpeed = false;
     
     void Awake()
-    {
+    {   
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
     }
     
