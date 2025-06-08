@@ -7,6 +7,7 @@ public class TrafficLightEventTrigger : MonoBehaviour
 {
     public List<Light> light;
     public static bool isTLEvent = false;
+    public GameObject obtacle;
     private Coroutine eventStart;
 
     void Start()
@@ -28,13 +29,12 @@ public class TrafficLightEventTrigger : MonoBehaviour
    
     private IEnumerator TLEvent_Start(){
     
-        yield return StartCoroutine(TLEvent_LightOn(0));
-        yield return new WaitForSeconds(3);
         yield return StartCoroutine(TLEvent_LightOff(0));
         yield return StartCoroutine(TLEvent_LightOn(1));
-        yield return new WaitForSeconds(1);
+
+        yield return StartCoroutine(TLEvent_ObtacleMove());
         yield return StartCoroutine(TLEvent_LightOff(1));
-        yield return StartCoroutine(TLEvent_LightOn(2));
+        yield return StartCoroutine(TLEvent_LightOn(0));
     }
     private IEnumerator TLEvent_LightOn(int num){
         if(light[num] != null){
@@ -48,8 +48,20 @@ public class TrafficLightEventTrigger : MonoBehaviour
         if(light[num] != null){
         light[num].gameObject.SetActive(false);
         yield return null;
-    }
         }
-        
+    }
+
+    private IEnumerator TLEvent_ObtacleMove(){
+        obtacle.SetActive(true);
+        yield return new WaitForSeconds(8.0f);
+        obtacle.SetActive(false);
+        yield return null;
+    }
+    
+    void Update(){
+        if(obtacle.activeSelf != false){
+        obtacle.transform.Translate(Vector3.right * Time.deltaTime);
+        }
+    }
 }
 

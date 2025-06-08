@@ -23,7 +23,14 @@ public class EventMove : MonoBehaviour
         moveRoutine = StartCoroutine(MoveRoutine());
     }
 
+    public void PlayerActiveOff(){
+    CameraFollow.isEvent = false;
+    BoomGateEventTrigger.isBoomEvent = false;
+    this.gameObject.SetActive(false);
+    CarRb.isKinematic = false;
+            //BoomGateEventTrigger off
 
+   }
     private IEnumerator MoveRoutine()
     {
         animator = GetComponent<Animator>();
@@ -62,13 +69,8 @@ public class EventMove : MonoBehaviour
         animator.SetInteger("Movement", 5);
         yield return StartCoroutine(BGEvent_Return(startPos));
         yield return new WaitForSecondsRealtime(1.0f);
-        this.gameObject.SetActive(false);
-        CameraFollow.isEvent = false;
-        CarRb.isKinematic = false;
-        BoomGateEventTrigger.isBoomEvent = false;
-        //BoomGateEventTrigger off
-
     }
+    
     private IEnumerator BGEvent_Move(Vector3 destination){
         while (Vector3.Distance(transform.position, destination) > 0.45f)
         {
