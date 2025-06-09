@@ -91,7 +91,7 @@ public class CarController : MonoBehaviour
     private EventInstance radio7;
 
     void Awake()
-    {
+    {   
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
         carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
         carCol = AudioManager.instance.CreateInstance(FMODEvents.instance.carCol);

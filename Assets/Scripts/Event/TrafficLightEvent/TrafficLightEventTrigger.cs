@@ -4,18 +4,17 @@ using UnityEngine;
 
 
 public class TrafficLightEventTrigger : MonoBehaviour
-{
+{   
+    public GameObject Car;
     public List<Light> light;
     public static bool isTLEvent = false;
+    public GameObject obstacle_1;
+    public GameObject obstacle_2;
     private Coroutine eventStart;
 
-    void Start()
-    {
-        GameObject carObj = GameObject.Find("Car");
-    }
     void OnTriggerEnter(Collider collider)
-    {
-        if(collider.gameObject.name == "Car")
+    {   
+        if(collider.gameObject == Car)
         //리팩터링 필요
         {   
             if(eventStart != null)
@@ -27,15 +26,14 @@ public class TrafficLightEventTrigger : MonoBehaviour
     }
    
     private IEnumerator TLEvent_Start(){
-    
-        yield return StartCoroutine(TLEvent_LightOn(0));
-        yield return new WaitForSeconds(3);
-        yield return StartCoroutine(TLEvent_LightOff(0));
-        yield return StartCoroutine(TLEvent_LightOn(1));
-        yield return new WaitForSeconds(1);
-        yield return StartCoroutine(TLEvent_LightOff(1));
-        yield return StartCoroutine(TLEvent_LightOn(2));
+
+        yield return StartCoroutine(TLEvent_LightOn(0)); // Green
+        yield return StartCoroutine(TLEvent_LightOff(1)); // Red
+        
+        yield return StartCoroutine(TLEvent_ObstacleActiveOn());
     }
+
+    
     private IEnumerator TLEvent_LightOn(int num){
         if(light[num] != null){
         light[num].gameObject.SetActive(true);
@@ -48,8 +46,37 @@ public class TrafficLightEventTrigger : MonoBehaviour
         if(light[num] != null){
         light[num].gameObject.SetActive(false);
         yield return null;
-    }
         }
+    }
+
+    private IEnumerator TLEvent_ObstacleActiveOn(){
+        // float duration = 5.0f;
+        // float elapsed = 0f;
+        // float speed = 1f;
+        obstacle_1.SetActive(true);
+        obstacle_2.SetActive(true);
+        yield return null;
+        // {   
+        //     if(obstacle.activeSelf != false)
+        //     {
+        //         while (elapsed <= duration)
+        //     {   
+        //         Debug.Log(elapsed);
+        //         elapsed += Time.deltaTime;
+        //         obstacle.transform.position = Vector3.MoveTowards(obstacle.transform.position, obstacle.transform.position + new Vector3(-4.27f,0,2),speed * Time.deltaTime);
+        //     }
+        //     }
         
+        // }
+    }
+    
+    void ObstacleMove(){
+         if(obstacle_1.activeSelf != false){
+        obstacle_1.transform.Translate(Vector3.right * Time.deltaTime/2);
+        }
+    }
+    void Update(){
+        ObstacleMove();
+    }
 }
 
