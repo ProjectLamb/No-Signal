@@ -5,10 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Car
-  - lb_bird
-  - lb_groundTarget
-  - lb_perchTarget
   - CrowEvent
+  - Entity
+  - DeerEvent
+  - Creature
+  - Deer
+  - CreatureEvent
+  - Road
   layers:
   - Default
   - TransparentFX
@@ -17,8 +20,8 @@ TagManager:
   - Water
   - UI
   - Minimap
-  - 
-  - 
+  - Fogs
+  - Trees
   - 
   - 
   - 
