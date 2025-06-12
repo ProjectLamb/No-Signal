@@ -463,8 +463,8 @@ public class CarController : MonoBehaviour
         {
             if (engineSoundFill < 0.1f)
             {
-                soundFill.fillAmount += 0.025f * Time.deltaTime;
-                engineSoundFill += 0.025f * Time.deltaTime;
+                soundFill.fillAmount += 0.01f * Time.deltaTime;
+                engineSoundFill += 0.01f * Time.deltaTime;
             }
         }
         else if(!IsEngineStart && radioCh < 1)
