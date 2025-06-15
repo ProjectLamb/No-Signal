@@ -72,6 +72,7 @@ public class CarController : MonoBehaviour
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
     private bool IsPrepareToDead = false;
+    private bool IsChaseEventStart = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -127,6 +128,7 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (IsChaseEventStart) return;
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))
@@ -214,6 +216,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (IsChaseEventStart) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent)
         {
@@ -323,7 +326,9 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
-            creature.SetActive(true);
+            EventManager.Instance.SetEvent(1);
+            EventManager.Instance.PlayEvent();
+            //creature.SetActive(true);
             Destroy(col.gameObject);
         }
     }
@@ -467,7 +472,7 @@ public class CarController : MonoBehaviour
                 engineSoundFill += 0.01f * Time.deltaTime;
             }
         }
-        else if(!IsEngineStart && radioCh < 1)
+        else if (!IsEngineStart && radioCh < 1)
         {
             soundFill.fillAmount -= 0.01f * Time.deltaTime;
             engineSoundFill -= 0.01f * Time.deltaTime;
@@ -571,5 +576,19 @@ public class CarController : MonoBehaviour
 
             soundFillCol.a = 0;
         }
+    }
+
+    public void ChaseEventStart()
+    {
+        carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+        IsChaseEventStart = true;
+        HeadLight.SetActive(false);
+        carRb.isKinematic = true;
+    }
+
+    public void CreatureReveal()
+    {
+        HeadLight.SetActive(true);
+        creature.SetActive(true);
     }
 }
