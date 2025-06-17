@@ -27,12 +27,6 @@ public class DeerEvent : MonoBehaviour
         {
             IsEventStart = false;
 
-            if (rushTr != null)
-            {
-                Vector3 worldSpawnPos = rushTr.TransformPoint(relativeSpawnPos);
-                transform.position = worldSpawnPos;
-            }
-
             anim.SetBool("IsRun", true);
             deerFootsteps.start();
             StartCoroutine("RushToCar");

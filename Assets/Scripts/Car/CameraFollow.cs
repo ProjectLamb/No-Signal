@@ -5,10 +5,10 @@ using UnityEngine.InputSystem;
 
 public class CameraFollow : MonoBehaviour
 {   
-    public Camera mainCamera;
+    //public Camera mainCamera;
     public Vector3 positionOffset;
     public Vector3 rotationOffset;
-    public static Transform carTarget;
+    public Transform carTarget;
 
     public float mouseSensitivity = 0.5f;
     public float maxYawAngle = 20f;
@@ -21,17 +21,16 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        carTarget = GameObject.Find("CarTr").transform;
-        mainCamera.enabled = false;
+        //mainCamera.enabled = false;
     }
 
-    void LateUpdate()
+    void Update()
     {
+        FollowTarget();
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
         {
             FollowTarget();
         }
-
     }
 
     void FollowTarget()

@@ -45,11 +45,13 @@ public class CrowEvent : MonoBehaviour
 
     void Update()
     {
+        if (CarController.IsChaseEventStart) return;
         RandomEvent();
     }
 
     void RandomEvent()
     {
+
         passedTime += Time.deltaTime;
 
         if ((int)passedTime != 0 && (int)passedTime % 10 == 0 && !IsPsvCheck)
@@ -57,8 +59,6 @@ public class CrowEvent : MonoBehaviour
             IsPsvCheck = true;
             EventPsv = (int)passedTime;
             int ran = Random.Range(0, 100);
-            Debug.Log("ran : " + ran);
-            Debug.Log("eventpsv : " + EventPsv);
             if (ran <= EventPsv && !RanEvent)
             {
                 RanEvent = true;
