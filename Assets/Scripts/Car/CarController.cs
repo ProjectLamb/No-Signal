@@ -147,6 +147,7 @@ public class CarController : MonoBehaviour
 
         if (IsChaseEventStart)
         {
+            TurnOffRadio();
             soundGauge.SetActive(false);
             foreach (var wheel in wheels)
             {
@@ -158,6 +159,7 @@ public class CarController : MonoBehaviour
                     if (carRb.velocity.magnitude < 1.5f) carRb.velocity = new Vector3(0, 0, 0);
                 }
             }
+            return;
         }
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
@@ -167,17 +169,14 @@ public class CarController : MonoBehaviour
         // 엔진사운드 시스템
         EngineSound();
         Vibrate();
-        if (!IsChaseEventStart)
-        {
-            SoundDetect();
-            RandomRadio();
-        }
+        SoundDetect();
+        RandomRadio();
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
-            {
-                IsEngineStart = true;
-                carDrive.start();
-            }
+        {
+            IsEngineStart = true;
+            carDrive.start();
+        }
 
         // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F1))
@@ -213,43 +212,16 @@ public class CarController : MonoBehaviour
         // 헤드라이트 키
         if (Input.GetKeyDown(KeyCode.L))
         {
-            if (BoomGateEventTrigger.isBoomEvent) return;
             ToggleHeadlights();
+        }
+                // 라디오 키
+        if (Input.GetKeyDown(KeyCode.R) && IsRadioOn)
+        {
+            TurnOffRadio();
         }
 
         if (!IsHeadlightsOn) lightOffTime += Time.deltaTime;
         else if (IsHeadlightsOn) lightOffTime = 0f;
-
-        // 라디오 키
-        if (Input.GetKeyDown(KeyCode.R) && IsRadioOn)
-        {
-            if (BoomGateEventTrigger.isBoomEvent) return;
-            switch (radioCh)
-            {
-                case 1:
-                    radio.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 2:
-                    radio2.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 3:
-                    radio3.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 4:
-                    radio4.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 5:
-                    radio5.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 6:
-                    radio6.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 7:
-                    radio7.stop(STOP_MODE.IMMEDIATE);
-                    break;
-            }
-            IsRadioOn = false;
-        }
 
         if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
         {
@@ -405,6 +377,7 @@ public class CarController : MonoBehaviour
 
     void ToggleHeadlights()
     {
+        if (IsChaseEventStart) return;
         AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
@@ -560,7 +533,7 @@ public class CarController : MonoBehaviour
         if ((int)radioPassedTime != 0 && (int)radioPassedTime % 10 == 0)
         {
             int ran = UnityEngine.Random.Range(0, 60);
-            if (ran <= (int)radioPassedTime && !IsRadioOn) 
+            if (ran <= (int)radioPassedTime && !IsRadioOn)
             {
                 IsRadioOn = true;
                 radioCh = (int)UnityEngine.Random.Range(1, 8);
@@ -590,6 +563,36 @@ public class CarController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void TurnOffRadio()
+    {
+        if (BoomGateEventTrigger.isBoomEvent) return;
+        switch (radioCh)
+        {
+            case 1:
+                radio.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 2:
+                radio2.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 3:
+                radio3.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 4:
+                radio4.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 5:
+                radio5.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 6:
+                radio6.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 7:
+                radio7.stop(STOP_MODE.IMMEDIATE);
+                break;
+        }
+        IsRadioOn = false;
     }
     public void ChaseCarBreak()
     {
