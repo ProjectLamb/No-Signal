@@ -6,6 +6,7 @@ public class GPS : MonoBehaviour
 {
     public GameObject car;
     public GameObject minimapMark;
+    public GameObject indicatorMark;
 
     public Transform player;              // 내비게이션 중심 (플레이어)
     public Transform target;              // 타겟 오브젝트
@@ -13,25 +14,30 @@ public class GPS : MonoBehaviour
     public RectTransform minimapRect;     // 미니맵 UI Rect
     public Camera minimapCam;
 
+    private bool IsIndicate = false;
+
     void Update()
     {
         GPSFollow();
-        SetIndicator();
+        if (IsIndicate)
+        {
+            SetIndicator();
+        }
     }
 
     void SetIndicator()
     {
-
         Vector3 viewportPos = minimapCam.WorldToViewportPoint(target.position);
         // 타겟이 미니맵 카메라 안에 있음
-        bool isInView = viewportPos.z > 0 &&
+        bool Isinview = viewportPos.z > 0 &&
                         viewportPos.x >= 0 && viewportPos.x <= 1 &&
                         viewportPos.y >= 0 && viewportPos.y <= 1;
-        if (isInView)
+        if (Isinview)
         {
-            indicator.gameObject.SetActive(false);  // 화면 안이면 숨기기
+            indicatorMark.SetActive(false);
+            IsIndicate = false;
         }
-        else indicator.gameObject.SetActive(true);
+        else indicatorMark.SetActive(true);
 
         Vector3 offset = target.position - player.position;
         Vector2 dir = new Vector2(offset.x, offset.z).normalized;
@@ -73,5 +79,10 @@ public class GPS : MonoBehaviour
         minimapMark.transform.SetParent(car.transform);
         minimapMark.transform.position = new Vector3(car.transform.position.x, car.transform.position.y + 20f, car.transform.position.z);
         minimapMark.transform.rotation = car.transform.rotation;
+    }
+
+    public void TurnIndicatorOn()
+    {
+        IsIndicate = true;
     }
 }

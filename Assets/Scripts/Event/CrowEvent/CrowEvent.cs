@@ -57,8 +57,6 @@ public class CrowEvent : MonoBehaviour
             IsPsvCheck = true;
             EventPsv = (int)passedTime;
             int ran = Random.Range(0, 100);
-            Debug.Log("ran : " + ran);
-            Debug.Log("eventpsv : " + EventPsv);
             if (ran <= EventPsv && !RanEvent)
             {
                 RanEvent = true;

@@ -49,9 +49,9 @@ public class CarController : MonoBehaviour
     public GameObject steeringWheel;
     public GameObject HeadLight;
     public GameObject gameOverPanel;
+    public GameObject chaseTimeline;
     public Image deerBlack;
     public Image soundFill;
-    public Image soundFrame;
     public Canvas soundDctCanvas;
     public Volume vhsVolume;
     private VhsVol vvs;
@@ -128,7 +128,6 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if (IsChaseEventStart) return;
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))
@@ -143,8 +142,21 @@ public class CarController : MonoBehaviour
             return;
         }
 
+        if (IsChaseEventStart)
+        {
+            foreach (var wheel in wheels)
+            {
+                wheel.wheelCollider.brakeTorque = 1000 * brakeAcceleration * Time.deltaTime;
+                if (wheel.wheelCollider.motorTorque < 0)
+                {
+                    wheel.wheelCollider.motorTorque = 0;
+                    carRb.velocity = Vector3.Lerp(carRb.velocity, Vector3.zero, 5f * Time.deltaTime);
+                    if (carRb.velocity.magnitude < 1.5f) carRb.velocity = new Vector3(0, 0, 0);
+                }
+            }
+        }
 
-        if (!BoomGateEventTrigger.isBoomEvent)
+        if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
             GetInputs();
             AnimateWheels();
@@ -216,9 +228,8 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (IsChaseEventStart) return;
         if (IsGameOver) return;
-        if (!BoomGateEventTrigger.isBoomEvent)
+        if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
             Move();
             Steer();
@@ -284,7 +295,7 @@ public class CarController : MonoBehaviour
         {
             foreach (var wheel in wheels)
             {
-                wheel.wheelCollider.brakeTorque = 300 * brakeAcceleration * Time.deltaTime;
+                wheel.wheelCollider.brakeTorque = 350 * brakeAcceleration * Time.deltaTime;
             }
         }
         else
@@ -326,9 +337,9 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
+            chaseTimeline.SetActive(true);
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
-            //creature.SetActive(true);
             Destroy(col.gameObject);
         }
     }
@@ -461,8 +472,6 @@ public class CarController : MonoBehaviour
     {
         if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
 
-        RectTransform soundFrameRctr = soundFrame.GetComponent<RectTransform>();
-        Vector2 orgSoundFrame = soundFrameRctr.anchoredPosition;
         //엔진 사운드 감지
         if (IsEngineStart)
         {
@@ -504,7 +513,6 @@ public class CarController : MonoBehaviour
             Color soundFillCol = soundFill.color;
             soundFillCol.a = 1;
             soundFill.color = soundFillCol;
-            soundFrameRctr.anchoredPosition = orgSoundFrame;
 
             IsSoundWarning = false;
             StopCoroutine("SoundLoudWarn");
@@ -533,13 +541,6 @@ public class CarController : MonoBehaviour
             creatureDct.transform.rotation = creatureLook;
             creatureDct.SetActive(true);
             AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
-        }
-
-        //경고중일때 진동효과
-        if (IsSoundWarning)
-        {
-            //지속시간,진폭,진동횟수
-            soundFrameRctr.DOShakeAnchorPos(0.3f, 0.2f, 50);
         }
 
         if (radioCh > 0)
@@ -578,10 +579,13 @@ public class CarController : MonoBehaviour
         }
     }
 
-    public void ChaseEventStart()
+    public void ChaseCarBreak()
+    {
+        IsChaseEventStart = true;
+    }
+    public void ChaseCarStop()
     {
         carDrive.stop(STOP_MODE.ALLOWFADEOUT);
-        IsChaseEventStart = true;
         HeadLight.SetActive(false);
         carRb.isKinematic = true;
     }
@@ -590,5 +594,12 @@ public class CarController : MonoBehaviour
     {
         HeadLight.SetActive(true);
         creature.SetActive(true);
+    }
+
+    public void ChaseCarStart()
+    {
+        carDrive.start();
+        carRb.isKinematic = false;
+        IsChaseEventStart = false;
     }
 }
