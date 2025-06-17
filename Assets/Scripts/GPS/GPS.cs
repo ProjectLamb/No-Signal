@@ -52,6 +52,7 @@ public class GPS : MonoBehaviour
             Vector2 pos = GetEdgePosition(dir, halfWidth, halfHeight);
             indicator.anchoredPosition = pos;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            indicator.localRotation = Quaternion.Euler(0, 0, angle - 90);
         }
     }
     Vector2 GetEdgePosition(Vector2 dir, float halfWidth, float halfHeight)

@@ -81,7 +81,7 @@ public class Creature : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 50f * Time.deltaTime);
         }
 
-        if (rigid.velocity.magnitude > 10)
+        if (rigid.velocity.magnitude > 2)
         {
             anim.SetBool("IsRun", true);
         }

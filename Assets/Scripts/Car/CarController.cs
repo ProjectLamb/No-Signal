@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using FMOD.Studio;
 using DG.Tweening;
 using VolFx;
+using Cinemachine;
 
 public class CarController : MonoBehaviour
 {
@@ -49,12 +50,12 @@ public class CarController : MonoBehaviour
     public GameObject steeringWheel;
     public GameObject HeadLight;
     public GameObject gameOverPanel;
-    public GameObject chaseTimeline;
     public Image deerBlack;
     public Image soundFill;
     public Canvas soundDctCanvas;
     public Volume vhsVolume;
     private VhsVol vvs;
+    public CinemachineBrain cinemachineBrain;
 
     private float speed;
     private float rpm;
@@ -337,7 +338,7 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
-            chaseTimeline.SetActive(true);
+            cinemachineBrain.enabled = true;
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
