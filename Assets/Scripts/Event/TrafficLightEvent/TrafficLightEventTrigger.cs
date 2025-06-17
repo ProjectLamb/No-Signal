@@ -19,16 +19,15 @@ public class TrafficLightEventTrigger : MonoBehaviour
         {   
             if(eventStart != null)
         StopCoroutine(eventStart);
-    
         eventStart = StartCoroutine(TLEvent_Start());
 
         };
     }
    
     private IEnumerator TLEvent_Start(){
-
-        yield return StartCoroutine(TLEvent_LightOn(0)); // Green
-        yield return StartCoroutine(TLEvent_LightOff(1)); // Red
+        
+        yield return StartCoroutine(TLEvent_LightOn(0)); // Red
+        yield return StartCoroutine(TLEvent_LightOff(1)); // Green
         
         yield return StartCoroutine(TLEvent_ObstacleActiveOn());
     }
