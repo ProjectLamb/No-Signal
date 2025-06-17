@@ -36,6 +36,7 @@ public class CarController : MonoBehaviour
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
+    public static bool IsChaseEventStart = false;
 
     public Vector3 _centerOfMass;
     public Transform modelTr;
@@ -50,6 +51,7 @@ public class CarController : MonoBehaviour
     public GameObject steeringWheel;
     public GameObject HeadLight;
     public GameObject gameOverPanel;
+    public GameObject soundGauge;
     public Image deerBlack;
     public Image soundFill;
     public Canvas soundDctCanvas;
@@ -73,7 +75,6 @@ public class CarController : MonoBehaviour
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
     private bool IsPrepareToDead = false;
-    private bool IsChaseEventStart = false;
     private bool IsRadioOn = false;
 
     private Rigidbody carRb;
@@ -146,6 +147,7 @@ public class CarController : MonoBehaviour
 
         if (IsChaseEventStart)
         {
+            soundGauge.SetActive(false);
             foreach (var wheel in wheels)
             {
                 wheel.wheelCollider.brakeTorque = 1000 * brakeAcceleration * Time.deltaTime;
@@ -157,7 +159,6 @@ public class CarController : MonoBehaviour
                 }
             }
         }
-
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
             GetInputs();
@@ -166,14 +167,17 @@ public class CarController : MonoBehaviour
         // 엔진사운드 시스템
         EngineSound();
         Vibrate();
-        SoundDetect();
-        RandomRadio();
+        if (!IsChaseEventStart)
+        {
+            SoundDetect();
+            RandomRadio();
+        }
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
-        {
-            IsEngineStart = true;
-            carDrive.start();
-        }
+            {
+                IsEngineStart = true;
+                carDrive.start();
+            }
 
         // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F1))
@@ -460,7 +464,6 @@ public class CarController : MonoBehaviour
         {
             if (engineSoundFill < 0.1f)
             {
-                Debug.Log("올라간다!");
                 soundFill.fillAmount += 0.01f * Time.deltaTime;
                 engineSoundFill += 0.01f * Time.deltaTime;
             }
