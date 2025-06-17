@@ -57,23 +57,24 @@ public class CarController : MonoBehaviour
     private VhsVol vvs;
     public CinemachineBrain cinemachineBrain;
 
+    private int radioCh;
     private float speed;
     private float rpm;
     private float pitch;
     private float speedRatio;
-    private float radioCh;
     private float moveInput;
     private float steerInput;
     private float vibeSpeed = 1f;
     private float intensity = 0.001f;
     private float engineSoundFill = 0f;
-    private float radioSoundFill = 0f;
+    private float radioPassedTime = 0;
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
     private bool IsPrepareToDead = false;
     private bool IsChaseEventStart = false;
+    private bool IsRadioOn = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -166,6 +167,7 @@ public class CarController : MonoBehaviour
         EngineSound();
         Vibrate();
         SoundDetect();
+        RandomRadio();
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
         {
@@ -215,10 +217,34 @@ public class CarController : MonoBehaviour
         else if (IsHeadlightsOn) lightOffTime = 0f;
 
         // 라디오 키
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && IsRadioOn)
         {
             if (BoomGateEventTrigger.isBoomEvent) return;
-            TurnRadio();
+            switch (radioCh)
+            {
+                case 1:
+                    radio.stop(STOP_MODE.IMMEDIATE);
+                    break;
+                case 2:
+                    radio2.stop(STOP_MODE.IMMEDIATE);
+                    break;
+                case 3:
+                    radio3.stop(STOP_MODE.IMMEDIATE);
+                    break;
+                case 4:
+                    radio4.stop(STOP_MODE.IMMEDIATE);
+                    break;
+                case 5:
+                    radio5.stop(STOP_MODE.IMMEDIATE);
+                    break;
+                case 6:
+                    radio6.stop(STOP_MODE.IMMEDIATE);
+                    break;
+                case 7:
+                    radio7.stop(STOP_MODE.IMMEDIATE);
+                    break;
+            }
+            IsRadioOn = false;
         }
 
         if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
@@ -381,51 +407,6 @@ public class CarController : MonoBehaviour
         soundFill.fillAmount += 0.05f;
     }
 
-    void TurnRadio()
-    {
-        switch (radioCh)
-        {
-            case 0:
-                radio.start();
-                radioCh++;
-                break;
-            case 1:
-                radio.stop(STOP_MODE.IMMEDIATE);
-                radio2.start();
-                radioCh++;
-                break;
-            case 2:
-                radio2.stop(STOP_MODE.IMMEDIATE);
-                radio3.start();
-                radioCh++;
-                break;
-            case 3:
-                radio3.stop(STOP_MODE.IMMEDIATE);
-                radio4.start();
-                radioCh++;
-                break;
-            case 4:
-                radio4.stop(STOP_MODE.IMMEDIATE);
-                radio5.start();
-                radioCh++;
-                break;
-            case 5:
-                radio5.stop(STOP_MODE.IMMEDIATE);
-                radio6.start();
-                radioCh++;
-                break;
-            case 6:
-                radio6.stop(STOP_MODE.IMMEDIATE);
-                radio7.start();
-                radioCh++;
-                break;
-            case 7:
-                radio7.stop(STOP_MODE.IMMEDIATE);
-                radioCh = 0;
-                break;
-        }
-    }
-
     void EngineSound()
     {
         speed = wheels[0].wheelCollider.rpm * 2f * Mathf.PI / 10f;
@@ -471,6 +452,7 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
+        Debug.Log(engineSoundFill);
         if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
 
         //엔진 사운드 감지
@@ -478,16 +460,20 @@ public class CarController : MonoBehaviour
         {
             if (engineSoundFill < 0.1f)
             {
+                Debug.Log("올라간다!");
                 soundFill.fillAmount += 0.01f * Time.deltaTime;
                 engineSoundFill += 0.01f * Time.deltaTime;
             }
         }
-        else if (!IsEngineStart && radioCh < 1)
+        if (!IsEngineStart)
         {
-            soundFill.fillAmount -= 0.01f * Time.deltaTime;
-            engineSoundFill -= 0.01f * Time.deltaTime;
+            if (engineSoundFill > 0f)
+            {
+                Debug.Log("내려간다!");
+                soundFill.fillAmount -= 0.01f * Time.deltaTime;
+                engineSoundFill -= 0.01f * Time.deltaTime;
+            }
         }
-
         // 까마귀 울음소리리
         if (IsCrowCaw)
         {
@@ -500,7 +486,7 @@ public class CarController : MonoBehaviour
             if (vhsVolume.profile.TryGet(out vvs))
             {
                 if (vvs._weight.value < 0.7f)
-                    vvs._weight.value += 0.05f;
+                    vvs._weight.value += 0.05f * Time.deltaTime;
             }
         }
         if (soundFill.fillAmount >= 0.7f && !IsSoundWarning)
@@ -509,7 +495,7 @@ public class CarController : MonoBehaviour
             StartCoroutine("SoundLoudWarn");
             soundLoud.start();
         }
-        else if (soundFill.fillAmount < 0.7f)
+        if (soundFill.fillAmount < 0.7f)
         {
             Color soundFillCol = soundFill.color;
             soundFillCol.a = 1;
@@ -543,23 +529,7 @@ public class CarController : MonoBehaviour
             creatureDct.SetActive(true);
             AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         }
-
-        if (radioCh > 0)
-        {
-            if (radioSoundFill < 0.1f)
-            {
-                soundFill.fillAmount += 0.01f * Time.deltaTime;
-                radioSoundFill += 0.01f * Time.deltaTime;
-            }
-        }
-        else
-        {
-            if (radioSoundFill > 0f)
-            {
-                soundFill.fillAmount -= 0.01f * Time.deltaTime;
-                radioSoundFill -= 0.01f * Time.deltaTime;
-            }
-        }
+        if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
     }
 
     IEnumerator SoundLoudWarn()
@@ -580,6 +550,44 @@ public class CarController : MonoBehaviour
         }
     }
 
+    public void RandomRadio()
+    {
+        radioPassedTime += Time.deltaTime;
+
+        if ((int)radioPassedTime != 0 && (int)radioPassedTime % 10 == 0)
+        {
+            int ran = UnityEngine.Random.Range(0, 60);
+            if (ran <= (int)radioPassedTime && !IsRadioOn) 
+            {
+                IsRadioOn = true;
+                radioCh = (int)UnityEngine.Random.Range(1, 8);
+                switch (radioCh)
+                {
+                    case 1:
+                        radio.start();
+                        break;
+                    case 2:
+                        radio2.start();
+                        break;
+                    case 3:
+                        radio3.start();
+                        break;
+                    case 4:
+                        radio4.start();
+                        break;
+                    case 5:
+                        radio5.start();
+                        break;
+                    case 6:
+                        radio6.start();
+                        break;
+                    case 7:
+                        radio7.start();
+                        break;
+                }
+            }
+        }
+    }
     public void ChaseCarBreak()
     {
         IsChaseEventStart = true;
