@@ -19,9 +19,11 @@ public class Creature : MonoBehaviour
     public Transform oakTree;
 
     public float rotSpeed = 3f;
+    public static bool IsDie = false;
     private bool IsChase = false;
     private bool IsReveal = false;
-    private bool IsEnding = false;
+    public static  bool IsEnding = false;
+    //private bool 
 
     void Awake()
     {
@@ -43,13 +45,18 @@ public class Creature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (CarController.IsGameOver)
+        if (IsDie)
         {
-            navMeshAgent.enabled = false;
-            this.transform.position = targetForward.position;
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
         }
+        if (CarController.IsGameOver)
+            {
+                navMeshAgent.enabled = false;
+                this.transform.position = targetForward.position;
+            }
         if (!CarController.IsGameOver && IsChase)
         {
+            stepEmitter.Play();
             if (navMeshAgent.isOnNavMesh)
             {
                 navMeshAgent.destination = targetTr.position;
@@ -78,18 +85,8 @@ public class Creature : MonoBehaviour
 
         if (IsEnding)
         {
-            this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 50f * Time.deltaTime);
+            this.transform.position = targetForward.position;
         }
-
-        if (rigid.velocity.magnitude > 2)
-        {
-            anim.SetBool("IsRun", true);
-        }
-        else anim.SetBool("IsRun", false);
-
-        Debug.Log(rigid.velocity.magnitude);
-
-
     }
 
     void LookTarget()

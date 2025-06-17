@@ -36,6 +36,7 @@ public class GPS : MonoBehaviour
         {
             indicatorMark.SetActive(false);
             IsIndicate = false;
+            CarController.IsEndingStart = true;
         }
         else indicatorMark.SetActive(true);
 

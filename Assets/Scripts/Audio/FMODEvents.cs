@@ -20,6 +20,10 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference carLight { get; private set; }
     [field: SerializeField] public EventReference carCol { get; private set; }
     [field: SerializeField] public EventReference carStarting { get; private set; }
+    [field: SerializeField] public EventReference headlightBoom { get; private set; }
+    [field: SerializeField] public EventReference carEngineOff { get; private set; }
+    [field: SerializeField] public EventReference carStartingSuccess { get; private set; }
+    [field: SerializeField] public EventReference carUturn { get; private set; }
 
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
@@ -33,6 +37,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference creatureStep { get; private set; }
     [field: SerializeField] public EventReference creatureClick { get; private set; }
     [field: SerializeField] public EventReference creatureDeath { get; private set; }
+    [field: SerializeField] public EventReference chaseBackground { get; private set; }
 
     [Header("Radio")]
     [field: SerializeField] public EventReference radio { get; private set; }
@@ -45,7 +50,7 @@ public class FMODEvents : MonoBehaviour
 
     [Header("Navi")]
     [field: SerializeField] public EventReference navi { get; private set; }
-    [field: SerializeField] public EventReference naviGlitch { get; private set; }
+    [field: SerializeField] public EventReference chaseNavi { get; private set; }
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
@@ -55,6 +60,7 @@ public class FMODEvents : MonoBehaviour
 
     [Header("ETC")]
     [field: SerializeField] public EventReference introNoise { get; private set; }
+    [field: SerializeField] public EventReference earSound { get; private set; }
     private void Awake()
     {
         if (instance != null)
