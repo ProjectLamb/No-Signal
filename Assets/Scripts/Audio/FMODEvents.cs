@@ -20,6 +20,13 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference carLight { get; private set; }
     [field: SerializeField] public EventReference carCol { get; private set; }
     [field: SerializeField] public EventReference carStarting { get; private set; }
+    [field: SerializeField] public EventReference headlightBoom { get; private set; }
+    [field: SerializeField] public EventReference carEngineOff { get; private set; }
+    [field: SerializeField] public EventReference carStartingSuccess { get; private set; }
+    [field: SerializeField] public EventReference carUturn { get; private set; }
+    [field: SerializeField] public EventReference creatureAttach { get; private set; }
+    [field: SerializeField] public EventReference carSliding { get; private set; }
+    [field: SerializeField] public EventReference carCrash2 { get; private set; }
 
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
@@ -40,6 +47,10 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference creatureStep { get; private set; }
     [field: SerializeField] public EventReference creatureClick { get; private set; }
     [field: SerializeField] public EventReference creatureDeath { get; private set; }
+    [field: SerializeField] public EventReference chaseBackground { get; private set; }
+    [field: SerializeField] public EventReference creatureCrying { get; private set; }
+    [field: SerializeField] public EventReference creatureDie { get; private set; }
+    [field: SerializeField] public EventReference creatureBreathe { get; private set; }
 
     [Header("Radio")]
     [field: SerializeField] public EventReference radio { get; private set; }
@@ -52,12 +63,24 @@ public class FMODEvents : MonoBehaviour
 
     [Header("Navi")]
     [field: SerializeField] public EventReference navi { get; private set; }
+    [field: SerializeField] public EventReference chaseNavi { get; private set; }
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
+    [field: SerializeField] public EventReference gravel { get; private set; }
 
     [Header("SoundAndLight")]
     [field: SerializeField] public EventReference soundLoud { get; private set; }
+
+    [Header("ETC")]
+    [field: SerializeField] public EventReference introNoise { get; private set; }
+    [field: SerializeField] public EventReference earSound { get; private set; }
+    [field: SerializeField] public EventReference insect { get; private set; }
+    [field: SerializeField] public EventReference insect2 { get; private set; }
+    [field: SerializeField] public EventReference cricket { get; private set; }
+    [field: SerializeField] public EventReference cricket2 { get; private set; }
+    [field: SerializeField] public EventReference tutorialPage { get; private set; }
+
     private void Awake()
     {
         if (instance != null)

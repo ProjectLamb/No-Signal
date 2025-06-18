@@ -28,6 +28,7 @@ public class CrowEvent : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if (CarController.IsChaseEventStart) return;
         if (IsStayCar) StayOnCar();
 
         if (IsEventStart)
@@ -125,6 +126,7 @@ public class CrowEvent : MonoBehaviour
     private void FlyToTheDest()
     {
         if (CarController.lightOffTime <= 3f) return;
+        if (CarController.IsChaseEventStart) return;
         anim.SetBool("flying", true);
         float ranDestX = Random.Range(30, 50);
         float ranDestZ = Random.Range(30, 50);

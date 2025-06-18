@@ -22,9 +22,9 @@ public class EventMove : MonoBehaviour
     private Coroutine moveRoutine;
 
     public List<EventDot> BGEventWave;
-
     public void MoveToTarget()
-    {   this.gameObject.SetActive(true);
+    {
+        this.gameObject.SetActive(true);
         if (moveRoutine != null)
             StopCoroutine(moveRoutine);
 

@@ -7,7 +7,6 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using FMOD.Studio;
-using DG.Tweening;
 using VolFx;
 using Cinemachine;
 
@@ -37,6 +36,7 @@ public class CarController : MonoBehaviour
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
     public static bool IsChaseEventStart = false;
+    public static bool IsEndingStart = false;
 
     public Vector3 _centerOfMass;
     public Transform modelTr;
@@ -45,16 +45,21 @@ public class CarController : MonoBehaviour
     public Transform deerCheat;
     public Transform trafficLightcrowCheat;
     public Transform creatureCheat;
+    public Transform oakTree;
     public GameObject creature;
     public GameObject creatureDct;
     public List<Wheel> wheels;
     public GameObject steeringWheel;
     public GameObject HeadLight;
     public GameObject gameOverPanel;
+    public GameObject gameEndPanel;
     public GameObject soundGauge;
+    public GameObject warnText;
+    public GameObject originBody;
+    public GameObject brokenBody;
+    public GameObject letterBox;
     public Image deerBlack;
     public Image soundFill;
-    public Canvas soundDctCanvas;
     public Volume vhsVolume;
     private VhsVol vvs;
     public CinemachineBrain cinemachineBrain;
@@ -76,6 +81,10 @@ public class CarController : MonoBehaviour
     private bool IsCreatureDct = false;
     private bool IsPrepareToDead = false;
     private bool IsRadioOn = false;
+    private bool IsChased = false;
+    private bool IsRushTreeStart = false;
+    private bool IsFinalCreature = false;
+    private bool IsTutorial = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -93,6 +102,10 @@ public class CarController : MonoBehaviour
     private EventInstance radio5;
     private EventInstance radio6;
     private EventInstance radio7;
+    private EventInstance chaseBackground;
+    private EventInstance creatureAttach;
+    private EventInstance carSliding;
+    private EventInstance carCrash2;
 
     void Awake()
     {   
@@ -102,6 +115,10 @@ public class CarController : MonoBehaviour
         deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
         soundLoud = AudioManager.instance.CreateInstance(FMODEvents.instance.soundLoud);
         creatureHowl = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureHowl);
+        chaseBackground = AudioManager.instance.CreateInstance(FMODEvents.instance.chaseBackground);
+        creatureAttach = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureAttach);
+        carSliding = AudioManager.instance.CreateInstance(FMODEvents.instance.carSliding);
+        carCrash2 = AudioManager.instance.CreateInstance(FMODEvents.instance.carCrash2);
 
         radio = AudioManager.instance.CreateInstance(FMODEvents.instance.radio);
         radio2 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio2);
@@ -110,10 +127,13 @@ public class CarController : MonoBehaviour
         radio5 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio5);
         radio6 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio6);
         radio7 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio7);
+
     }
 
     void Start()
     {
+        IsTutorial = Tutorial.IsTutorial;
+        if (!GameManager.IsTutorialFirst) IsTutorial = false;
         rpm = 0;
         radioCh = 0;
         carDrive.getPitch(out pitch);
@@ -131,6 +151,8 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.IsTutorialFirst && IsTutorial) return;
+        if (IsEndingStart) RushToTree();
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))
@@ -147,6 +169,7 @@ public class CarController : MonoBehaviour
 
         if (IsChaseEventStart)
         {
+            TurnOffRadio();
             soundGauge.SetActive(false);
             foreach (var wheel in wheels)
             {
@@ -158,26 +181,27 @@ public class CarController : MonoBehaviour
                     if (carRb.velocity.magnitude < 1.5f) carRb.velocity = new Vector3(0, 0, 0);
                 }
             }
+            return;
         }
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
             GetInputs();
             AnimateWheels();
         }
-        // 엔진사운드 시스템
-        EngineSound();
-        Vibrate();
-        if (!IsChaseEventStart)
+        if (!IsChased && !BoomGateEventTrigger.isBoomEvent)
         {
+            // 엔진사운드 시스템
+            EngineSound();
+            Vibrate();
             SoundDetect();
             RandomRadio();
         }
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
-            {
-                IsEngineStart = true;
-                carDrive.start();
-            }
+        {
+            IsEngineStart = true;
+            carDrive.start();
+        }
 
         // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F1))
@@ -211,45 +235,18 @@ public class CarController : MonoBehaviour
         }
 
         // 헤드라이트 키
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            if (BoomGateEventTrigger.isBoomEvent) return;
             ToggleHeadlights();
+        }
+        // 라디오 키
+        if (Input.GetKeyDown(KeyCode.R) && IsRadioOn)
+        {
+            TurnOffRadio();
         }
 
         if (!IsHeadlightsOn) lightOffTime += Time.deltaTime;
         else if (IsHeadlightsOn) lightOffTime = 0f;
-
-        // 라디오 키
-        if (Input.GetKeyDown(KeyCode.R) && IsRadioOn)
-        {
-            if (BoomGateEventTrigger.isBoomEvent) return;
-            switch (radioCh)
-            {
-                case 1:
-                    radio.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 2:
-                    radio2.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 3:
-                    radio3.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 4:
-                    radio4.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 5:
-                    radio5.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 6:
-                    radio6.stop(STOP_MODE.IMMEDIATE);
-                    break;
-                case 7:
-                    radio7.stop(STOP_MODE.IMMEDIATE);
-                    break;
-            }
-            IsRadioOn = false;
-        }
 
         if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
         {
@@ -259,6 +256,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Tutorial.IsTutorial) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
@@ -368,6 +366,9 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
+
+            letterBox.SetActive(true);
+            GameManager.IsTrafficClear = true;
             cinemachineBrain.enabled = true;
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
@@ -384,17 +385,30 @@ public class CarController : MonoBehaviour
         }
         if (collision.gameObject.tag == "Deer")
         {
+            GameManager.IsDeerClear = true;
+            originBody.SetActive(false);
+            brokenBody.SetActive(true);
             StartCoroutine("WaitForDeer");
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        if (collision.gameObject.tag == "Creature")
+        if (collision.gameObject.tag == "Creature" && !IsChased)
         {
             IsGameOver = true;
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+        }
+        if (collision.gameObject.tag == "Oak" && IsChased)
+        {
+            IsEndingStart = false;
+            chaseBackground.stop(STOP_MODE.IMMEDIATE);
+            EventManager.Instance.SetEvent(2);
+            EventManager.Instance.PlayEvent();
         }
     }
 
+    public void EndPanelOn()
+    {
+        gameEndPanel.SetActive(true);
+    }
     IEnumerator WaitForDeer()
     {
         yield return new WaitForSeconds(0.1f);
@@ -405,6 +419,7 @@ public class CarController : MonoBehaviour
 
     void ToggleHeadlights()
     {
+        if (IsChaseEventStart) return;
         AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
@@ -456,7 +471,6 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
-        Debug.Log(engineSoundFill);
         if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
 
         //엔진 사운드 감지
@@ -472,9 +486,8 @@ public class CarController : MonoBehaviour
         {
             if (engineSoundFill > 0f)
             {
-                Debug.Log("내려간다!");
-                soundFill.fillAmount -= 0.01f * Time.deltaTime;
-                engineSoundFill -= 0.01f * Time.deltaTime;
+                soundFill.fillAmount -= 0.02f * Time.deltaTime;
+                engineSoundFill -= 0.02f * Time.deltaTime;
             }
         }
         // 까마귀 울음소리리
@@ -560,7 +573,7 @@ public class CarController : MonoBehaviour
         if ((int)radioPassedTime != 0 && (int)radioPassedTime % 10 == 0)
         {
             int ran = UnityEngine.Random.Range(0, 60);
-            if (ran <= (int)radioPassedTime && !IsRadioOn) 
+            if (ran <= (int)radioPassedTime && !IsRadioOn)
             {
                 IsRadioOn = true;
                 radioCh = (int)UnityEngine.Random.Range(1, 8);
@@ -591,6 +604,36 @@ public class CarController : MonoBehaviour
             }
         }
     }
+
+    private void TurnOffRadio()
+    {
+        if (BoomGateEventTrigger.isBoomEvent) return;
+        switch (radioCh)
+        {
+            case 1:
+                radio.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 2:
+                radio2.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 3:
+                radio3.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 4:
+                radio4.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 5:
+                radio5.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 6:
+                radio6.stop(STOP_MODE.IMMEDIATE);
+                break;
+            case 7:
+                radio7.stop(STOP_MODE.IMMEDIATE);
+                break;
+        }
+        IsRadioOn = false;
+    }
     public void ChaseCarBreak()
     {
         IsChaseEventStart = true;
@@ -606,12 +649,56 @@ public class CarController : MonoBehaviour
     {
         HeadLight.SetActive(true);
         creature.SetActive(true);
+        chaseBackground.start();
     }
 
     public void ChaseCarStart()
     {
+        LetterBox.IsLetterBoxOut = true;
         carDrive.start();
         carRb.isKinematic = false;
         IsChaseEventStart = false;
+        IsChased = true;
+    }
+    public void WarnTextOn()
+    {
+        StartCoroutine("WarnTextEffect");
+    }
+
+    public void RushToTree()
+    {
+        if (!IsRushTreeStart)
+        {
+            Creature.IsEnding = true;
+            IsRushTreeStart = true;
+            carRb.isKinematic = false;
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
+        }
+        this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 20f * Time.deltaTime);
+        float distance = Vector3.Distance(transform.position, oakTree.position);
+        if (distance < 5f && !IsFinalCreature)
+        {
+            IsFinalCreature = true;
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.carSliding, this.transform.position);
+        }
+    }
+
+    IEnumerator WarnTextEffect()
+    {
+        warnText.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        warnText.SetActive(false);
     }
 }

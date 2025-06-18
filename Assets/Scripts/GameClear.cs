@@ -10,4 +10,9 @@ public class GameClear : MonoBehaviour
         CarController.IsGameOver = false;
         SceneManager.LoadScene("Title");
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }

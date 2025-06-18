@@ -24,8 +24,8 @@ public class BoomGateEventTrigger : MonoBehaviour
     {
         if(collider.gameObject.name == "Car")
         //리팩터링 필요
-        {   
-
+        {
+            GameManager.IsCargateClear = true;
             Rigidbody carRb = collider.gameObject.GetComponent<Rigidbody>();
             Transform carTr = collider.gameObject.GetComponent<Transform>();
             Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;

@@ -11,6 +11,9 @@ TagManager:
   - Creature
   - Deer
   - CreatureEvent
+  - lb_bird
+  - Road
+  - Oak
   layers:
   - Default
   - TransparentFX
@@ -20,7 +23,7 @@ TagManager:
   - UI
   - Minimap
   - Fogs
-  - 
+  - Oak
   - 
   - 
   - 
