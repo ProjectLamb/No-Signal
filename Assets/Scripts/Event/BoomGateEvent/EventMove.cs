@@ -73,7 +73,10 @@ public class EventMove : MonoBehaviour
         yield return StartCoroutine(BGEvent_Lighton()); //이벤트 진입 시 헤드라이트 on
         // yield return StartCoroutine(BGEvent_Lighton());
         // yield return StartCoroutine(BGEvent_Move(destination)); // 차단바까지 이동
-        playerFootSteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        if (playerFootSteps.isValid())
+        {
+        playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        }
         animator.SetInteger("Movement", 1); // 차단바 주섬주섬 애니메이션
         yield return new WaitForSecondsRealtime(3f); // 3초 기다림
 
@@ -89,7 +92,7 @@ public class EventMove : MonoBehaviour
         yield return StartCoroutine(BGEvent_Rotate());
         yield return StartCoroutine(BGEvent_WaveInactive());
         yield return StartCoroutine(BGEvent_Lightoff());
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
+        
         yield return new WaitForSecondsRealtime(3.5f);
         // 여기 퓨즈나가는 소리 추가
         yield return StartCoroutine(BGEvent_Rotate());
@@ -105,7 +108,10 @@ public class EventMove : MonoBehaviour
         playerFootSteps.start();
         yield return StartCoroutine(BGEvent_Return(startPos));
         yield return new WaitForSecondsRealtime(1.0f);
-        playerFootSteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        if (playerFootSteps.isValid())
+        {
+            playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        }
         playerFootSteps.release();
     }   
 
@@ -157,9 +163,11 @@ public class EventMove : MonoBehaviour
     }
     
     private IEnumerator BGEvent_Lightoff()
-    {
+    {   AudioManager.instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
+        yield return new WaitForSecondsRealtime(0.5f);
         light.SetActive(false);
         yield return null;
+
     }
 
     private IEnumerator BGEvent_Lightblink(int num)

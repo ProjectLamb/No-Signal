@@ -8,8 +8,8 @@ public class TrafficLightEventTrigger : MonoBehaviour
     public GameObject Car;
     public List<Light> light;
     public static bool isTLEvent = false;
-    public GameObject obstacle_1;
-    public GameObject obstacle_2;
+    public GameObject obstacle;
+    // public GameObject obstacle_2;
     private Coroutine eventStart;
 
     void OnTriggerEnter(Collider collider)
@@ -52,9 +52,9 @@ public class TrafficLightEventTrigger : MonoBehaviour
         // float duration = 5.0f;
         // float elapsed = 0f;
         // float speed = 1f;
-        obstacle_1.SetActive(true);
-        obstacle_2.SetActive(true);
-        yield return null;
+        obstacle.SetActive(true);
+        yield return new WaitForSecondsRealtime(5.0f);
+        // obstacle_2.SetActive(true);
         // {   
         //     if(obstacle.activeSelf != false)
         //     {
@@ -69,13 +69,13 @@ public class TrafficLightEventTrigger : MonoBehaviour
         // }
     }
     
-    void ObstacleMove(){
-         if(obstacle_1.activeSelf != false){
-        obstacle_1.transform.Translate(Vector3.right * Time.deltaTime/2);
-        }
-    }
-    void Update(){
-        ObstacleMove();
-    }
+    // void ObstacleMove(){
+    //      if(obstacle_1.activeSelf != false){
+    //     obstacle_1.transform.Translate(Vector3.right * Time.deltaTime/2);
+    //     }
+    // }
+    // void Update(){
+    //     ObstacleMove();
+    // }
 }
 
