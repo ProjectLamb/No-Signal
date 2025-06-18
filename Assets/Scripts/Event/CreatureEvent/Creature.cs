@@ -110,9 +110,12 @@ public class Creature : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Oak tree")
+        if (collision.gameObject.tag == "Oak")
         {
+            stepEmitter.Stop();
             anim.SetTrigger("DoDie");
+            IsEnding = false;
+            IsChase = false;
         }
 
         if (collision.gameObject.name == "Car")

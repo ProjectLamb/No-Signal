@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameOverFade : MonoBehaviour
+public class GameEndFade : MonoBehaviour
 {
     public Image fadeImage;
     public void Start()
@@ -20,6 +20,6 @@ public class GameOverFade : MonoBehaviour
             fadeImage.color = fadeCol;
             yield return new WaitForSeconds(0.01f);
         }
-        SceneManager.LoadScene("Death");
+        SceneManager.LoadScene("Clear");
     }
 }
