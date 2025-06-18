@@ -8,6 +8,7 @@ public class StartFade : MonoBehaviour
 {
 
     public Image startFadeImage;
+    public GameObject tutorial;
 
     private EventInstance introNoise;
 
@@ -31,6 +32,7 @@ public class StartFade : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
         }
         startFadeImage.gameObject.SetActive(false);
+        tutorial.SetActive(GameManager.IsTutorialFirst);
     }
 
     IEnumerator WaitTime()

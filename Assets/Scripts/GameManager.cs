@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public static bool IsDeerClear = false;
     public static bool IsCargateClear = false;
     public static bool IsTrafficClear = false;
+    public static bool IsTutorialFirst = true;
 
     void Awake()
     {
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        CarController.IsGameOver = false;
         if (IsDeerClear)
         {
             car.transform.position = traffitSpawn.position;

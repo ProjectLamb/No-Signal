@@ -56,6 +56,7 @@ public class Creature : MonoBehaviour
             }
         if (!CarController.IsGameOver && IsChase)
         {
+            IsReveal = false;
             stepEmitter.Play();
             if (navMeshAgent.isOnNavMesh)
             {

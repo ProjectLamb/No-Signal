@@ -60,6 +60,7 @@ public class FMODEvents : MonoBehaviour
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
+    [field: SerializeField] public EventReference gravel { get; private set; }
 
     [Header("SoundAndLight")]
     [field: SerializeField] public EventReference soundLoud { get; private set; }
@@ -67,6 +68,12 @@ public class FMODEvents : MonoBehaviour
     [Header("ETC")]
     [field: SerializeField] public EventReference introNoise { get; private set; }
     [field: SerializeField] public EventReference earSound { get; private set; }
+    [field: SerializeField] public EventReference insect { get; private set; }
+    [field: SerializeField] public EventReference insect2 { get; private set; }
+    [field: SerializeField] public EventReference cricket { get; private set; }
+    [field: SerializeField] public EventReference cricket2 { get; private set; }
+    [field: SerializeField] public EventReference tutorialPage { get; private set; }
+
     private void Awake()
     {
         if (instance != null)

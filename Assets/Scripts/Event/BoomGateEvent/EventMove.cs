@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.Playables;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
+using FMOD.Studio;
 
 public class EventMove : MonoBehaviour
 {   
@@ -14,9 +16,9 @@ public class EventMove : MonoBehaviour
     public float speed = 2f;       // 이동 속도
     private Coroutine moveRoutine;
 
-
     public void MoveToTarget()
-    {   this.gameObject.SetActive(true);
+    {
+        this.gameObject.SetActive(true);
         if (moveRoutine != null)
             StopCoroutine(moveRoutine);
 

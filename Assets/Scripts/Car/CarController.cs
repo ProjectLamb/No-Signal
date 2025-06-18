@@ -57,9 +57,9 @@ public class CarController : MonoBehaviour
     public GameObject warnText;
     public GameObject originBody;
     public GameObject brokenBody;
+    public GameObject letterBox;
     public Image deerBlack;
     public Image soundFill;
-    public Canvas soundDctCanvas;
     public Volume vhsVolume;
     private VhsVol vvs;
     public CinemachineBrain cinemachineBrain;
@@ -84,6 +84,7 @@ public class CarController : MonoBehaviour
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
+    private bool IsTutorial = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -131,6 +132,8 @@ public class CarController : MonoBehaviour
 
     void Start()
     {
+        IsTutorial = Tutorial.IsTutorial;
+        if (!GameManager.IsTutorialFirst) IsTutorial = false;
         rpm = 0;
         radioCh = 0;
         carDrive.getPitch(out pitch);
@@ -148,6 +151,7 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.IsTutorialFirst && IsTutorial) return;
         if (IsEndingStart) RushToTree();
         if (IsGameOver)
         {
@@ -231,7 +235,7 @@ public class CarController : MonoBehaviour
         }
 
         // 헤드라이트 키
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             ToggleHeadlights();
         }
@@ -252,6 +256,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Tutorial.IsTutorial) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
@@ -361,6 +366,8 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
+
+            letterBox.SetActive(true);
             GameManager.IsTrafficClear = true;
             cinemachineBrain.enabled = true;
             EventManager.Instance.SetEvent(1);
@@ -388,7 +395,6 @@ public class CarController : MonoBehaviour
         if (collision.gameObject.tag == "Creature" && !IsChased)
         {
             IsGameOver = true;
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
         }
         if (collision.gameObject.tag == "Oak" && IsChased)
         {
@@ -465,7 +471,6 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
-        Debug.Log(engineSoundFill);
         if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
 
         //엔진 사운드 감지
@@ -481,9 +486,8 @@ public class CarController : MonoBehaviour
         {
             if (engineSoundFill > 0f)
             {
-                Debug.Log("내려간다!");
-                soundFill.fillAmount -= 0.01f * Time.deltaTime;
-                engineSoundFill -= 0.01f * Time.deltaTime;
+                soundFill.fillAmount -= 0.02f * Time.deltaTime;
+                engineSoundFill -= 0.02f * Time.deltaTime;
             }
         }
         // 까마귀 울음소리리
@@ -650,6 +654,7 @@ public class CarController : MonoBehaviour
 
     public void ChaseCarStart()
     {
+        LetterBox.IsLetterBoxOut = true;
         carDrive.start();
         carRb.isKinematic = false;
         IsChaseEventStart = false;
@@ -669,7 +674,7 @@ public class CarController : MonoBehaviour
             carRb.isKinematic = false;
             AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
         }
-        this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 10f * Time.deltaTime);
+        this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 20f * Time.deltaTime);
         float distance = Vector3.Distance(transform.position, oakTree.position);
         if (distance < 5f && !IsFinalCreature)
         {
