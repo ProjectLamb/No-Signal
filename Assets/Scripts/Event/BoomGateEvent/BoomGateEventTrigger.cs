@@ -7,9 +7,11 @@ public class BoomGateEventTrigger : MonoBehaviour
 {
     public PlayableDirector PlayableDirector;
     public EventMove EventMove;
+    public GameObject target;
     public static bool isBoomEvent = false;
     private Transform carCamTr;
 
+  
     void Start()
     {
         GameObject carObj = GameObject.Find("Car");
@@ -26,7 +28,7 @@ public class BoomGateEventTrigger : MonoBehaviour
 
             Rigidbody carRb = collider.gameObject.GetComponent<Rigidbody>();
             Transform carTr = collider.gameObject.GetComponent<Transform>();
-        Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;
+            Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;
                 if (carRb != null)
             {   
                StartCoroutine(HandleEventSequence(carRb, carTr, carCam));     
@@ -41,14 +43,22 @@ public class BoomGateEventTrigger : MonoBehaviour
        EventMove.MoveToTarget();
     }
     IEnumerator SmoothStop(Rigidbody carRb, Transform carTr, Camera carCam)
-    {
-        float duration = 2.0f;
+    {   
+        Collider carCollider = carRb.GetComponent<Collider>();
+        if (carCollider != null) carCollider.enabled = false; // 충돌 비활성화
+
+        float duration = 3.0f;
         float elapsed = 0f;
 
         Vector3 initialVelocity = carRb.velocity;
-        Quaternion initialCarRotation = carTr.transform.rotation;
+        Vector3 initialCarPosition = carTr.position;
+        Vector3 targetPosition = target.transform.position;
+        Quaternion initialCarRotation = carTr.rotation;
         Quaternion initialCamRotation = carCam.transform.rotation;
-        Quaternion targetRotation = Quaternion.Euler(8, 300, 2); 
+
+        Vector3 dirToGate = (targetPosition - carTr.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(dirToGate, Vector3.up);
+        //Quaternion.Euler(8, 300, 2); 
         CameraFollow.isEvent = true;
         isBoomEvent = true;
         // carRb.angularVelocity = Vector3.zero;
@@ -56,15 +66,16 @@ public class BoomGateEventTrigger : MonoBehaviour
 
         while (elapsed < duration){
             carRb.velocity = Vector3.Lerp(initialVelocity, Vector3.zero, elapsed / duration);
-            carTr.transform.rotation = Quaternion.Slerp(initialCarRotation, targetRotation, elapsed / duration);
+            carTr.rotation = Quaternion.Slerp(initialCarRotation, targetRotation, elapsed / duration);
             carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetRotation, elapsed / duration);
-
+            Vector3 nextPosXZ = Vector3.Lerp(initialCarPosition, targetPosition, elapsed / (duration * 3));
+            carTr.position = new Vector3(nextPosXZ.x, carTr.position.y, nextPosXZ.z);
             //속도 점차 줄여서 0으로
             elapsed += Time.deltaTime;
-            
             yield return null;
         }
-            // carRb.velocity = Vector3.zero;
+            if (carCollider != null) carCollider.enabled = true; // 충돌 복원
+
             PlayableDirector.gameObject.SetActive(true);
             PlayableDirector.Play();
             carRb.isKinematic = true;         
