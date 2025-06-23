@@ -256,7 +256,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Tutorial.IsTutorial) return;
+        if (GameManager.IsTutorialFirst && IsTutorial) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
