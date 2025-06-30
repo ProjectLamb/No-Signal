@@ -21,12 +21,12 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        //mainCamera.enabled = false;
+        FollowTarget();
     }
 
     void Update()
     {
-        FollowTarget();
+        if (GameManager.Instance.IsTutorial) return;
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
         {
             FollowTarget();

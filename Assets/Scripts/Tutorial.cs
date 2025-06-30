@@ -14,10 +14,9 @@ public class Tutorial : MonoBehaviour
     private int page = 0;
     private bool IsFade = false;
     private bool IsCanSkip = false;
-    public static bool IsTutorial = false;
     void Start()
     {
-        IsTutorial = true;
+        GameManager.Instance.IsTutorial = true;
         StartCoroutine(CoFadeIn(memo1));
         StartCoroutine(CoFadeIn(memo2));
         StartCoroutine("WaitSkip");
@@ -69,9 +68,9 @@ public class Tutorial : MonoBehaviour
         }
         fadeImage.gameObject.SetActive(false);
         if (page == 1) IsCanSkip = false;
-        if (page == 2) IsTutorial = false;
+        if (page == 2) GameManager.Instance.IsTutorial = false;
         IsFade = false;
-        GameManager.IsTutorialFirst = false;
+        GameManager.Instance.IsTutorialFirst = false;
     }
 
     IEnumerator WaitSkip()

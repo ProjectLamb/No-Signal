@@ -84,7 +84,6 @@ public class CarController : MonoBehaviour
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
-    private bool IsTutorial = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -132,8 +131,6 @@ public class CarController : MonoBehaviour
 
     void Start()
     {
-        IsTutorial = Tutorial.IsTutorial;
-        if (!GameManager.IsTutorialFirst) IsTutorial = false;
         rpm = 0;
         radioCh = 0;
         carDrive.getPitch(out pitch);
@@ -151,7 +148,8 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.IsTutorialFirst && IsTutorial) return;
+        if (GameManager.Instance.IsTutorial) return;
+        if (GameManager.Instance.IsTutorialFirst) return;
         if (IsEndingStart) RushToTree();
         if (IsGameOver)
         {
@@ -256,7 +254,8 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.IsTutorialFirst && IsTutorial) return;
+        if (GameManager.Instance.IsTutorial) return;
+        if (GameManager.Instance.IsTutorialFirst) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
@@ -366,9 +365,9 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
-
             letterBox.SetActive(true);
-            GameManager.IsTrafficClear = true;
+            GameManager.Instance.IsTrafficClear = true;
+            GameManager.Instance.IsDeerClear = true;
             cinemachineBrain.enabled = true;
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
@@ -385,7 +384,7 @@ public class CarController : MonoBehaviour
         }
         if (collision.gameObject.tag == "Deer")
         {
-            GameManager.IsDeerClear = true;
+            GameManager.Instance.IsDeerClear = true;
             originBody.SetActive(false);
             brokenBody.SetActive(true);
             StartCoroutine("WaitForDeer");

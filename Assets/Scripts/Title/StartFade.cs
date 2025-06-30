@@ -32,7 +32,7 @@ public class StartFade : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
         }
         startFadeImage.gameObject.SetActive(false);
-        tutorial.SetActive(GameManager.IsTutorialFirst);
+        tutorial.SetActive(GameManager.Instance.IsTutorialFirst);
     }
 
     IEnumerator WaitTime()

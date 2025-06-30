@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
                 instance = FindObjectOfType<GameManager>();
             }
@@ -23,10 +23,12 @@ public class GameManager : MonoBehaviour
     public Transform cargateSpawn;
     public Transform traffitSpawn;
     public Transform creatureSpawn;
-    public static bool IsDeerClear = false;
-    public static bool IsCargateClear = false;
-    public static bool IsTrafficClear = false;
-    public static bool IsTutorialFirst = true;
+    public GameObject deerEvent;
+    public bool IsDeerClear = false;
+    public bool IsCargateClear = false;
+    public bool IsTrafficClear = false;
+    public bool IsTutorial = true;
+    public bool IsTutorialFirst = true;
 
     void Awake()
     {
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        IsTutorial = true;
         CarController.IsGameOver = false;
         if (IsDeerClear)
         {
@@ -49,6 +52,14 @@ public class GameManager : MonoBehaviour
         {
             car.transform.position = creatureSpawn.position;
             car.transform.rotation = creatureSpawn.rotation;
+        }
+    }
+
+    void Update()
+    {
+        if (IsDeerClear)
+        {
+            deerEvent.SetActive(false);   
         }
     }
 }
