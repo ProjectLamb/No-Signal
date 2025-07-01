@@ -169,14 +169,16 @@ public class CarController : MonoBehaviour
         {
             TurnOffRadio();
             soundGauge.SetActive(false);
+
+            carRb.velocity = Vector3.Lerp(carRb.velocity, Vector3.zero, 1f * Time.deltaTime);
             foreach (var wheel in wheels)
             {
                 wheel.wheelCollider.brakeTorque = 1000 * brakeAcceleration * Time.deltaTime;
                 if (wheel.wheelCollider.motorTorque < 0)
                 {
                     wheel.wheelCollider.motorTorque = 0;
-                    carRb.velocity = Vector3.Lerp(carRb.velocity, Vector3.zero, 5f * Time.deltaTime);
-                    if (carRb.velocity.magnitude < 1.5f) carRb.velocity = new Vector3(0, 0, 0);
+                    // carRb.velocity = Vector3.Lerp(carRb.velocity, Vector3.zero, 5f * Time.deltaTime);
+                    // if (carRb.velocity.magnitude < 1.5f) carRb.velocity = new Vector3(0, 0, 0);
                 }
             }
             return;
@@ -365,10 +367,12 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
+            this.GetComponent<Animator>().enabled = false;
             letterBox.SetActive(true);
             GameManager.Instance.IsTrafficClear = true;
             GameManager.Instance.IsDeerClear = true;
             cinemachineBrain.enabled = true;
+
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
@@ -391,7 +395,7 @@ public class CarController : MonoBehaviour
             AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        if (collision.gameObject.tag == "Creature" && !IsChased)
+        if (collision.gameObject.tag == "Creature" && !IsRushTreeStart)
         {
             IsGameOver = true;
         }
@@ -636,12 +640,13 @@ public class CarController : MonoBehaviour
     public void ChaseCarBreak()
     {
         IsChaseEventStart = true;
+        GameManager.Instance.IsChaseEvent = true;
     }
     public void ChaseCarStop()
     {
         carDrive.stop(STOP_MODE.ALLOWFADEOUT);
         HeadLight.SetActive(false);
-        carRb.isKinematic = true;
+        //carRb.isKinematic = true;
     }
 
     public void CreatureReveal()
@@ -661,6 +666,7 @@ public class CarController : MonoBehaviour
     }
     public void WarnTextOn()
     {
+        this.GetComponent<Animator>().enabled = true;
         StartCoroutine("WarnTextEffect");
     }
 
