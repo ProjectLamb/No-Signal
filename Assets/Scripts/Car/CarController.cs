@@ -650,6 +650,7 @@ public class CarController : MonoBehaviour
 
     public void ChaseCarStart()
     {
+        cinemachineBrain.enabled = false;
         LetterBox.IsLetterBoxOut = true;
         carDrive.start();
         carRb.isKinematic = false;
