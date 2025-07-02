@@ -180,10 +180,9 @@ public class CarController : MonoBehaviour
                 if (wheel.wheelCollider.motorTorque < 0)
                 {
                     wheel.wheelCollider.motorTorque = 0;
-                    // carRb.velocity = Vector3.Lerp(carRb.velocity, Vector3.zero, 5f * Time.deltaTime);
-                    // if (carRb.velocity.magnitude < 1.5f) carRb.velocity = new Vector3(0, 0, 0);
                 }
             }
+            if (carRb.velocity.magnitude > 0.5f) EngineSound();
             return;
         }
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
@@ -207,12 +206,6 @@ public class CarController : MonoBehaviour
         }
 
         // 치트코드 모음
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            this.transform.position = crowCheat.position;
-            this.transform.rotation = crowCheat.rotation;
-        }
-
         if (Input.GetKeyDown(KeyCode.F2))
         {
             this.transform.position = boomgateCheat.position;
@@ -373,7 +366,6 @@ public class CarController : MonoBehaviour
             this.GetComponent<Animator>().enabled = false;
             letterBox.SetActive(true);
             GameManager.Instance.IsTrafficClear = true;
-            GameManager.Instance.IsDeerClear = true;
             cinemachineBrain.enabled = true;
 
             EventManager.Instance.SetEvent(1);
@@ -391,7 +383,6 @@ public class CarController : MonoBehaviour
         }
         if (collision.gameObject.tag == "Deer")
         {
-            GameManager.Instance.IsDeerClear = true;
             originBody.SetActive(false);
             brokenBody.SetActive(true);
             StartCoroutine("WaitForDeer");
@@ -421,6 +412,7 @@ public class CarController : MonoBehaviour
         deerBlack.gameObject.SetActive(true);
         yield return new WaitForSeconds(2f);
         deerBlack.gameObject.SetActive(false);
+        GameManager.Instance.IsDeerClear = true;
     }
 
     void ToggleHeadlights()
@@ -608,7 +600,7 @@ public class CarController : MonoBehaviour
                 // 초기화
             }
         }
-        if((int)radioPassedTime % 15 != 0) IsRadioTime = false;
+        if ((int)radioPassedTime % 15 != 0) IsRadioTime = false;
     }
 
     private void TurnOffRadio()
