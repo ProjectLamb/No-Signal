@@ -107,7 +107,7 @@ public class CarController : MonoBehaviour
     private EventInstance carCrash2;
 
     void Awake()
-    {   
+    {
         carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
         carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
         carCol = AudioManager.instance.CreateInstance(FMODEvents.instance.carCol);
@@ -148,8 +148,12 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.IsTutorial) return;
-        if (GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsCargateEvent)
+        {
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+            return;
+        }
         if (IsEndingStart) RushToTree();
         if (IsGameOver)
         {
@@ -256,8 +260,8 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.Instance.IsTutorial) return;
-        if (GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsCargateEvent) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {

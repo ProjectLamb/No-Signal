@@ -28,7 +28,7 @@ public class CrowEvent : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent) return;
         if (CarController.IsChaseEventStart) return;
         if (IsStayCar) StayOnCar();
 
@@ -47,7 +47,7 @@ public class CrowEvent : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent) return;
         if (CarController.IsChaseEventStart) return;
         RandomEvent();
     }

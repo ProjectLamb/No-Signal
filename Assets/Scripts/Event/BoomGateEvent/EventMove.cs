@@ -31,14 +31,16 @@ public class EventMove : MonoBehaviour
         moveRoutine = StartCoroutine(MoveRoutine());
     }
 
-    public void PlayerActiveOff(){
+    public void PlayerActiveOff()
+    {
         CameraFollow.isEvent = false;
         BoomGateEventTrigger.isBoomEvent = false;
         this.gameObject.SetActive(false);
         CarRb.isKinematic = false;
         CarRb.velocity = Vector3.zero;
+        GameManager.Instance.IsCargateEvent = false;
         //BoomGateEventTrigger off
-   }
+    }
    void Awake()
     {  
         agent = GetComponent<NavMeshAgent>();

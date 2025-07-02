@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public GameObject deerEvent;
     public bool IsDeerClear = false;
     public bool IsCargateClear = false;
+    public bool IsCargateEvent = false;
     public bool IsTrafficClear = false;
     public bool IsTutorial = true;
     public bool IsTutorialFirst = true;
