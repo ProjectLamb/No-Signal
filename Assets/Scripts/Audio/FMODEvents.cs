@@ -59,7 +59,6 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference radio4 { get; private set; }
     [field: SerializeField] public EventReference radio5 { get; private set; }
     [field: SerializeField] public EventReference radio6 { get; private set; }
-    [field: SerializeField] public EventReference radio7 { get; private set; }
 
     [Header("Navi")]
     [field: SerializeField] public EventReference navi { get; private set; }

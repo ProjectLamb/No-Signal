@@ -81,6 +81,7 @@ public class CarController : MonoBehaviour
     private bool IsCreatureDct = false;
     private bool IsPrepareToDead = false;
     private bool IsRadioOn = false;
+    private bool IsRadioTime = false;
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
@@ -100,7 +101,6 @@ public class CarController : MonoBehaviour
     private EventInstance radio4;
     private EventInstance radio5;
     private EventInstance radio6;
-    private EventInstance radio7;
     private EventInstance chaseBackground;
     private EventInstance creatureAttach;
     private EventInstance carSliding;
@@ -125,7 +125,6 @@ public class CarController : MonoBehaviour
         radio4 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio4);
         radio5 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio5);
         radio6 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio6);
-        radio7 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio7);
 
     }
 
@@ -576,14 +575,14 @@ public class CarController : MonoBehaviour
     public void RandomRadio()
     {
         radioPassedTime += Time.deltaTime;
-
-        if ((int)radioPassedTime != 0 && (int)radioPassedTime % 10 == 0)
+        if ((int)radioPassedTime != 0 && (int)radioPassedTime % 15 == 0 && !IsRadioTime && !IsRadioOn)
         {
-            int ran = UnityEngine.Random.Range(0, 60);
+            IsRadioTime = true;
+            int ran = UnityEngine.Random.Range(0, 100);
             if (ran <= (int)radioPassedTime && !IsRadioOn)
             {
                 IsRadioOn = true;
-                radioCh = (int)UnityEngine.Random.Range(1, 8);
+                radioCh = (int)UnityEngine.Random.Range(1, 7);
                 switch (radioCh)
                 {
                     case 1:
@@ -604,12 +603,12 @@ public class CarController : MonoBehaviour
                     case 6:
                         radio6.start();
                         break;
-                    case 7:
-                        radio7.start();
-                        break;
                 }
+                radioPassedTime = 0f;
+                // 초기화
             }
         }
+        if((int)radioPassedTime % 15 != 0) IsRadioTime = false;
     }
 
     private void TurnOffRadio()
@@ -634,9 +633,6 @@ public class CarController : MonoBehaviour
                 break;
             case 6:
                 radio6.stop(STOP_MODE.IMMEDIATE);
-                break;
-            case 7:
-                radio7.stop(STOP_MODE.IMMEDIATE);
                 break;
         }
         IsRadioOn = false;
