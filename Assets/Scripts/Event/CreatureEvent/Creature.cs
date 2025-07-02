@@ -28,8 +28,8 @@ public class Creature : MonoBehaviour
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        creatureHowl = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureHowl);
-        creatureDeath = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureDeath);
+        creatureHowl = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureHowl);
+        creatureDeath = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureDeath);
 
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
@@ -37,8 +37,8 @@ public class Creature : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
-        stepEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+        stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
         IsReveal = true;
     }
 
@@ -47,7 +47,7 @@ public class Creature : MonoBehaviour
     {
         if (IsDie)
         {
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
         }
         if (CarController.IsGameOver)
             {

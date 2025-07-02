@@ -29,7 +29,7 @@ public class Tutorial : MonoBehaviour
             {
                 page++;
                 StartCoroutine(CoFadeOut(memo1));
-                AudioManager.instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
                 StartCoroutine("WaitSkip");
             }
 
@@ -37,7 +37,7 @@ public class Tutorial : MonoBehaviour
             {
                 page++;
                 StartCoroutine(CoFadeOut(memo2));
-                AudioManager.instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
             }
         }
     }

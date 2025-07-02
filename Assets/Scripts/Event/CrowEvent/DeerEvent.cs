@@ -18,7 +18,7 @@ public class DeerEvent : MonoBehaviour
     void Awake()
     {
         anim = GetComponent<Animator>();
-        deerFootsteps = AudioManager.instance.CreateInstance(FMODEvents.instance.deerFootsteps);
+        deerFootsteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.deerFootsteps);
     }
 
     void Update()

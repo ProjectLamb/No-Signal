@@ -108,23 +108,23 @@ public class CarController : MonoBehaviour
 
     void Awake()
     {
-        carDrive = AudioManager.instance.CreateInstance(FMODEvents.instance.carDrive);
-        carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
-        carCol = AudioManager.instance.CreateInstance(FMODEvents.instance.carCol);
-        deerCrying = AudioManager.instance.CreateInstance(FMODEvents.instance.deerCrying);
-        soundLoud = AudioManager.instance.CreateInstance(FMODEvents.instance.soundLoud);
-        creatureHowl = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureHowl);
-        chaseBackground = AudioManager.instance.CreateInstance(FMODEvents.instance.chaseBackground);
-        creatureAttach = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureAttach);
-        carSliding = AudioManager.instance.CreateInstance(FMODEvents.instance.carSliding);
-        carCrash2 = AudioManager.instance.CreateInstance(FMODEvents.instance.carCrash2);
+        carDrive = AudioManager.Instance.CreateInstance(FMODEvents.instance.carDrive);
+        carLight = AudioManager.Instance.CreateInstance(FMODEvents.instance.carLight);
+        carCol = AudioManager.Instance.CreateInstance(FMODEvents.instance.carCol);
+        deerCrying = AudioManager.Instance.CreateInstance(FMODEvents.instance.deerCrying);
+        soundLoud = AudioManager.Instance.CreateInstance(FMODEvents.instance.soundLoud);
+        creatureHowl = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureHowl);
+        chaseBackground = AudioManager.Instance.CreateInstance(FMODEvents.instance.chaseBackground);
+        creatureAttach = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureAttach);
+        carSliding = AudioManager.Instance.CreateInstance(FMODEvents.instance.carSliding);
+        carCrash2 = AudioManager.Instance.CreateInstance(FMODEvents.instance.carCrash2);
 
-        radio = AudioManager.instance.CreateInstance(FMODEvents.instance.radio);
-        radio2 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio2);
-        radio3 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio3);
-        radio4 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio4);
-        radio5 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio5);
-        radio6 = AudioManager.instance.CreateInstance(FMODEvents.instance.radio6);
+        radio = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio);
+        radio2 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio2);
+        radio3 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio3);
+        radio4 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio4);
+        radio5 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio5);
+        radio6 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio6);
 
     }
 
@@ -364,7 +364,7 @@ public class CarController : MonoBehaviour
         {
             DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.deerCrying, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.deerCrying, this.transform.position);
             soundFill.fillAmount += 0.05f;
         }
 
@@ -387,7 +387,7 @@ public class CarController : MonoBehaviour
         soundFill.fillAmount += 0.02f; // 사운드 소리 
         if (collision.gameObject.tag != "Road")
         {
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
         }
         if (collision.gameObject.tag == "Deer")
         {
@@ -395,7 +395,7 @@ public class CarController : MonoBehaviour
             originBody.SetActive(false);
             brokenBody.SetActive(true);
             StartCoroutine("WaitForDeer");
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
         if (collision.gameObject.tag == "Creature" && !IsRushTreeStart)
@@ -426,7 +426,7 @@ public class CarController : MonoBehaviour
     void ToggleHeadlights()
     {
         if (IsChaseEventStart) return;
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
         soundFill.fillAmount += 0.05f;
@@ -549,7 +549,7 @@ public class CarController : MonoBehaviour
             creatureDct.transform.position = creaturePos;
             creatureDct.transform.rotation = creatureLook;
             creatureDct.SetActive(true);
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         }
         if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
     }
@@ -677,14 +677,14 @@ public class CarController : MonoBehaviour
             Creature.IsEnding = true;
             IsRushTreeStart = true;
             carRb.isKinematic = false;
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
         }
         this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 20f * Time.deltaTime);
         float distance = Vector3.Distance(transform.position, oakTree.position);
         if (distance < 5f && !IsFinalCreature)
         {
             IsFinalCreature = true;
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.carSliding, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.carSliding, this.transform.position);
         }
     }
 

@@ -15,7 +15,7 @@ public class StartFade : MonoBehaviour
 
     void Awake()
     {
-        introNoise = AudioManager.instance.CreateInstance(FMODEvents.instance.introNoise);
+        introNoise = AudioManager.Instance.CreateInstance(FMODEvents.instance.introNoise);
     }
     void Start()
     {
@@ -38,7 +38,7 @@ public class StartFade : MonoBehaviour
     IEnumerator WaitTime()
     {
         yield return new WaitForSeconds(1.5f);
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.introNoise,this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.introNoise,this.transform.position);
         yield return new WaitForSeconds(2.5f);
         StartCoroutine("CoFadeOut");
     }

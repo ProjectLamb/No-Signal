@@ -15,7 +15,7 @@ public class FootStepsSound : MonoBehaviour
     {
         this.transform.position = target.transform.position + new Vector3(0, 100f, 0);
         StartCoroutine("WaveCoroutine");
-        emitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.playerFootSteps, this.gameObject);
+        emitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.playerFootSteps, this.gameObject);
         emitter.Play();
     }
 

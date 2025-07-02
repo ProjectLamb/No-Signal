@@ -10,7 +10,7 @@ public class Insect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        insectEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.insect, this.gameObject);
+        insectEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.insect, this.gameObject);
         insectEmitter.Play();
     }
 }

@@ -44,10 +44,10 @@ public class EventMove : MonoBehaviour
    void Awake()
     {  
         agent = GetComponent<NavMeshAgent>();
-        playerFootSteps = AudioManager.instance.CreateInstance(FMODEvents.instance.playerFootSteps);
-        boomGateBarSound = AudioManager.instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
-        carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
-        fuseOff = AudioManager.instance.CreateInstance(FMODEvents.instance.fuseOff);
+        playerFootSteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.playerFootSteps);
+        boomGateBarSound = AudioManager.Instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
+        carLight = AudioManager.Instance.CreateInstance(FMODEvents.instance.carLight);
+        fuseOff = AudioManager.Instance.CreateInstance(FMODEvents.instance.fuseOff);
     }
 
     private IEnumerator MoveRoutine()
@@ -160,12 +160,12 @@ public class EventMove : MonoBehaviour
     private IEnumerator BGEvent_Lighton()
     {   
         light.SetActive(true);
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         yield return null;
     }
     
     private IEnumerator BGEvent_Lightoff()
-    {   AudioManager.instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
+    {   AudioManager.Instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
         yield return new WaitForSecondsRealtime(0.5f);
         light.SetActive(false);
         yield return null;
@@ -192,7 +192,7 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator BGEvent_BoomGateOpen()
     {   
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.boomGateBarSound, target.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.boomGateBarSound, target.transform.position);
         Quaternion startRot = boomgatebar.transform.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, -90, 0);
         float elapsed = 0f;

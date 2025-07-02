@@ -25,7 +25,7 @@ public class DctCreature : MonoBehaviour
         {
             navMeshAgent.Warp(hit.position);
         }
-        stepEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
         stepEmitter.Play();
     }
 

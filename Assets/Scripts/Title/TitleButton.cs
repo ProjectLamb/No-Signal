@@ -12,7 +12,7 @@ public class TitleButton : MonoBehaviour
 
     void Awake()
     {
-        title = AudioManager.instance.CreateInstance(FMODEvents.instance.title);
+        title = AudioManager.Instance.CreateInstance(FMODEvents.instance.title);
     }
 
     void Start()
