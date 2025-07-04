@@ -472,28 +472,24 @@ public class CarController : MonoBehaviour
         if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
 
         //엔진 사운드 감지
-        if (IsEngineStart)
+        if (IsEngineStart && engineSoundFill < 0.1f)
         {
-            if (engineSoundFill < 0.1f)
-            {
-                soundFill.fillAmount += 0.01f * Time.deltaTime;
-                engineSoundFill += 0.01f * Time.deltaTime;
-            }
+            soundFill.fillAmount += 0.01f * Time.deltaTime;
+            engineSoundFill += 0.01f * Time.deltaTime;
         }
-        if (!IsEngineStart)
+        if (!IsEngineStart && engineSoundFill > 0f)
         {
-            if (engineSoundFill > 0f)
-            {
-                soundFill.fillAmount -= 0.02f * Time.deltaTime;
-                engineSoundFill -= 0.02f * Time.deltaTime;
-            }
+            soundFill.fillAmount -= 0.015f * Time.deltaTime;
+            engineSoundFill -= 0.015f * Time.deltaTime;
         }
+        if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
         // 까마귀 울음소리리
         if (IsCrowCaw)
         {
             IsCrowCaw = false;
             soundFill.fillAmount += 0.05f;
         }
+        if(!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.01f * Time.deltaTime;
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
         {
@@ -543,7 +539,7 @@ public class CarController : MonoBehaviour
             creatureDct.SetActive(true);
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         }
-        if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
+
     }
 
     IEnumerator SoundLoudWarn()
