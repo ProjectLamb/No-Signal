@@ -58,6 +58,7 @@ public class CarController : MonoBehaviour
     public GameObject originBody;
     public GameObject brokenBody;
     public GameObject letterBox;
+    public GameObject insectSound;
     public Image deerBlack;
     public Image soundFill;
     public Volume vhsVolume;
@@ -628,6 +629,7 @@ public class CarController : MonoBehaviour
     public void ChaseCarBreak()
     {
         IsChaseEventStart = true;
+        insectSound.SetActive(false);
         GameManager.Instance.IsChaseEvent = true;
     }
     public void ChaseCarStop()
