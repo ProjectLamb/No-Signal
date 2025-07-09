@@ -51,7 +51,7 @@ public class CarController : MonoBehaviour
     public List<Wheel> wheels;
     public GameObject steeringWheel;
     public GameObject HeadLight;
-    public GameObject gameOverPanel;
+    public GameObject GameOverPanel;
     public GameObject gameEndPanel;
     public GameObject soundGauge;
     public GameObject warnText;
@@ -59,6 +59,7 @@ public class CarController : MonoBehaviour
     public GameObject brokenBody;
     public GameObject letterBox;
     public GameObject insectSound;
+    public GameObject closedTree;
     public Image deerBlack;
     public Image soundFill;
     public Volume vhsVolume;
@@ -76,6 +77,8 @@ public class CarController : MonoBehaviour
     private float intensity = 0.001f;
     private float engineSoundFill = 0f;
     private float radioPassedTime = 0;
+    private float treeSearchRad = 10f;
+
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
@@ -86,15 +89,12 @@ public class CarController : MonoBehaviour
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
+    private bool IsWrongWay = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
 
     private EventInstance carDrive;
-    private EventInstance carLight;
-    private EventInstance carCol;
-    private EventInstance deerCrying;
-    private EventInstance creatureHowl;
     private EventInstance soundLoud;
     private EventInstance radio;
     private EventInstance radio2;
@@ -103,22 +103,12 @@ public class CarController : MonoBehaviour
     private EventInstance radio5;
     private EventInstance radio6;
     private EventInstance chaseBackground;
-    private EventInstance creatureAttach;
-    private EventInstance carSliding;
-    private EventInstance carCrash2;
 
     void Awake()
     {
         carDrive = AudioManager.Instance.CreateInstance(FMODEvents.instance.carDrive);
-        carLight = AudioManager.Instance.CreateInstance(FMODEvents.instance.carLight);
-        carCol = AudioManager.Instance.CreateInstance(FMODEvents.instance.carCol);
-        deerCrying = AudioManager.Instance.CreateInstance(FMODEvents.instance.deerCrying);
         soundLoud = AudioManager.Instance.CreateInstance(FMODEvents.instance.soundLoud);
-        creatureHowl = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureHowl);
         chaseBackground = AudioManager.Instance.CreateInstance(FMODEvents.instance.chaseBackground);
-        creatureAttach = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureAttach);
-        carSliding = AudioManager.Instance.CreateInstance(FMODEvents.instance.carSliding);
-        carCrash2 = AudioManager.Instance.CreateInstance(FMODEvents.instance.carCrash2);
 
         radio = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio);
         radio2 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio2);
@@ -126,7 +116,6 @@ public class CarController : MonoBehaviour
         radio4 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio4);
         radio5 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio5);
         radio6 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio6);
-
     }
 
     void Start()
@@ -148,6 +137,11 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (IsWrongWay)
+        {
+            this.transform.position = Vector3.MoveTowards(transform.position,closedTree.transform.position,10f * Time.deltaTime);
+            return;
+        }
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
         if (GameManager.Instance.IsCargateEvent)
         {
@@ -164,7 +158,7 @@ public class CarController : MonoBehaviour
                     vvs._weight.value += 0.02f;
                 }
                 else
-                    gameOverPanel.SetActive(true);
+                    GameOverPanel.SetActive(true);
             }
             return;
         }
@@ -373,6 +367,18 @@ public class CarController : MonoBehaviour
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
+        if (col.gameObject.name == "CreatureAttachTrigger")
+        {
+            creature.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            // 크리처 등장 (isCancreatureattach)
+            // 크리처 유리에 붙음
+            // 내비게이션 우회전 음성 재생
+        }
+        if (col.gameObject.name == "Lightway")
+        {
+            FindTree();
+            IsWrongWay = true;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -390,10 +396,10 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        if (collision.gameObject.tag == "Creature" && !IsRushTreeStart)
-        {
-            IsGameOver = true;
-        }
+        // if (collision.gameObject.tag == "Creature" && !IsRushTreeStart)
+        // {
+        //     IsGameOver = true;
+        // }
         if (collision.gameObject.tag == "Oak" && IsChased)
         {
             IsEndingStart = false;
@@ -490,7 +496,7 @@ public class CarController : MonoBehaviour
             IsCrowCaw = false;
             soundFill.fillAmount += 0.05f;
         }
-        if(!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.01f * Time.deltaTime;
+        if (!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.01f * Time.deltaTime;
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
         {
@@ -696,5 +702,32 @@ public class CarController : MonoBehaviour
         warnText.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         warnText.SetActive(false);
+    }
+
+    public void Die()
+    {
+        IsGameOver = true;
+    }
+
+    void FindTree()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, treeSearchRad);
+        float closestDistance = Mathf.Infinity;
+        GameObject nearest = null;
+
+        foreach (Collider hit in hitColliders)
+        {
+            if (hit.CompareTag("Tree"))
+            {
+                float distance = (hit.transform.position - transform.position).sqrMagnitude;
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    nearest = hit.gameObject;
+                }
+            }
+        }
+
+        closedTree = nearest;
     }
 }

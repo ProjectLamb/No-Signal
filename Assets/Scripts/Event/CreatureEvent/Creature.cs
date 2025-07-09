@@ -8,30 +8,26 @@ using FMODUnity;
 public class Creature : MonoBehaviour
 {
     private NavMeshAgent navMeshAgent;
-    private EventInstance creatureHowl;
-    private EventInstance creatureDeath;
     private StudioEventEmitter stepEmitter;
-    private Rigidbody rigid;
+    private Rigidbody rb;
     private Animator anim;
 
     public Transform targetTr;
-    public Transform targetForward;
     public Transform oakTree;
+    public Transform gameOverTr;
 
     public float rotSpeed = 3f;
     public static bool IsDie = false;
     private bool IsChase = false;
     private bool IsReveal = false;
-    public static  bool IsEnding = false;
-    //private bool 
-
+    public static bool IsEnding = false;
+    public static bool IsGameOver = false;
+    //private bool  
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        creatureHowl = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureHowl);
-        creatureDeath = AudioManager.Instance.CreateInstance(FMODEvents.instance.creatureDeath);
 
-        rigid = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
     // Start is called before the first frame update
@@ -49,18 +45,18 @@ public class Creature : MonoBehaviour
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
         }
-        if (CarController.IsGameOver)
-            {
-                navMeshAgent.enabled = false;
-                this.transform.position = targetForward.position;
-            }
-        if (!CarController.IsGameOver && IsChase)
+        if (IsGameOver)
+        {
+            navMeshAgent.enabled = false;
+        }
+        if (!IsGameOver && IsChase)
         {
             IsReveal = false;
             stepEmitter.Play();
             if (navMeshAgent.isOnNavMesh)
             {
                 navMeshAgent.destination = targetTr.position;
+                anim.SetBool("IsRun", true);
             }
             else
             {
@@ -73,12 +69,14 @@ public class Creature : MonoBehaviour
 
         if (IsReveal)
         {
+            anim.SetBool("IsRun", true);
             stepEmitter.Play();
-            Vector3 revealPos = new Vector3(targetTr.position.x - 50f, targetTr.position.y + 13f, targetTr.position.z + 5f);
-            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 50f * Time.deltaTime);
+            Vector3 revealPos = new Vector3(targetTr.position.x - 21f, targetTr.position.y - 1.7f, targetTr.position.z + 2f);
+            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 100f * Time.deltaTime);
 
             if (transform.position == revealPos)
             {
+                anim.SetBool("IsRun", false);
                 IsReveal = false;
                 stepEmitter.Stop();
             }
@@ -86,7 +84,9 @@ public class Creature : MonoBehaviour
 
         if (IsEnding)
         {
-            this.transform.position = targetForward.position;
+            IsEnding = false;
+            this.transform.position = gameOverTr.position;
+            anim.SetTrigger("DoAttack");
         }
     }
 
@@ -103,6 +103,7 @@ public class Creature : MonoBehaviour
     {
         StartCoroutine("WaitChase");
         IsChase = true;
+        anim.SetBool("IsRun", true);
     }
     public void RunIntoTree()
     {
@@ -119,14 +120,37 @@ public class Creature : MonoBehaviour
             IsChase = false;
         }
 
-        if (collision.gameObject.name == "Car")
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.name == "Car")
         {
-            anim.SetTrigger("DoAttack");
+            if (!IsGameOver)
+            {
+                IsGameOver = true;
+                EventManager.Instance.SetEvent(4);
+                EventManager.Instance.PlayEvent();
+                stepEmitter.Stop();
+            }
         }
     }
+
     IEnumerator WaitChase()
     {
         yield return new WaitForSeconds(2f);
         stepEmitter.Play();
+    }
+
+    public void JumpToCar()
+    {
+        LookTarget();
+        anim.SetTrigger("DoAttack");
+    }
+
+    public void SetRushPosition()
+    {
+        rb.isKinematic = false;
+        this.transform.position = new Vector3(targetTr.position.x - 4f, targetTr.position.y - 5f, targetTr.position.z - 32f);
     }
 }

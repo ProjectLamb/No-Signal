@@ -41,5 +41,10 @@ public class SavePoint : MonoBehaviour
         {
             deerEvent.SetActive(false);
         }
+
+        if (GameManager.Instance.IsTrafficClear)
+        {
+            deerEvent.SetActive(false);
+        }
     }
 }
