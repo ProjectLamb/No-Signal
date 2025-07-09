@@ -34,11 +34,15 @@ public class CrowEvent : MonoBehaviour
 
         if (IsEventStart)
         {
+            float ranDestX = Random.Range(30, 50);
+            float ranDestY = Random.Range(10, 20);
+            float ranDestZ = Random.Range(30, 50);
+
             // 여기가 까마귀 이벤트의 시작
             IsEventStart = false;
             crowDot.SetActive(true);
             anim.SetBool("flying", true);
-            this.transform.position = carLandSpot.position + new Vector3(50f, 30f, 50f);
+            this.transform.position = carLandSpot.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
             StartCoroutine("FollowTarget");
         }
 
@@ -130,9 +134,8 @@ public class CrowEvent : MonoBehaviour
         if (CarController.lightOffTime <= 3f) return;
         if (CarController.IsChaseEventStart) return;
         anim.SetBool("flying", true);
-        float ranDestX = Random.Range(30, 50);
-        float ranDestZ = Random.Range(30, 50);
-        finalDestination.position = this.transform.position + new Vector3(ranDestX, 20f, ranDestZ);
+
+        finalDestination.position = this.transform.position + new Vector3(-10f, 10f, -100f);
         IsStayCar = false;
         this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
         // 대상 방향으로 회전

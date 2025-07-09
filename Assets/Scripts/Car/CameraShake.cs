@@ -7,7 +7,7 @@ public class CameraShake : MonoBehaviour
 {
 
     public CinemachineVirtualCamera vcam;
-    public float intensity = 0.5f;
+    public float intensity = 0.1f;
     private CinemachineBasicMultiChannelPerlin camNoise;
 
     private bool IsShake = false;

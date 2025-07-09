@@ -139,7 +139,7 @@ public class CarController : MonoBehaviour
     {
         if (IsWrongWay)
         {
-            this.transform.position = Vector3.MoveTowards(transform.position,closedTree.transform.position,10f * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 10f * Time.deltaTime);
             return;
         }
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
@@ -348,6 +348,11 @@ public class CarController : MonoBehaviour
             Destroy(col.gameObject);
         }
 
+        if (col.gameObject.name == "BoomGateEventTrigger")
+        {
+            GameManager.Instance.IsCargateEvent = true;
+        }
+
         if (col.gameObject.tag == "DeerEvent")
         {
             DeerEvent.IsEventStart = true;
@@ -383,7 +388,9 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        soundFill.fillAmount += 0.02f; // 사운드 소리 
+        if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
+            soundFill.fillAmount += 0.02f; // 사운드 소리 
+            
         if (collision.gameObject.tag != "Road")
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
@@ -477,7 +484,6 @@ public class CarController : MonoBehaviour
     void SoundDetect()
     {
         if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
-
         //엔진 사운드 감지
         if (IsEngineStart && engineSoundFill < 0.1f)
         {
@@ -486,8 +492,8 @@ public class CarController : MonoBehaviour
         }
         if (!IsEngineStart && engineSoundFill > 0f)
         {
-            soundFill.fillAmount -= 0.015f * Time.deltaTime;
-            engineSoundFill -= 0.015f * Time.deltaTime;
+            soundFill.fillAmount -= 0.02f * Time.deltaTime;
+            engineSoundFill -= 0.02f * Time.deltaTime;
         }
         if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
         // 까마귀 울음소리리
@@ -496,7 +502,7 @@ public class CarController : MonoBehaviour
             IsCrowCaw = false;
             soundFill.fillAmount += 0.05f;
         }
-        if (!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.01f * Time.deltaTime;
+        if (!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.02f * Time.deltaTime;
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
         {
