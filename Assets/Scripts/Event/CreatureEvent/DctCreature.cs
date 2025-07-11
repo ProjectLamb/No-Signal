@@ -11,6 +11,7 @@ public class DctCreature : MonoBehaviour
     private Animator anim;
     public Transform targetTr;
     public Transform gameOverTr;
+    public Collider col;
     public float rotSpeed = 3f;
     private StudioEventEmitter stepEmitter;
     public static bool IsGameOver = false;
@@ -62,9 +63,8 @@ public class DctCreature : MonoBehaviour
     void LookTarget()
     {
         Quaternion creatureRot = Quaternion.LookRotation(targetTr.position - transform.position);
-        this.transform.rotation = creatureRot;
         creatureRot.eulerAngles = new Vector3(0, creatureRot.eulerAngles.y, 0);
-        //this.transform.rotation = Quaternion.Lerp(this.transform.rotation, creatureRot, Time.deltaTime * rotSpeed);
+        this.transform.rotation = creatureRot;
     }
 
     void OnTriggerEnter(Collider col)
@@ -90,6 +90,7 @@ public class DctCreature : MonoBehaviour
     public void SetRushPosition()
     {
         rb.isKinematic = false;
+        col.isTrigger = true;
         this.transform.position = new Vector3(targetTr.position.x - 4f, targetTr.position.y - 5f, targetTr.position.z - 32f);
     }
 }
