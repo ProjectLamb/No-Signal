@@ -15,11 +15,14 @@ public class Creature : MonoBehaviour
     public Transform targetTr;
     public Transform oakTree;
     public Transform gameOverTr;
+    public Transform attachTr;
+    public Collider col;
 
     public float rotSpeed = 3f;
     public static bool IsDie = false;
     private bool IsChase = false;
     private bool IsReveal = false;
+    private bool IsAttachCar = false;
     public static bool IsEnding = false;
     public static bool IsGameOver = false;
     //private bool  
@@ -82,6 +85,8 @@ public class Creature : MonoBehaviour
             }
         }
 
+        if (IsAttachCar) this.transform.position = attachTr.position;
+
         if (IsEnding)
         {
             IsEnding = false;
@@ -93,10 +98,8 @@ public class Creature : MonoBehaviour
     void LookTarget()
     {
         Quaternion creatureRot = Quaternion.LookRotation(targetTr.position - transform.position);
-        this.transform.rotation = creatureRot;
-
         creatureRot.eulerAngles = new Vector3(0, creatureRot.eulerAngles.y, 0);
-        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, creatureRot, Time.deltaTime * rotSpeed);
+        this.transform.rotation = creatureRot;
     }
 
     public void ChaseStart()
@@ -118,6 +121,11 @@ public class Creature : MonoBehaviour
             anim.SetTrigger("DoDie");
             IsEnding = false;
             IsChase = false;
+        }
+
+        if (collision.gameObject.tag == "Car" && GameManager.Instance.IsJunctionEvent)
+        {
+            IsAttachCar = true;
         }
 
     }
@@ -151,6 +159,7 @@ public class Creature : MonoBehaviour
     public void SetRushPosition()
     {
         rb.isKinematic = false;
+        col.isTrigger = true;
         this.transform.position = new Vector3(targetTr.position.x - 4f, targetTr.position.y - 5f, targetTr.position.z - 32f);
     }
 }

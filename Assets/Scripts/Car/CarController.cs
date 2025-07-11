@@ -375,6 +375,7 @@ public class CarController : MonoBehaviour
         if (col.gameObject.name == "CreatureAttachTrigger")
         {
             creature.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            GameManager.Instance.IsJunctionEvent = true;
             // 크리처 등장 (isCancreatureattach)
             // 크리처 유리에 붙음
             // 내비게이션 우회전 음성 재생
