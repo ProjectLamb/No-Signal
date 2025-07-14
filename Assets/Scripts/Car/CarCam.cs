@@ -23,8 +23,9 @@ public class CarCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
-        
-        CarLook();
+        if (!BoomGateEventTrigger.isBoomEvent){
+            CarLook();
+        }
     }
 
     void CarLook()

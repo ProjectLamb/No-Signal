@@ -26,7 +26,6 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
-        FollowTarget();
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
         {
             FollowTarget();
