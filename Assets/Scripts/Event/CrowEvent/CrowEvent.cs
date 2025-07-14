@@ -29,6 +29,7 @@ public class CrowEvent : MonoBehaviour
     void FixedUpdate()
     {
         if (CarController.IsChaseEventStart) return;
+        if (BoomGateEventTrigger.isBoomEvent) return;
         if (IsStayCar) StayOnCar();
 
         if (IsEventStart)

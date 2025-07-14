@@ -235,7 +235,7 @@ public class CarController : MonoBehaviour
         }
 
         // 헤드라이트 키
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && !BoomGateEventTrigger.isBoomEvent)
         {
             ToggleHeadlights();
         }

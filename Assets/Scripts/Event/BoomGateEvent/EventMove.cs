@@ -23,29 +23,28 @@ public class EventMove : MonoBehaviour
 
     public List<EventDot> BGEventWave;
     public void MoveToTarget()
-    {
-        this.gameObject.SetActive(true);
-        if (moveRoutine != null)
-            StopCoroutine(moveRoutine);
-
-        moveRoutine = StartCoroutine(MoveRoutine());
+    {   
+        if (this.gameObject != null)
+        {
+            this.gameObject.SetActive(true);
+            if (moveRoutine != null) StopCoroutine(moveRoutine);
+            moveRoutine = StartCoroutine(MoveRoutine());
+        }
+        else 
+        {
+            CameraFollow.isEvent = false;
+            BoomGateEventTrigger.isBoomEvent = false;
+            CarRb.isKinematic = false;
+            CarRb.velocity = Vector3.zero;
+            // 차단바 이벤트 진입시 player가 null인 에러가 떠도 차 움직이게 하는 예외처리
+        }
     }
 
-    public void PlayerActiveOff(){
-        CameraFollow.isEvent = false;
-        BoomGateEventTrigger.isBoomEvent = false;
-        this.gameObject.SetActive(false);
-        CarRb.isKinematic = false;
-        CarRb.velocity = Vector3.zero;
-        //BoomGateEventTrigger off
-   }
    void Awake()
     {  
         agent = GetComponent<NavMeshAgent>();
         playerFootSteps = AudioManager.instance.CreateInstance(FMODEvents.instance.playerFootSteps);
         boomGateBarSound = AudioManager.instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
-        carLight = AudioManager.instance.CreateInstance(FMODEvents.instance.carLight);
-        fuseOff = AudioManager.instance.CreateInstance(FMODEvents.instance.fuseOff);
     }
 
     private IEnumerator MoveRoutine()
@@ -60,7 +59,8 @@ public class EventMove : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
         
 
-        // 1. 이동 및 헤드라이트 off
+        // 1. 이동 및 헤드라이트 on
+        yield return StartCoroutine(BGEvent_Lighton()); //이벤트 진입 시 헤드라이트 on
         animator.SetInteger("Movement", 0);
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
@@ -70,7 +70,6 @@ public class EventMove : MonoBehaviour
             yield return null;
         }
         agent.isStopped = true;
-        yield return StartCoroutine(BGEvent_Lighton()); //이벤트 진입 시 헤드라이트 on
         // yield return StartCoroutine(BGEvent_Lighton());
         // yield return StartCoroutine(BGEvent_Move(destination)); // 차단바까지 이동
         if (playerFootSteps.isValid())
@@ -87,7 +86,7 @@ public class EventMove : MonoBehaviour
         // 3. 회전 및 헤드라이트 점등
         
         yield return StartCoroutine(BGEvent_Lightblink(3));
-        yield return new WaitForSecondsRealtime(2.0f);
+        yield return new WaitForSecondsRealtime(1.0f);
         animator.SetInteger("Movement", 2);
         yield return StartCoroutine(BGEvent_Rotate());
         yield return StartCoroutine(BGEvent_WaveInactive());
@@ -107,23 +106,38 @@ public class EventMove : MonoBehaviour
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
         yield return StartCoroutine(BGEvent_Return(startPos));
-        yield return new WaitForSecondsRealtime(1.0f);
         if (playerFootSteps.isValid())
         {
-            playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         }
-        playerFootSteps.release();
+        yield return StartCoroutine(PlayerActiveOff());
+        yield return new WaitForSecondsRealtime(1.0f);
+        
+        // playerFootSteps.release();
     }   
 
-    private IEnumerator BGEvent_Move(Vector3 destination){
-        while (Vector3.Distance(transform.position, destination) > 0.45f)
-        {
-            Vector3 dir = (destination - transform.position).normalized;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
-            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
-            yield return null;
-        }
-        }
+   
+
+    private IEnumerator PlayerActiveOff(){
+        CameraFollow.isEvent = false;
+        BoomGateEventTrigger.isBoomEvent = false;
+        this.gameObject.SetActive(false);
+        CarRb.isKinematic = false;
+        CarRb.velocity = Vector3.zero;
+        //BoomGateEventTrigger off
+        yield return null;
+    }
+
+    // private IEnumerator BGEvent_Move(Vector3 destination){
+    //     while (Vector3.Distance(transform.position, destination) > 0.45f)
+    //     {
+    //         Vector3 dir = (destination - transform.position).normalized;
+    //         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5f);
+    //         transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+    //         yield return null;
+    //     }
+    //     }
+
     private IEnumerator BGEvent_Rotate(){
         Quaternion startRot = transform.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, 180, 0);
@@ -163,8 +177,7 @@ public class EventMove : MonoBehaviour
     }
     
     private IEnumerator BGEvent_Lightoff()
-    {   AudioManager.instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
-        yield return new WaitForSecondsRealtime(0.5f);
+    {   
         light.SetActive(false);
         yield return null;
 
@@ -172,6 +185,7 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator BGEvent_Lightblink(int num)
     {   
+        AudioManager.instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
         int i = 0;
 
         while (i < num)
