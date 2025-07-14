@@ -64,6 +64,7 @@ public class FMODEvents : MonoBehaviour
     [Header("Navi")]
     [field: SerializeField] public EventReference navi { get; private set; }
     [field: SerializeField] public EventReference chaseNavi { get; private set; }
+    [field: SerializeField] public EventReference goLeft { get; private set; }
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }

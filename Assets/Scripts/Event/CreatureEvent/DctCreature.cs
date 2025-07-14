@@ -31,6 +31,7 @@ public class DctCreature : MonoBehaviour
         if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
         {
             navMeshAgent.Warp(hit.position);
+            navMeshAgent.destination = targetTr.position;
         }
         anim.SetBool("IsRun", true);
         stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
@@ -43,6 +44,7 @@ public class DctCreature : MonoBehaviour
         if (IsGameOver)
         {
             navMeshAgent.enabled = false;
+            return;
         }
         else
         {
@@ -59,6 +61,7 @@ public class DctCreature : MonoBehaviour
             LookTarget();
         }
     }
+
 
     void LookTarget()
     {
@@ -83,6 +86,7 @@ public class DctCreature : MonoBehaviour
 
     public void JumpToCar()
     {
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
         LookTarget();
         anim.SetTrigger("DoAttack");
     }

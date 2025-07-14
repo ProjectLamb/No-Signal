@@ -29,7 +29,6 @@ public class Creature : MonoBehaviour
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
@@ -39,6 +38,8 @@ public class Creature : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
         IsReveal = true;
+        stepEmitter.Play();
+        anim.SetBool("IsRun", true);
     }
 
     // Update is called once per frame
@@ -73,26 +74,17 @@ public class Creature : MonoBehaviour
         if (IsReveal)
         {
             anim.SetBool("IsRun", true);
-            stepEmitter.Play();
             Vector3 revealPos = new Vector3(targetTr.position.x - 21f, targetTr.position.y - 1.7f, targetTr.position.z + 2f);
-            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 100f * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 50f * Time.deltaTime);
 
             if (transform.position == revealPos)
             {
                 anim.SetBool("IsRun", false);
                 IsReveal = false;
-                stepEmitter.Stop();
             }
         }
 
         if (IsAttachCar) this.transform.position = attachTr.position;
-
-        if (IsEnding)
-        {
-            IsEnding = false;
-            this.transform.position = gameOverTr.position;
-            anim.SetTrigger("DoAttack");
-        }
     }
 
     void LookTarget()
@@ -107,10 +99,7 @@ public class Creature : MonoBehaviour
         StartCoroutine("WaitChase");
         IsChase = true;
         anim.SetBool("IsRun", true);
-    }
-    public void RunIntoTree()
-    {
-        IsEnding = true;
+        stepEmitter.Play();
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -119,7 +108,6 @@ public class Creature : MonoBehaviour
         {
             stepEmitter.Stop();
             anim.SetTrigger("DoDie");
-            IsEnding = false;
             IsChase = false;
         }
 
@@ -147,11 +135,12 @@ public class Creature : MonoBehaviour
     IEnumerator WaitChase()
     {
         yield return new WaitForSeconds(2f);
-        stepEmitter.Play();
+        stepEmitter.Stop();
     }
 
     public void JumpToCar()
     {
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
         LookTarget();
         anim.SetTrigger("DoAttack");
     }

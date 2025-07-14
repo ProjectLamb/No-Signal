@@ -45,6 +45,7 @@ public class CarController : MonoBehaviour
     public Transform deerCheat;
     public Transform trafficLightcrowCheat;
     public Transform creatureCheat;
+    public Transform junctionCheat;
     public Transform oakTree;
     public GameObject creature;
     public GameObject creatureDct;
@@ -83,13 +84,14 @@ public class CarController : MonoBehaviour
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
-    private bool IsPrepareToDead = false;
+    private bool IsDctDie = false;
     private bool IsRadioOn = false;
     private bool IsRadioTime = false;
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
     private bool IsWrongWay = false;
+    private bool IsDeathScene = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -142,7 +144,7 @@ public class CarController : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 10f * Time.deltaTime);
             return;
         }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst || IsDeathScene) return;
         if (GameManager.Instance.IsCargateEvent)
         {
             carDrive.stop(STOP_MODE.ALLOWFADEOUT);
@@ -225,6 +227,12 @@ public class CarController : MonoBehaviour
             this.transform.rotation = creatureCheat.rotation;
         }
 
+        if (Input.GetKeyDown(KeyCode.F6))
+        {
+            this.transform.position = junctionCheat.position;
+            //this.transform.rotation = junctionCheat.rotation;
+        }
+
         // 헤드라이트 키
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -247,7 +255,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst || IsDeathScene) return;
         if (GameManager.Instance.IsCargateEvent) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
@@ -363,6 +371,10 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.tag == "CreatureEvent")
         {
+            soundFill.fillAmount = 0f;
+            IsSoundWarning = false;
+            vvs._weight.value = 0.3f;
+
             this.GetComponent<Animator>().enabled = false;
             letterBox.SetActive(true);
             GameManager.Instance.IsTrafficClear = true;
@@ -372,15 +384,20 @@ public class CarController : MonoBehaviour
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
-        if (col.gameObject.name == "CreatureAttachTrigger")
+        if (col.gameObject.name == "JunctionTrigger")
         {
-            creature.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            float ranDestX = UnityEngine.Random.Range(30, 50);
+            float ranDestY = UnityEngine.Random.Range(10, 20);
+            float ranDestZ = UnityEngine.Random.Range(30, 50);
+
+            creature.transform.position = this.transform.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
             GameManager.Instance.IsJunctionEvent = true;
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
             // 크리처 등장 (isCancreatureattach)
             // 크리처 유리에 붙음
             // 내비게이션 우회전 음성 재생
         }
-        if (col.gameObject.name == "Lightway")
+        if (col.gameObject.name == "LeftWay")
         {
             FindTree();
             IsWrongWay = true;
@@ -391,7 +408,7 @@ public class CarController : MonoBehaviour
     {
         if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
             soundFill.fillAmount += 0.02f; // 사운드 소리 
-            
+
         if (collision.gameObject.tag != "Road")
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
@@ -404,16 +421,23 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        // if (collision.gameObject.tag == "Creature" && !IsRushTreeStart)
-        // {
-        //     IsGameOver = true;
-        // }
+        if (collision.gameObject.tag == "Creatrue")
+        {
+            TurnOffRadio();
+            IsDeathScene = true;
+            carRb.isKinematic = true;
+            carDrive.stop(STOP_MODE.IMMEDIATE);
+        }
         if (collision.gameObject.tag == "Oak" && IsChased)
         {
             IsEndingStart = false;
             chaseBackground.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(2);
             EventManager.Instance.PlayEvent();
+        }
+        if (collision.gameObject.tag == "Tree" && IsWrongWay)
+        {
+            IsGameOver = true;
         }
     }
 
@@ -484,7 +508,7 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
-        if (IsPrepareToDead) return; // 게이지를 100을 이미 채웠다면
+        if (IsDctDie) return; // 게이지를 100을 이미 채웠다면
         //엔진 사운드 감지
         if (IsEngineStart && engineSoundFill < 0.1f)
         {
@@ -540,7 +564,7 @@ public class CarController : MonoBehaviour
         if (soundFill.fillAmount > 0.99f && !IsCreatureDct)
         {
             IsCreatureDct = true;
-            IsPrepareToDead = true;
+            IsDctDie = true;
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
 
             float creatureRanX = UnityEngine.Random.Range(30, 50);

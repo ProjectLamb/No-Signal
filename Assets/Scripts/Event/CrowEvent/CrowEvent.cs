@@ -15,7 +15,7 @@ public class CrowEvent : MonoBehaviour
     public static bool IsEventStart = false;
     private bool IsStayCar = false;
     private bool IsFlyAway = false;
-    private bool RanEvent = false;
+    private bool IsRanEvent = false;
     private bool IsPsvCheck = false;
 
 
@@ -66,9 +66,9 @@ public class CrowEvent : MonoBehaviour
             IsPsvCheck = true;
             EventPsv = (int)passedTime;
             int ran = Random.Range(0, 100);
-            if (ran <= EventPsv && !RanEvent)
+            if (ran <= EventPsv && !IsRanEvent)
             {
-                RanEvent = true;
+                IsRanEvent = true;
                 passedTime = 0f;
                 IsEventStart = true;
             }
@@ -132,7 +132,7 @@ public class CrowEvent : MonoBehaviour
     private void FlyToTheDest()
     {
         if (CarController.lightOffTime <= 3f) return;
-        if (CarController.IsChaseEventStart) return;
+        if (CarController.IsChaseEventStart && IsRanEvent) return;
         anim.SetBool("flying", true);
 
         finalDestination.position = this.transform.position + new Vector3(-10f, 10f, -100f);
