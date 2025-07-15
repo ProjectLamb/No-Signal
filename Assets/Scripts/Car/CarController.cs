@@ -563,6 +563,7 @@ public class CarController : MonoBehaviour
         {
             IsCreatureDct = true;
             IsDctDie = true;
+            GameManager.Instance.IsDeathEvent = true;
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
 
             float creatureRanX = UnityEngine.Random.Range(10, 30);

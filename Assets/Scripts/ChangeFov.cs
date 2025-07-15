@@ -6,26 +6,14 @@ using Cinemachine;
 public class ChangeFov : MonoBehaviour
 {
 
-    private CinemachineVirtualCamera vCam;
+    public CinemachineVirtualCamera vCam1;
+    public CinemachineVirtualCamera vCam2;
     public Camera cam;
-
-    public void Awake()
-    {
-        vCam = GetComponent<CinemachineVirtualCamera>();
-    }
 
     public void Start()
     {
-        if (this.gameObject.name == "DeathCam")
-        {
-            ChangeFOV();
-            cam.fieldOfView = 30f;
-        }
-        else
-        {
-            vCam.m_Lens.FieldOfView = 30f;
-            cam.fieldOfView = 30f;
-        }
+        vCam2.m_Lens.FieldOfView = 30f;
+        cam.fieldOfView = 30f;
     }
     public void ChangeFOV()
     {
@@ -34,9 +22,9 @@ public class ChangeFov : MonoBehaviour
 
     IEnumerator FOVDown()
     {
-        if (vCam.m_Lens.FieldOfView > 30f)
+        if (vCam1.m_Lens.FieldOfView > 30f)
         {
-            vCam.m_Lens.FieldOfView -= 0.1f;
+            vCam1.m_Lens.FieldOfView -= 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
     }

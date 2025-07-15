@@ -56,7 +56,6 @@ public class Creature : MonoBehaviour
         if (!IsGameOver && IsChase)
         {
             IsReveal = false;
-            stepEmitter.Play();
             if (navMeshAgent.isOnNavMesh)
             {
                 navMeshAgent.destination = targetTr.position;
@@ -84,7 +83,10 @@ public class Creature : MonoBehaviour
             }
         }
 
-        if (IsAttachCar) this.transform.position = attachTr.position;
+        if (IsAttachCar)
+        {
+            this.transform.position = attachTr.position;
+        }
     }
 
     void LookTarget()
@@ -106,7 +108,7 @@ public class Creature : MonoBehaviour
     {
         if (collision.gameObject.tag == "Oak")
         {
-            stepEmitter.Stop();
+            //stepEmitter.Stop();
             anim.SetTrigger("DoDie");
             IsChase = false;
         }
@@ -114,6 +116,7 @@ public class Creature : MonoBehaviour
         if (collision.gameObject.tag == "Car" && GameManager.Instance.IsJunctionEvent)
         {
             IsAttachCar = true;
+            stepEmitter.Stop();
         }
 
     }

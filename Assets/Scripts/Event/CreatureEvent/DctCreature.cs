@@ -31,7 +31,6 @@ public class DctCreature : MonoBehaviour
         if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
         {
             navMeshAgent.Warp(hit.position);
-            navMeshAgent.SetDestination(targetTr.position);
         }
         anim.SetBool("IsRun", true);
         stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
