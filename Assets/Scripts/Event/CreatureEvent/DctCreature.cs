@@ -31,7 +31,7 @@ public class DctCreature : MonoBehaviour
         if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
         {
             navMeshAgent.Warp(hit.position);
-            navMeshAgent.destination = targetTr.position;
+            navMeshAgent.SetDestination(targetTr.position);
         }
         anim.SetBool("IsRun", true);
         stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
@@ -50,7 +50,7 @@ public class DctCreature : MonoBehaviour
         {
             if (navMeshAgent.isOnNavMesh)
             {
-                navMeshAgent.destination = targetTr.position;
+                navMeshAgent.SetDestination(targetTr.position);
             }
             else
             {
@@ -77,6 +77,7 @@ public class DctCreature : MonoBehaviour
             if (!IsGameOver)
             {
                 IsGameOver = true;
+                GameManager.Instance.IsDeathEvent = true;
                 EventManager.Instance.SetEvent(3);
                 EventManager.Instance.PlayEvent();
                 stepEmitter.Stop();

@@ -13,16 +13,9 @@ public class CameraFollow : MonoBehaviour
     public float maxYawAngle = 20f;
 
     private float currentYaw = 0f;
-    private bool IsGameOver = false;
 
     public static bool isEvent = false; // 이벤트 제어용 변수 추가
     public static Quaternion fixedRotation = Quaternion.identity;
-    Camera carCam;
-
-    void Awake()
-    {
-        carCam = GetComponent<Camera>();
-    }
 
     void Start()
     {
@@ -31,10 +24,6 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
-        if (IsGameOver)
-        {
-            carCam.fieldOfView = 30f;
-        }
         if (GameManager.Instance.IsTutorial) return;
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
         {
@@ -62,20 +51,5 @@ public class CameraFollow : MonoBehaviour
         Quaternion yawRot = Quaternion.Euler(0f, currentYaw, 0f);
 
         transform.rotation = baseRot * yawRot;
-    }
-
-    public void ChangeFOV()
-    {
-        StartCoroutine("FOVDown");
-    }
-
-    IEnumerator FOVDown()
-    {
-        if (carCam.fieldOfView > 30f)
-        {
-            carCam.fieldOfView -= 0.1f;
-            yield return new WaitForSeconds(0.1f);
-        }
-        IsGameOver = true;
     }
 }

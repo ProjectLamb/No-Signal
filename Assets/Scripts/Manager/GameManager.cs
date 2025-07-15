@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public bool IsTutorialFirst = true;
     public bool IsChaseEvent = false;
     public bool IsJunctionEvent = false;
+    public bool IsDeathEvent = false;
 
     void Awake()
     {

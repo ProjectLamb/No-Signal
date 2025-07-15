@@ -91,7 +91,6 @@ public class CarController : MonoBehaviour
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
     private bool IsWrongWay = false;
-    private bool IsDeathScene = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -144,7 +143,7 @@ public class CarController : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 10f * Time.deltaTime);
             return;
         }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst || IsDeathScene) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
         if (GameManager.Instance.IsCargateEvent)
         {
             carDrive.stop(STOP_MODE.ALLOWFADEOUT);
@@ -255,7 +254,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst || IsDeathScene) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
         if (GameManager.Instance.IsCargateEvent) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
@@ -421,10 +420,9 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        if (collision.gameObject.tag == "Creatrue")
+        if (collision.gameObject.tag == "Creature")
         {
             TurnOffRadio();
-            IsDeathScene = true;
             carRb.isKinematic = true;
             carDrive.stop(STOP_MODE.IMMEDIATE);
         }
@@ -567,8 +565,8 @@ public class CarController : MonoBehaviour
             IsDctDie = true;
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
 
-            float creatureRanX = UnityEngine.Random.Range(30, 50);
-            float creatureRanZ = UnityEngine.Random.Range(30, 50);
+            float creatureRanX = UnityEngine.Random.Range(10, 30);
+            float creatureRanZ = UnityEngine.Random.Range(10, 30);
             Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z + creatureRanZ);
             Vector3 creatureRot = this.transform.position - creaturePos;
             Quaternion creatureLook = Quaternion.LookRotation(creatureRot);

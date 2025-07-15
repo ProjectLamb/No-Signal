@@ -75,7 +75,7 @@ public class Creature : MonoBehaviour
         {
             anim.SetBool("IsRun", true);
             Vector3 revealPos = new Vector3(targetTr.position.x - 21f, targetTr.position.y - 1.7f, targetTr.position.z + 2f);
-            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 50f * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 20f * Time.deltaTime);
 
             if (transform.position == revealPos)
             {
