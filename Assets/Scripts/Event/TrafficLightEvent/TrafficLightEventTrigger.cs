@@ -9,8 +9,9 @@ public class TrafficLightEventTrigger : MonoBehaviour
     public List<Light> light;
     public static bool isTLEvent = false;
     public GameObject obstacle;
-    // public GameObject obstacle_2;
+    public GameObject EventDot;
     private Coroutine eventStart;
+    
 
     void OnTriggerEnter(Collider collider)
     {   
@@ -28,8 +29,12 @@ public class TrafficLightEventTrigger : MonoBehaviour
         
         yield return StartCoroutine(TLEvent_LightOn(0)); // Red
         yield return StartCoroutine(TLEvent_LightOff(1)); // Green
-        
+        yield return StartCoroutine(TLEvent_EventDotActiveOn());
+
         yield return StartCoroutine(TLEvent_ObstacleActiveOn());
+        yield return StartCoroutine(TLEvent_LightOn(1)); // Red
+        yield return StartCoroutine(TLEvent_LightOff(0)); // Green
+        yield return StartCoroutine(TLEvent_EventDotActiveOff());
     }
 
     
@@ -48,34 +53,20 @@ public class TrafficLightEventTrigger : MonoBehaviour
         }
     }
 
-    private IEnumerator TLEvent_ObstacleActiveOn(){
-        // float duration = 5.0f;
-        // float elapsed = 0f;
-        // float speed = 1f;
-        obstacle.SetActive(true);
-        yield return new WaitForSecondsRealtime(5.0f);
-        // obstacle_2.SetActive(true);
-        // {   
-        //     if(obstacle.activeSelf != false)
-        //     {
-        //         while (elapsed <= duration)
-        //     {   
-        //         Debug.Log(elapsed);
-        //         elapsed += Time.deltaTime;
-        //         obstacle.transform.position = Vector3.MoveTowards(obstacle.transform.position, obstacle.transform.position + new Vector3(-4.27f,0,2),speed * Time.deltaTime);
-        //     }
-        //     }
-        
-        // }
+    private IEnumerator TLEvent_EventDotActiveOn(){
+        EventDot.SetActive(true);
+        yield return null;
     }
-    
-    // void ObstacleMove(){
-    //      if(obstacle_1.activeSelf != false){
-    //     obstacle_1.transform.Translate(Vector3.right * Time.deltaTime/2);
-    //     }
-    // }
-    // void Update(){
-    //     ObstacleMove();
-    // }
+
+    private IEnumerator TLEvent_ObstacleActiveOn(){
+        obstacle.SetActive(true);
+        yield return new WaitForSecondsRealtime(10.0f);
+        obstacle.SetActive(false);
+    }
+
+    private IEnumerator TLEvent_EventDotActiveOff(){
+        Destroy(EventDot);
+        yield return null;
+    }
 }
 
