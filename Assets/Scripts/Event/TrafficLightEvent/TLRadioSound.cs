@@ -11,13 +11,13 @@ public class TLRadioSound : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        radio_TL = AudioManager.instance.CreateInstance(FMODEvents.instance.radio_TL);
+        radio_TL = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio_TL);
     }
 
     // Update is called once per frame
     void OnTriggerEnter(Collider collider){
         if(collider.gameObject == Car){
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.radio_TL, this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.radio_TL, this.transform.position);
 
         this.gameObject.SetActive(false);
     }

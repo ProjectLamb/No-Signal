@@ -15,7 +15,7 @@ public class EventDot : MonoBehaviour
     {
         this.transform.position = target.transform.position + new Vector3(0, 100f, 0);
         StartCoroutine("WaveCoroutine");
-        emitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.radar, this.gameObject);
+        emitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.radar, this.gameObject);
         emitter.Play();
     }
 

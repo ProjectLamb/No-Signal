@@ -8,14 +8,21 @@ using FMODUnity;
 public class DctCreature : MonoBehaviour
 {
     private NavMeshAgent navMeshAgent;
+    private Animator anim;
     public Transform targetTr;
-    public Transform targetForward;
+    public Transform gameOverTr;
+    public Collider col;
     public float rotSpeed = 3f;
     private StudioEventEmitter stepEmitter;
+    public static bool IsGameOver = false;
+
+    Rigidbody rb;
 
     void Awake()
     {
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
     }
     // Start is called before the first frame update
     void Start()
@@ -25,23 +32,24 @@ public class DctCreature : MonoBehaviour
         {
             navMeshAgent.Warp(hit.position);
         }
-        stepEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        anim.SetBool("IsRun", true);
+        stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
         stepEmitter.Play();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (CarController.IsGameOver)
+        if (IsGameOver)
         {
             navMeshAgent.enabled = false;
-            this.transform.position = targetForward.position;
+            return;
         }
         else
         {
             if (navMeshAgent.isOnNavMesh)
             {
-                navMeshAgent.destination = targetTr.position;
+                navMeshAgent.SetDestination(targetTr.position);
             }
             else
             {
@@ -49,24 +57,44 @@ public class DctCreature : MonoBehaviour
                 if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
                     navMeshAgent.Warp(hit.position);
             }
+            LookTarget();
         }
-        LookTarget();
     }
+
 
     void LookTarget()
     {
         Quaternion creatureRot = Quaternion.LookRotation(targetTr.position - transform.position);
-        this.transform.rotation = creatureRot;
-
         creatureRot.eulerAngles = new Vector3(0, creatureRot.eulerAngles.y, 0);
-        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, creatureRot, Time.deltaTime * rotSpeed);
+        this.transform.rotation = creatureRot;
     }
 
-    void OnCollsionEnter(Collision col)
+    void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Car")
+        if (col.gameObject.name == "Car")
         {
-            this.transform.position = targetForward.position;
+            if (!IsGameOver)
+            {
+                IsGameOver = true;
+                GameManager.Instance.IsDeathEvent = true;
+                EventManager.Instance.SetEvent(3);
+                EventManager.Instance.PlayEvent();
+                stepEmitter.Stop();
+            }
         }
+    }
+
+    public void JumpToCar()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
+        LookTarget();
+        anim.SetTrigger("DoAttack");
+    }
+
+    public void SetRushPosition()
+    {
+        rb.isKinematic = false;
+        col.isTrigger = true;
+        this.transform.position = new Vector3(targetTr.position.x - 4f, targetTr.position.y - 5f, targetTr.position.z - 32f);
     }
 }

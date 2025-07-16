@@ -9,17 +9,20 @@ public class Tutorial : MonoBehaviour
 {
     public Image memo1;
     public Image memo2;
+    public Image memo3;
+    public Image memo4;
 
     private EventInstance tutorialPage;
     private int page = 0;
     private bool IsFade = false;
     private bool IsCanSkip = false;
-    public static bool IsTutorial = false;
     void Start()
     {
-        IsTutorial = true;
+        GameManager.Instance.IsTutorial = true;
         StartCoroutine(CoFadeIn(memo1));
         StartCoroutine(CoFadeIn(memo2));
+        StartCoroutine(CoFadeIn(memo3));
+        StartCoroutine(CoFadeIn(memo4));
         StartCoroutine("WaitSkip");
     }
     void Update()
@@ -30,7 +33,7 @@ public class Tutorial : MonoBehaviour
             {
                 page++;
                 StartCoroutine(CoFadeOut(memo1));
-                AudioManager.instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
                 StartCoroutine("WaitSkip");
             }
 
@@ -38,7 +41,23 @@ public class Tutorial : MonoBehaviour
             {
                 page++;
                 StartCoroutine(CoFadeOut(memo2));
-                AudioManager.instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
+                StartCoroutine("WaitSkip");
+            }
+
+            else if (page == 2)
+            {
+                page++;
+                StartCoroutine(CoFadeOut(memo3));
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
+                StartCoroutine("WaitSkip");
+            }
+
+            else if (page == 3)
+            {
+                page++;
+                StartCoroutine(CoFadeOut(memo4));
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
             }
         }
     }
@@ -68,15 +87,15 @@ public class Tutorial : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         fadeImage.gameObject.SetActive(false);
-        if (page == 1) IsCanSkip = false;
-        if (page == 2) IsTutorial = false;
+        if (page < 3) IsCanSkip = false;
+        if (page == 3) GameManager.Instance.IsTutorial = false;
         IsFade = false;
-        GameManager.IsTutorialFirst = false;
+        GameManager.Instance.IsTutorialFirst = false;
     }
 
     IEnumerator WaitSkip()
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(2.0f);
         IsCanSkip = true;
     }
 }

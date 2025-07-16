@@ -8,38 +8,38 @@ using FMODUnity;
 public class Creature : MonoBehaviour
 {
     private NavMeshAgent navMeshAgent;
-    private EventInstance creatureHowl;
-    private EventInstance creatureDeath;
     private StudioEventEmitter stepEmitter;
-    private Rigidbody rigid;
+    private Rigidbody rb;
     private Animator anim;
 
     public Transform targetTr;
-    public Transform targetForward;
     public Transform oakTree;
+    public Transform gameOverTr;
+    public Transform attachTr;
+    public Collider col;
 
     public float rotSpeed = 3f;
     public static bool IsDie = false;
     private bool IsChase = false;
     private bool IsReveal = false;
-    public static  bool IsEnding = false;
-    //private bool 
-
+    private bool IsAttachCar = false;
+    private bool IsGameOver = false;
+    public static bool IsEnding = false;
+    //private bool  
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        creatureHowl = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureHowl);
-        creatureDeath = AudioManager.instance.CreateInstance(FMODEvents.instance.creatureDeath);
-
-        rigid = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
-        stepEmitter = AudioManager.instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+        stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
         IsReveal = true;
+        stepEmitter.Play();
+        anim.SetBool("IsRun", true);
     }
 
     // Update is called once per frame
@@ -47,20 +47,19 @@ public class Creature : MonoBehaviour
     {
         if (IsDie)
         {
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
         }
-        if (CarController.IsGameOver)
-            {
-                navMeshAgent.enabled = false;
-                this.transform.position = targetForward.position;
-            }
-        if (!CarController.IsGameOver && IsChase)
+        if (IsGameOver)
+        {
+            navMeshAgent.enabled = false;
+        }
+        if (!IsGameOver && IsChase && !IsAttachCar)
         {
             IsReveal = false;
-            stepEmitter.Play();
             if (navMeshAgent.isOnNavMesh)
             {
                 navMeshAgent.destination = targetTr.position;
+                anim.SetBool("IsRun", true);
             }
             else
             {
@@ -73,60 +72,87 @@ public class Creature : MonoBehaviour
 
         if (IsReveal)
         {
-            stepEmitter.Play();
-            Vector3 revealPos = new Vector3(targetTr.position.x - 50f, targetTr.position.y + 13f, targetTr.position.z + 5f);
-            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 50f * Time.deltaTime);
+            anim.SetBool("IsRun", true);
+            Vector3 revealPos = new Vector3(targetTr.position.x - 21f, targetTr.position.y - 1.7f, targetTr.position.z + 2f);
+            this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 20f * Time.deltaTime);
 
             if (transform.position == revealPos)
             {
+                anim.SetBool("IsRun", false);
                 IsReveal = false;
-                stepEmitter.Stop();
             }
         }
 
-        if (IsEnding)
+        if (IsAttachCar)
         {
-            this.transform.position = targetForward.position;
+            this.transform.position = attachTr.position;
         }
     }
 
     void LookTarget()
     {
         Quaternion creatureRot = Quaternion.LookRotation(targetTr.position - transform.position);
-        this.transform.rotation = creatureRot;
-
         creatureRot.eulerAngles = new Vector3(0, creatureRot.eulerAngles.y, 0);
-        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, creatureRot, Time.deltaTime * rotSpeed);
+        this.transform.rotation = creatureRot;
     }
 
     public void ChaseStart()
     {
         StartCoroutine("WaitChase");
         IsChase = true;
-    }
-    public void RunIntoTree()
-    {
-        IsEnding = true;
+        anim.SetBool("IsRun", true);
+        stepEmitter.Play();
     }
 
     public void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Oak")
         {
-            stepEmitter.Stop();
+            //stepEmitter.Stop();
             anim.SetTrigger("DoDie");
-            IsEnding = false;
             IsChase = false;
         }
 
-        if (collision.gameObject.name == "Car")
+        if (collision.gameObject.tag == "Car" && GameManager.Instance.IsJunctionEvent)
         {
-            anim.SetTrigger("DoAttack");
+            IsAttachCar = true;
+            stepEmitter.Stop();
+            anim.SetBool("IsRun", false);
+        }
+
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.name == "Car")
+        {
+            if (!IsGameOver && !GameManager.Instance.IsJunctionEvent)
+            {
+                IsGameOver = true;
+                EventManager.Instance.SetEvent(4);
+                EventManager.Instance.PlayEvent();
+                stepEmitter.Stop();
+            }
         }
     }
+
     IEnumerator WaitChase()
     {
         yield return new WaitForSeconds(2f);
-        stepEmitter.Play();
+        stepEmitter.Stop();
+    }
+
+    public void JumpToCar()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
+        LookTarget();
+        anim.SetTrigger("DoAttack");
+    }
+
+    public void SetRushPosition()
+    {
+        rb.isKinematic = false;
+        col.isTrigger = true;
+        this.transform.position = new Vector3(targetTr.position.x - 4f, targetTr.position.y - 5f, targetTr.position.z - 32f);
     }
 }

@@ -27,6 +27,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference creatureAttach { get; private set; }
     [field: SerializeField] public EventReference carSliding { get; private set; }
     [field: SerializeField] public EventReference carCrash2 { get; private set; }
+    [field: SerializeField] public EventReference carBoom { get; private set; }
 
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
@@ -59,11 +60,11 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference radio4 { get; private set; }
     [field: SerializeField] public EventReference radio5 { get; private set; }
     [field: SerializeField] public EventReference radio6 { get; private set; }
-    [field: SerializeField] public EventReference radio7 { get; private set; }
 
     [Header("Navi")]
     [field: SerializeField] public EventReference navi { get; private set; }
     [field: SerializeField] public EventReference chaseNavi { get; private set; }
+    [field: SerializeField] public EventReference goLeft { get; private set; }
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }

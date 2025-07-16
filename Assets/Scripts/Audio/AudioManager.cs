@@ -8,22 +8,32 @@ public class AudioManager : MonoBehaviour
 
     private List<EventInstance> eventInstances;
     private List<StudioEventEmitter> eventEmitters;
-    public static AudioManager instance { get; private set; }
-
-   private void Awake()
-{
-    if (instance != null && instance != this)
+    private static AudioManager instance;
+    public static AudioManager Instance
     {
-        Debug.LogError("More than one AudioManager exists");
-        Destroy(this.gameObject);
-        return;
+        get
+        {
+            if (instance == null)
+            {
+                Debug.LogError("No AudioManagerInstance");
+            }
+            return instance;
+        }
     }
 
-    instance = this;
-    DontDestroyOnLoad(gameObject);
-    eventInstances = new List<EventInstance>();
-    eventEmitters = new List<StudioEventEmitter>();
-}
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        eventInstances = new List<EventInstance>();
+        eventEmitters = new List<StudioEventEmitter>();
+    }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos)
     {
@@ -47,13 +57,13 @@ public class AudioManager : MonoBehaviour
 
     private void CleanUp()
     {
-        foreach(EventInstance eventInstance in eventInstances)
+        foreach (EventInstance eventInstance in eventInstances)
         {
             eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
             eventInstance.release();
         }
 
-        foreach(StudioEventEmitter emitter in eventEmitters)
+        foreach (StudioEventEmitter emitter in eventEmitters)
         {
             emitter.Stop();
         }

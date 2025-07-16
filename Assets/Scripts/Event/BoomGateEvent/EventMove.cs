@@ -172,7 +172,7 @@ public class EventMove : MonoBehaviour
     private IEnumerator BGEvent_Lighton()
     {   
         light.SetActive(true);
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         yield return null;
     }
     
@@ -204,7 +204,7 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator BGEvent_BoomGateOpen()
     {   
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.boomGateBarSound, target.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.boomGateBarSound, target.transform.position);
         Quaternion startRot = boomgatebar.transform.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, -90, 0);
         float elapsed = 0f;
