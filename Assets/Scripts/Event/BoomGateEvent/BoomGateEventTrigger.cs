@@ -60,30 +60,43 @@ public class BoomGateEventTrigger : MonoBehaviour
         Quaternion initialCarRotation = carTr.rotation;
         Quaternion initialCamRotation = carCam.transform.rotation;
 
-        Vector3 dirToGate = (targetPosition - carTr.position).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(dirToGate, Vector3.up);
+        Vector3 carTrToGate = (targetPosition - carTr.position).normalized;
+        Quaternion targetCarRotation = Quaternion.LookRotation(carTrToGate, Vector3.up);
+        Vector3 carCamToGate = (targetPosition - carCam.transform.position).normalized;
+        Quaternion targetCamRotation = Quaternion.LookRotation(carCamToGate, Vector3.up);
         //Quaternion.Euler(8, 300, 2); 
-        CameraFollow.isEvent = true;
-        isBoomEvent = true;
+        
         // carRb.angularVelocity = Vector3.zero;
 
+        float initialDrag = carRb.drag;
+        float targetDrag = 3f;  // 원하는 감속 정도 (클수록 더 빨리 멈춤)
 
-        while (elapsed < duration)
-        {
-            carRb.velocity = Vector3.Lerp(initialVelocity, Vector3.zero, elapsed / duration);
-            carTr.rotation = Quaternion.Slerp(initialCarRotation, targetRotation, elapsed / duration);
-            carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetRotation, elapsed / duration);
-            Vector3 nextPosXZ = Vector3.Lerp(initialCarPosition, targetPosition, elapsed / (duration * 3));
+        CameraFollow.isEvent = true;
+        isBoomEvent = true;
+
+        while (elapsed < duration){
+            
+            float t = elapsed / duration;
+            // carRb.velocity = Vector3.Lerp(initialVelocity, Vector3.zero, t);
+            carRb.drag = Mathf.Lerp(initialDrag, targetDrag, t);
+            carTr.rotation = Quaternion.Slerp(initialCarRotation, targetCarRotation, t);
+            carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetCamRotation, t);
+            Vector3 nextPosXZ = Vector3.Lerp(initialCarPosition, targetPosition, t/3.0f);
+
             carTr.position = new Vector3(nextPosXZ.x, carTr.position.y, nextPosXZ.z);
             //속도 점차 줄여서 0으로
             elapsed += Time.deltaTime;
             yield return null;
         }
-        if (carCollider != null) carCollider.enabled = true; // 충돌 복원
+            carRb.drag = targetDrag; // 최종 감속 완료
+            if (carCollider != null) carCollider.enabled = true; // 충돌 복원
 
-        PlayableDirector.gameObject.SetActive(true);
-        PlayableDirector.Play();
-        carRb.isKinematic = true;
-        Destroy(this.gameObject);
+            // PlayableDirector.gameObject.SetActive(true);
+            // PlayableDirector.Play();
+            carRb.isKinematic = true; 
+            
+            carRb.drag = initialDrag; // 감속 복원       
+            Destroy(this.gameObject); 
+
     }
 }

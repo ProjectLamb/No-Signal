@@ -30,6 +30,7 @@ public class CrowEvent : MonoBehaviour
     {
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
         if (CarController.IsChaseEventStart) return;
+        if (BoomGateEventTrigger.isBoomEvent) return;
         if (IsStayCar) StayOnCar();
 
         if (IsEventStart)

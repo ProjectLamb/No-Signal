@@ -37,6 +37,7 @@ public class CameraFollow : MonoBehaviour
         {
             carCam.fieldOfView = 30f;
         }
+
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
         {
             FollowTarget();
