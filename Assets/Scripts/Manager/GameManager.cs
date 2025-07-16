@@ -17,11 +17,11 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-
     public bool IsDeerClear = false;
     public bool IsCargateClear = false;
     public bool IsCargateEvent = false;
     public bool IsTrafficClear = false;
+
     public bool IsTutorial = true;
     public bool IsTutorialFirst = true;
     public bool IsChaseEvent = false;

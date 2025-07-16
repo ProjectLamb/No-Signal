@@ -10,7 +10,9 @@ public class SavePoint : MonoBehaviour
     public Transform traffitSpawn;
     public Transform creatureSpawn;
     public GameObject deerEvent;
+    public GameObject cargateEvent;
     public GameObject car;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,11 @@ public class SavePoint : MonoBehaviour
             car.transform.position = creatureSpawn.position;
             car.transform.rotation = creatureSpawn.rotation;
         }
+        if (GameManager.Instance.IsChaseEvent)
+        {
+            car.transform.position = creatureSpawn.position;
+            car.transform.rotation = creatureSpawn.rotation;
+        }
 
 
     }
@@ -45,6 +52,12 @@ public class SavePoint : MonoBehaviour
         if (GameManager.Instance.IsTrafficClear)
         {
             deerEvent.SetActive(false);
+        }
+
+        if (GameManager.Instance.IsChaseEvent)
+        {
+            deerEvent.SetActive(false);
+            cargateEvent.SetActive(false);
         }
     }
 }
