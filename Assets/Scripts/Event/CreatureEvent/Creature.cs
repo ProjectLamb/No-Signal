@@ -23,8 +23,8 @@ public class Creature : MonoBehaviour
     private bool IsChase = false;
     private bool IsReveal = false;
     private bool IsAttachCar = false;
+    private bool IsGameOver = false;
     public static bool IsEnding = false;
-    public static bool IsGameOver = false;
     //private bool  
     void Awake()
     {
@@ -53,7 +53,7 @@ public class Creature : MonoBehaviour
         {
             navMeshAgent.enabled = false;
         }
-        if (!IsGameOver && IsChase)
+        if (!IsGameOver && IsChase && !IsAttachCar)
         {
             IsReveal = false;
             if (navMeshAgent.isOnNavMesh)
@@ -117,6 +117,7 @@ public class Creature : MonoBehaviour
         {
             IsAttachCar = true;
             stepEmitter.Stop();
+            anim.SetBool("IsRun", false);
         }
 
     }
@@ -125,7 +126,7 @@ public class Creature : MonoBehaviour
     {
         if (col.gameObject.name == "Car")
         {
-            if (!IsGameOver)
+            if (!IsGameOver && !GameManager.Instance.IsJunctionEvent)
             {
                 IsGameOver = true;
                 EventManager.Instance.SetEvent(4);

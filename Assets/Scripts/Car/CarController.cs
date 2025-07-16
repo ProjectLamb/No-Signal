@@ -61,6 +61,8 @@ public class CarController : MonoBehaviour
     public GameObject letterBox;
     public GameObject insectSound;
     public GameObject closedTree;
+    public GameObject deerRush;
+
     public Image deerBlack;
     public Image soundFill;
     public Volume vhsVolume;
@@ -78,7 +80,7 @@ public class CarController : MonoBehaviour
     private float intensity = 0.001f;
     private float engineSoundFill = 0f;
     private float radioPassedTime = 0;
-    private float treeSearchRad = 10f;
+    private float treeSearchRad = 100f;
 
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
@@ -138,18 +140,6 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if (IsWrongWay)
-        {
-            this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 10f * Time.deltaTime);
-            return;
-        }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
-        if (GameManager.Instance.IsCargateEvent)
-        {
-            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
-            return;
-        }
-        if (IsEndingStart) RushToTree();
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))
@@ -163,6 +153,18 @@ public class CarController : MonoBehaviour
             }
             return;
         }
+        if (IsWrongWay && closedTree != null && !IsGameOver)
+        {
+            this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 50f * Time.deltaTime);
+            return;
+        }
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
+        if (GameManager.Instance.IsCargateEvent)
+        {
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+            return;
+        }
+        if (IsEndingStart) RushToTree();
 
         if (IsChaseEventStart)
         {
@@ -229,7 +231,7 @@ public class CarController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F6))
         {
             this.transform.position = junctionCheat.position;
-            //this.transform.rotation = junctionCheat.rotation;
+            this.transform.rotation = junctionCheat.rotation;
         }
 
         // 헤드라이트 키
@@ -392,15 +394,23 @@ public class CarController : MonoBehaviour
             creature.transform.position = this.transform.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
             GameManager.Instance.IsJunctionEvent = true;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
+
+            col.gameObject.SetActive(false);
             // 크리처 등장 (isCancreatureattach)
             // 크리처 유리에 붙음
-            // 내비게이션 우회전 음성 재생
+            // 내비게이션 우회
+            // 전 음성 재생
+        }
+        if (col.gameObject.name == "DeerRushTrigger")
+        {
+            deerRush.SetActive(true);
         }
         if (col.gameObject.name == "LeftWay")
         {
             FindTree();
             IsWrongWay = true;
-        }
+            col.gameObject.SetActive(false);  
+            }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -420,7 +430,7 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        if (collision.gameObject.tag == "Creature")
+        if (collision.gameObject.tag == "Creature" && !GameManager.Instance.IsJunctionEvent)
         {
             TurnOffRadio();
             carRb.isKinematic = true;
@@ -435,7 +445,10 @@ public class CarController : MonoBehaviour
         }
         if (collision.gameObject.tag == "Tree" && IsWrongWay)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             IsGameOver = true;
+            carDrive.stop(STOP_MODE.IMMEDIATE);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.introNoise,this.transform.position);
         }
     }
 
@@ -749,6 +762,7 @@ public class CarController : MonoBehaviour
         {
             if (hit.CompareTag("Tree"))
             {
+                Debug.Log("나무 찾음!~!");
                 float distance = (hit.transform.position - transform.position).sqrMagnitude;
                 if (distance < closestDistance)
                 {

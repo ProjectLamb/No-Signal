@@ -10,12 +10,9 @@ public class StartFade : MonoBehaviour
     public Image startFadeImage;
     public GameObject tutorial;
 
-    private EventInstance introNoise;
-
 
     void Awake()
     {
-        introNoise = AudioManager.Instance.CreateInstance(FMODEvents.instance.introNoise);
     }
     void Start()
     {
