@@ -43,8 +43,8 @@ public class EventMove : MonoBehaviour
    void Awake()
     {  
         agent = GetComponent<NavMeshAgent>();
-        playerFootSteps = AudioManager.instance.CreateInstance(FMODEvents.instance.playerFootSteps);
-        boomGateBarSound = AudioManager.instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
+        playerFootSteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.playerFootSteps);
+        boomGateBarSound = AudioManager.Instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
     }
 
     private IEnumerator MoveRoutine()
@@ -185,7 +185,7 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator BGEvent_Lightblink(int num)
     {   
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
         int i = 0;
 
         while (i < num)
