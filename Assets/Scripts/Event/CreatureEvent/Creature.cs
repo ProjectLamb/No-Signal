@@ -50,11 +50,14 @@ public class Creature : MonoBehaviour
         if (IsJunction)
         {
             IsJunction = false;
-            float ranDestX = UnityEngine.Random.Range(30, 50);
-            float ranDestY = UnityEngine.Random.Range(10, 20);
-            float ranDestZ = UnityEngine.Random.Range(30, 50);
+            float ranDestX = UnityEngine.Random.Range(20, 30);
+            float ranDestY = UnityEngine.Random.Range(3, 5);
 
-            this.transform.position = targetTr.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
+            Vector3 offset = targetTr.forward * ranDestX + targetTr.up * ranDestY;
+            this.transform.position = targetTr.position + offset;
+            navMeshAgent.enabled = false;
+            NavCheck();
+            navMeshAgent.enabled = true;
         }
         if (IsDie)
         {
@@ -67,17 +70,7 @@ public class Creature : MonoBehaviour
         if (!IsGameOver && IsChase && !IsAttachCar)
         {
             IsReveal = false;
-            if (navMeshAgent.isOnNavMesh)
-            {
-                navMeshAgent.destination = targetTr.position;
-                anim.SetBool("IsRun", true);
-            }
-            else
-            {
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
-                    navMeshAgent.Warp(hit.position);
-            }
+            NavCheck();
         }
         LookTarget();
 
@@ -100,6 +93,20 @@ public class Creature : MonoBehaviour
         }
     }
 
+    void NavCheck()
+    {
+        if (navMeshAgent.isOnNavMesh)
+        {
+            navMeshAgent.destination = targetTr.position;
+            anim.SetBool("IsRun", true);
+        }
+        else
+        {
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(this.transform.position, out hit, 50f, NavMesh.AllAreas))
+                navMeshAgent.Warp(hit.position);
+        }
+    }
     void LookTarget()
     {
         Quaternion creatureRot = Quaternion.LookRotation(targetTr.position - transform.position);
