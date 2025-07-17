@@ -119,12 +119,14 @@ public class EventMove : MonoBehaviour
    
 
     private IEnumerator PlayerActiveOff(){
+        GameManager.Instance.IsCargateEvent = false;
         CameraFollow.isEvent = false;
         BoomGateEventTrigger.isBoomEvent = false;
         this.gameObject.SetActive(false);
         CarRb.isKinematic = false;
         CarRb.velocity = Vector3.zero;
-        //BoomGateEventTrigger off
+        
+         //BoomGateEventTrigger off
         yield return null;
     }
 
