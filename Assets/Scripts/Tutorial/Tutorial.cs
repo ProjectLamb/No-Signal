@@ -87,8 +87,8 @@ public class Tutorial : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         fadeImage.gameObject.SetActive(false);
-        if (page < 3) IsCanSkip = false;
-        if (page == 3) GameManager.Instance.IsTutorial = false;
+        if (page < 4) IsCanSkip = false;
+        else if (page == 4) GameManager.Instance.IsTutorial = false;
         IsFade = false;
         GameManager.Instance.IsTutorialFirst = false;
     }

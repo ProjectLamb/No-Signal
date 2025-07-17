@@ -387,12 +387,8 @@ public class CarController : MonoBehaviour
         }
         if (col.gameObject.name == "JunctionTrigger")
         {
-            float ranDestX = UnityEngine.Random.Range(30, 50);
-            float ranDestY = UnityEngine.Random.Range(10, 20);
-            float ranDestZ = UnityEngine.Random.Range(30, 50);
-
-            creature.transform.position = this.transform.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
             GameManager.Instance.IsJunctionEvent = true;
+            Creature.IsJunction = true;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
 
             col.gameObject.SetActive(false);

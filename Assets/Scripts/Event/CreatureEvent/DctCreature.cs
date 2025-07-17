@@ -89,6 +89,7 @@ public class DctCreature : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
         LookTarget();
         anim.SetTrigger("DoAttack");
+        rb.isKinematic = true;
     }
 
     public void SetRushPosition()

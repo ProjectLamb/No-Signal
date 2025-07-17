@@ -24,6 +24,8 @@ public class Creature : MonoBehaviour
     private bool IsReveal = false;
     private bool IsAttachCar = false;
     private bool IsGameOver = false;
+
+    public static bool IsJunction = false;
     public static bool IsEnding = false;
     //private bool  
     void Awake()
@@ -45,6 +47,15 @@ public class Creature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsJunction)
+        {
+            IsJunction = false;
+            float ranDestX = UnityEngine.Random.Range(30, 50);
+            float ranDestY = UnityEngine.Random.Range(10, 20);
+            float ranDestZ = UnityEngine.Random.Range(30, 50);
+
+            this.transform.position = targetTr.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
+        }
         if (IsDie)
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
@@ -147,6 +158,7 @@ public class Creature : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
         LookTarget();
         anim.SetTrigger("DoAttack");
+        rb.isKinematic = true;
     }
 
     public void SetRushPosition()
