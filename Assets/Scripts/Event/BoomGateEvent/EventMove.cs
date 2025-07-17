@@ -86,11 +86,11 @@ public class EventMove : MonoBehaviour
         // 3. 회전 및 헤드라이트 점등
         
         yield return StartCoroutine(BGEvent_Lightblink(3));
-        yield return new WaitForSecondsRealtime(1.0f);
+        yield return new WaitForSecondsRealtime(0.5f);
         animator.SetInteger("Movement", 2);
         yield return StartCoroutine(BGEvent_Rotate());
-        yield return StartCoroutine(BGEvent_WaveInactive());
         yield return StartCoroutine(BGEvent_Lightoff());
+        yield return StartCoroutine(BGEvent_WaveInactive());
         
         yield return new WaitForSecondsRealtime(3.5f);
         // 여기 퓨즈나가는 소리 추가
