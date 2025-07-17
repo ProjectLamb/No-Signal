@@ -165,6 +165,7 @@ public class Creature : MonoBehaviour
     {
         rb.isKinematic = false;
         col.isTrigger = true;
-        this.transform.position = new Vector3(targetTr.position.x - 4f, targetTr.position.y - 5f, targetTr.position.z - 32f);
+        Vector3 offset = targetTr.forward * 30f + targetTr.up * -6f;
+        this.transform.position = targetTr.position + offset;
     }
 }
