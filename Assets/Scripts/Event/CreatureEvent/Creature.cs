@@ -90,6 +90,7 @@ public class Creature : MonoBehaviour
         if (IsAttachCar)
         {
             this.transform.position = attachTr.position;
+            anim.SetBool("IsRun", false);
         }
     }
 
@@ -131,27 +132,24 @@ public class Creature : MonoBehaviour
             IsChase = false;
         }
 
-        if (collision.gameObject.tag == "Car" && GameManager.Instance.IsJunctionEvent)
+        if (collision.gameObject.tag == "Car")
         {
-            IsAttachCar = true;
-            stepEmitter.Stop();
-            anim.SetBool("IsRun", false);
-        }
-
-    }
-
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.name == "Car")
-        {
+            if (GameManager.Instance.IsJunctionEvent)
+            {
+                IsAttachCar = true;
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
+                stepEmitter.Stop();
+            }
             if (!IsGameOver && !GameManager.Instance.IsJunctionEvent)
             {
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
                 IsGameOver = true;
                 EventManager.Instance.SetEvent(4);
                 EventManager.Instance.PlayEvent();
                 stepEmitter.Stop();
             }
         }
+
     }
 
     IEnumerator WaitChase()
@@ -174,5 +172,11 @@ public class Creature : MonoBehaviour
         col.isTrigger = true;
         Vector3 offset = targetTr.forward * 30f + targetTr.up * -6f;
         this.transform.position = targetTr.position + offset;
+    }
+
+    public void Die()
+    {
+        anim.SetTrigger("DoDie");
+        IsChase = false;
     }
 }

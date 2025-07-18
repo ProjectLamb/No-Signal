@@ -414,7 +414,7 @@ public class CarController : MonoBehaviour
         if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
             soundFill.fillAmount += 0.02f; // 사운드 소리 
 
-        if (collision.gameObject.tag != "Road")
+        if (collision.gameObject.tag != "Road" && collision.gameObject.tag != "Creature")
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
         }
@@ -710,7 +710,6 @@ public class CarController : MonoBehaviour
     {
         if (!IsRushTreeStart)
         {
-            Creature.IsEnding = true;
             IsRushTreeStart = true;
             carRb.isKinematic = false;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
