@@ -387,12 +387,8 @@ public class CarController : MonoBehaviour
         }
         if (col.gameObject.name == "JunctionTrigger")
         {
-            float ranDestX = UnityEngine.Random.Range(30, 50);
-            float ranDestY = UnityEngine.Random.Range(10, 20);
-            float ranDestZ = UnityEngine.Random.Range(30, 50);
-
-            creature.transform.position = this.transform.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
             GameManager.Instance.IsJunctionEvent = true;
+            Creature.IsJunction = true;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
 
             col.gameObject.SetActive(false);
@@ -418,7 +414,7 @@ public class CarController : MonoBehaviour
         if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
             soundFill.fillAmount += 0.02f; // 사운드 소리 
 
-        if (collision.gameObject.tag != "Road")
+        if (collision.gameObject.tag != "Road" && collision.gameObject.tag != "Creature")
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
         }
@@ -714,7 +710,6 @@ public class CarController : MonoBehaviour
     {
         if (!IsRushTreeStart)
         {
-            Creature.IsEnding = true;
             IsRushTreeStart = true;
             carRb.isKinematic = false;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
