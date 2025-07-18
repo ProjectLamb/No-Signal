@@ -20,8 +20,18 @@ public class EventMove : MonoBehaviour
     public Rigidbody CarRb;
     public float speed = 2f;       // 이동 속도
     private Coroutine moveRoutine;
-
     public List<EventDot> BGEventWave;
+
+    public Collider carCollider;
+
+    void Awake()
+    {  
+        
+        agent = GetComponent<NavMeshAgent>();
+        playerFootSteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.playerFootSteps);
+        boomGateBarSound = AudioManager.Instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
+    }
+
     public void MoveToTarget()
     {   
         if (this.gameObject != null)
@@ -40,18 +50,12 @@ public class EventMove : MonoBehaviour
         }
     }
 
-   void Awake()
-    {  
-        agent = GetComponent<NavMeshAgent>();
-        playerFootSteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.playerFootSteps);
-        boomGateBarSound = AudioManager.Instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
-    }
+   
 
     private IEnumerator MoveRoutine()
     {   
         Vector3 destination = target.position;
         Vector3 startPos = transform.position;
-
         animator = GetComponent<Animator>();
         agent.enabled = true;
         agent.SetDestination(destination);
@@ -70,8 +74,6 @@ public class EventMove : MonoBehaviour
             yield return null;
         }
         agent.isStopped = true;
-        // yield return StartCoroutine(BGEvent_Lighton());
-        // yield return StartCoroutine(BGEvent_Move(destination)); // 차단바까지 이동
         if (playerFootSteps.isValid())
         {
         playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -86,23 +88,28 @@ public class EventMove : MonoBehaviour
         // 3. 회전 및 헤드라이트 점등
         
         yield return StartCoroutine(BGEvent_Lightblink(3));
-        yield return new WaitForSecondsRealtime(1.0f);
-        animator.SetInteger("Movement", 2);
-        yield return StartCoroutine(BGEvent_Rotate());
-        yield return StartCoroutine(BGEvent_WaveInactive());
+        yield return new WaitForSecondsRealtime(0.5f);
         yield return StartCoroutine(BGEvent_Lightoff());
-        
+        animator.SetInteger("Movement", 2); // 도는 애니메이션
+        yield return StartCoroutine(BGEvent_WaveInactive());
         yield return new WaitForSecondsRealtime(3.5f);
-        // 여기 퓨즈나가는 소리 추가
-        yield return StartCoroutine(BGEvent_Rotate());
-        animator.SetInteger("Movement", 3);
+        
+        // animator.SetInteger("Movement", 3); // 도는 애니메이션
+        // yield return StartCoroutine(BGEvent_Rotate300());
+        // yield return new WaitForSecondsRealtime(4.0f);
+        // yield return StartCoroutine(BGEvent_Rotate120());
+        animator.SetInteger("Movement", 3); // 차단바 버튼 푸쉬 애니메이션
         yield return new WaitForSecondsRealtime(1.0f);
         yield return StartCoroutine(BGEvent_BoomGateOpen());
 
         // 4. 복귀
-        animator.SetInteger("Movement", 4);
-        yield return StartCoroutine(BGEvent_Rotate());
-        animator.SetInteger("Movement", 5);
+        animator.SetInteger("Movement", 4); // 도는 애니메이션
+        yield return new WaitForSecondsRealtime(4.0f);
+        
+        // yield return StartCoroutine(BGEvent_Rotate());
+       
+        animator.SetInteger("Movement", 5); // 복귀 애니메이션
+        yield return StartCoroutine(BGEvent_Rotate120());
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
         yield return StartCoroutine(BGEvent_Return(startPos));
@@ -119,12 +126,15 @@ public class EventMove : MonoBehaviour
    
 
     private IEnumerator PlayerActiveOff(){
+        GameManager.Instance.IsCargateEvent = false;
         CameraFollow.isEvent = false;
         BoomGateEventTrigger.isBoomEvent = false;
         this.gameObject.SetActive(false);
         CarRb.isKinematic = false;
+        CarRb.useGravity = true;
         CarRb.velocity = Vector3.zero;
-        //BoomGateEventTrigger off
+        
+         //BoomGateEventTrigger off
         yield return null;
     }
 
@@ -138,19 +148,39 @@ public class EventMove : MonoBehaviour
     //     }
     //     }
 
-    private IEnumerator BGEvent_Rotate(){
-        Quaternion startRot = transform.rotation;
-        Quaternion endRot = startRot * Quaternion.Euler(0, 180, 0);
-        float elapsed = 0f;
-        float turnDuration = 1.0f;
+    private IEnumerator BGEvent_Rotate120(){
+        
+        // Quaternion startRot = transform.rotation;
+        // Quaternion endRot = startRot * Quaternion.Euler(0, 90, 0);
+        // float elapsed = 0f;
+        // float turnDuration = 1.0f;
 
-        while (elapsed < turnDuration)
-        {
-            transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
-            elapsed += Time.deltaTime;
-            yield return null;
+        // while (elapsed < turnDuration)
+        // {
+        //     transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
+        //     elapsed += Time.deltaTime;
+        //     yield return null;
+        // }
+        // transform.rotation = endRot;
+        transform.rotation = Quaternion.Euler(0,120,0);
+        yield return null;
         }
-        transform.rotation = endRot;
+    private IEnumerator BGEvent_Rotate300(){
+        
+        // Quaternion startRot = transform.rotation;
+        // Quaternion endRot = startRot * Quaternion.Euler(0, 90, 0);
+        // float elapsed = 0f;
+        // float turnDuration = 1.0f;
+
+        // while (elapsed < turnDuration)
+        // {
+        //     transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
+        //     elapsed += Time.deltaTime;
+        //     yield return null;
+        // }
+        // transform.rotation = endRot;
+        transform.rotation = Quaternion.Euler(0,300,0);
+        yield return null;
         }
     private IEnumerator BGEvent_Return(Vector3 startPos){
         agent.isStopped = false;
@@ -218,7 +248,7 @@ public class EventMove : MonoBehaviour
         }
         boomgatebar.transform.rotation = endRot;
 
-        yield return new WaitForSecondsRealtime(1.0f);
+        yield return new WaitForSecondsRealtime(3.0f);
     }
     private IEnumerator BGEvent_WaveActive()
     {

@@ -1,24 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Playables;
+using DG.Tweening;
+
 
 public class BoomGateEventTrigger : MonoBehaviour
-{
-    public PlayableDirector PlayableDirector;
+{   
     public EventMove EventMove;
     public GameObject target;
     public static bool isBoomEvent = false;
-    private Transform carCamTr;
+    public static bool isFinished = false;
+    // private Transform carCamTr;
 
 
     void Start()
     {
         GameObject carObj = GameObject.Find("Car");
-        if (carObj != null)
-        {
-            carCamTr = carObj.transform.Find("CarCam");
-        }
     }
     void OnTriggerEnter(Collider collider)
     {
@@ -29,74 +26,79 @@ public class BoomGateEventTrigger : MonoBehaviour
             GameManager.Instance.IsCargateEvent = true;
             Rigidbody carRb = collider.gameObject.GetComponent<Rigidbody>();
             Transform carTr = collider.gameObject.GetComponent<Transform>();
-            Camera carCam = carCamTr != null ? carCamTr.GetComponent<Camera>() : null;
             if (carRb != null)
             {
-                StartCoroutine(HandleEventSequence(carRb, carTr, carCam));
+                StartCoroutine(HandleEventSequence(carRb, carTr));
             }
 
-
         }
-        ;
-        //EventTrigger collider를 지나간 gameObject의 name을 콘솔에 출력
 
     }
-    IEnumerator HandleEventSequence(Rigidbody carRb, Transform carTr, Camera carCam)
+    List<Collider> disabledColliders = new List<Collider>();
+
+    void DisableAllColliders(GameObject car)
     {
-        yield return StartCoroutine(SmoothStop(carRb, carTr, carCam));
+    Collider[] colliders = car.GetComponentsInChildren<Collider>();
+    foreach (Collider col in colliders)
+    {
+        if (col.enabled)
+        {
+            col.enabled = false;
+            disabledColliders.Add(col);
+        }
+    }
+    }
+
+    void EnableAllColliders()
+    {
+    foreach (Collider col in disabledColliders)
+    {
+        if (col != null)
+            col.enabled = true;
+    }
+    disabledColliders.Clear();
+    }
+
+    IEnumerator HandleEventSequence(Rigidbody carRb, Transform carTr)
+    {
+        yield return StartCoroutine(SmoothStop(carRb, carTr));
         EventMove.MoveToTarget();
     }
-    IEnumerator SmoothStop(Rigidbody carRb, Transform carTr, Camera carCam)
+    IEnumerator SmoothStop(Rigidbody carRb, Transform carTr)
     {
-        Collider carCollider = carRb.GetComponent<Collider>();
-        if (carCollider != null) carCollider.enabled = false; // 충돌 비활성화
-
-        float duration = 3.0f;
-        float elapsed = 0f;
+        // Collider carCollider = carRb.GetComponent<Collider>();
+         DisableAllColliders(carTr.gameObject);
+    
+        // if (carCollider != null) carCollider.enabled = false; // 충돌 비활성화
 
         Vector3 initialVelocity = carRb.velocity;
         Vector3 initialCarPosition = carTr.position;
         Vector3 targetPosition = target.transform.position;
         Quaternion initialCarRotation = carTr.rotation;
-        Quaternion initialCamRotation = carCam.transform.rotation;
 
         Vector3 carTrToGate = (targetPosition - carTr.position).normalized;
         Quaternion targetCarRotation = Quaternion.LookRotation(carTrToGate, Vector3.up);
-        Vector3 carCamToGate = (targetPosition - carCam.transform.position).normalized;
-        Quaternion targetCamRotation = Quaternion.LookRotation(carCamToGate, Vector3.up);
-        //Quaternion.Euler(8, 300, 2); 
-        
-        // carRb.angularVelocity = Vector3.zero;
-
-        float initialDrag = carRb.drag;
-        float targetDrag = 3f;  // 원하는 감속 정도 (클수록 더 빨리 멈춤)
+        Vector3 targetRotation = targetCarRotation.eulerAngles;
 
         CameraFollow.isEvent = true;
         isBoomEvent = true;
 
-        while (elapsed < duration){
-            
-            float t = elapsed / duration;
-            // carRb.velocity = Vector3.Lerp(initialVelocity, Vector3.zero, t);
-            carRb.drag = Mathf.Lerp(initialDrag, targetDrag, t);
-            carTr.rotation = Quaternion.Slerp(initialCarRotation, targetCarRotation, t);
-            carCam.transform.rotation = Quaternion.Slerp(initialCamRotation, targetCamRotation, t);
-            Vector3 nextPosXZ = Vector3.Lerp(initialCarPosition, targetPosition, t/3.0f);
+        Sequence mySequence = DOTween.Sequence();
+        mySequence.Append(carTr.DORotate(targetRotation, 3.0f));
+        mySequence.Join(carTr.DOMove(targetPosition, 3.0f));
+        mySequence.OnComplete(() => isFinished = true);
+        mySequence.Play();
+        
+        yield return new WaitUntil(() => isFinished);
 
-            carTr.position = new Vector3(nextPosXZ.x, carTr.position.y, nextPosXZ.z);
-            //속도 점차 줄여서 0으로
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-            carRb.drag = targetDrag; // 최종 감속 완료
-            if (carCollider != null) carCollider.enabled = true; // 충돌 복원
+        EnableAllColliders(); // 이벤트 끝나고 Collider 복구
+        // if (carCollider != null) carCollider.enabled = true; // 충돌 복원
+        carRb.isKinematic = true; 
+        carRb.useGravity = false;
+          
+        Destroy(this.gameObject); 
 
-            // PlayableDirector.gameObject.SetActive(true);
-            // PlayableDirector.Play();
-            carRb.isKinematic = true; 
             
-            carRb.drag = initialDrag; // 감속 복원       
-            Destroy(this.gameObject); 
 
     }
 }

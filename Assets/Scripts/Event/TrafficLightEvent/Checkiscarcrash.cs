@@ -12,6 +12,7 @@ public class Checkiscarcrash : MonoBehaviour
     // private EventInstance humanFall;
     // public GameObject CrossCheckTrigger;
     public GameObject Car;
+    public GameObject EventDot;
     public List<Light> light;
     public static bool isCrashed = false;
     private Coroutine eventEnd;
@@ -52,6 +53,7 @@ public class Checkiscarcrash : MonoBehaviour
         yield return StartCoroutine(TLEvent_LightOff(0)); // Red
         
         yield return StartCoroutine(TLEvent_ObstacleActiveOff());
+        yield return StartCoroutine(TLEvent_EventDotActiveOff());
     }
 
     
@@ -75,6 +77,8 @@ public class Checkiscarcrash : MonoBehaviour
         yield return null;
     }
     
-    
-    
+    private IEnumerator TLEvent_EventDotActiveOff(){
+        Destroy(EventDot);
+        yield return null;
+    }
 }
