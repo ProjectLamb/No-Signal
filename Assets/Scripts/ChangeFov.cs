@@ -13,7 +13,6 @@ public class ChangeFov : MonoBehaviour
     public void Start()
     {
         vCam2.m_Lens.FieldOfView = 30f;
-        cam.fieldOfView = 30f;
     }
     public void ChangeFOV()
     {

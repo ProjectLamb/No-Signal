@@ -32,11 +32,7 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.IsTutorial) return;
-        if (GameManager.Instance.IsDeathEvent)
-        {
-            carCam.fieldOfView = 30f;
-        }
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsDeathEvent) return;
 
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
         {

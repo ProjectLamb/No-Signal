@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Cinemachine;
 
 
 public class BoomGateEventTrigger : MonoBehaviour
-{   
+{
     public EventMove EventMove;
     public GameObject target;
+    public CinemachineBrain cinemachineBrain;
     public static bool isBoomEvent = false;
     public static bool isFinished = false;
     // private Transform carCamTr;
@@ -38,25 +40,25 @@ public class BoomGateEventTrigger : MonoBehaviour
 
     void DisableAllColliders(GameObject car)
     {
-    Collider[] colliders = car.GetComponentsInChildren<Collider>();
-    foreach (Collider col in colliders)
-    {
-        if (col.enabled)
+        Collider[] colliders = car.GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
         {
-            col.enabled = false;
-            disabledColliders.Add(col);
+            if (col.enabled)
+            {
+                col.enabled = false;
+                disabledColliders.Add(col);
+            }
         }
-    }
     }
 
     void EnableAllColliders()
     {
-    foreach (Collider col in disabledColliders)
-    {
-        if (col != null)
-            col.enabled = true;
-    }
-    disabledColliders.Clear();
+        foreach (Collider col in disabledColliders)
+        {
+            if (col != null)
+                col.enabled = true;
+        }
+        disabledColliders.Clear();
     }
 
     IEnumerator HandleEventSequence(Rigidbody carRb, Transform carTr)
@@ -67,8 +69,8 @@ public class BoomGateEventTrigger : MonoBehaviour
     IEnumerator SmoothStop(Rigidbody carRb, Transform carTr)
     {
         // Collider carCollider = carRb.GetComponent<Collider>();
-         DisableAllColliders(carTr.gameObject);
-    
+        DisableAllColliders(carTr.gameObject);
+
         // if (carCollider != null) carCollider.enabled = false; // 충돌 비활성화
 
         Vector3 initialVelocity = carRb.velocity;
@@ -80,6 +82,7 @@ public class BoomGateEventTrigger : MonoBehaviour
         Quaternion targetCarRotation = Quaternion.LookRotation(carTrToGate, Vector3.up);
         Vector3 targetRotation = targetCarRotation.eulerAngles;
 
+        cinemachineBrain.enabled = true;
         CameraFollow.isEvent = true;
         isBoomEvent = true;
 
@@ -88,17 +91,17 @@ public class BoomGateEventTrigger : MonoBehaviour
         mySequence.Join(carTr.DOMove(targetPosition, 3.0f));
         mySequence.OnComplete(() => isFinished = true);
         mySequence.Play();
-        
+
         yield return new WaitUntil(() => isFinished);
 
         EnableAllColliders(); // 이벤트 끝나고 Collider 복구
         // if (carCollider != null) carCollider.enabled = true; // 충돌 복원
-        carRb.isKinematic = true; 
+        carRb.isKinematic = true;
         carRb.useGravity = false;
-          
-        Destroy(this.gameObject); 
 
-            
+        Destroy(this.gameObject);
+
+
 
     }
 }

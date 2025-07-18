@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
+using Cinemachine;
 
 public class EventMove : MonoBehaviour
 {   
@@ -21,6 +22,7 @@ public class EventMove : MonoBehaviour
     public float speed = 2f;       // 이동 속도
     private Coroutine moveRoutine;
     public List<EventDot> BGEventWave;
+    public CinemachineBrain cinemachineBrain;
 
     public Collider carCollider;
 
@@ -42,6 +44,7 @@ public class EventMove : MonoBehaviour
         }
         else 
         {
+            cinemachineBrain.enabled = false;
             CameraFollow.isEvent = false;
             BoomGateEventTrigger.isBoomEvent = false;
             CarRb.isKinematic = false;
@@ -133,7 +136,7 @@ public class EventMove : MonoBehaviour
         CarRb.isKinematic = false;
         CarRb.useGravity = true;
         CarRb.velocity = Vector3.zero;
-        
+        cinemachineBrain.enabled = false;
          //BoomGateEventTrigger off
         yield return null;
     }
