@@ -429,6 +429,7 @@ public class CarController : MonoBehaviour
         if (collision.gameObject.tag == "Creature" && !GameManager.Instance.IsJunctionEvent)
         {
             TurnOffRadio();
+            cinemachineBrain.enabled = true;
             carRb.isKinematic = true;
             carDrive.stop(STOP_MODE.IMMEDIATE);
         }

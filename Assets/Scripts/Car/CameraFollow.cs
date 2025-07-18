@@ -62,9 +62,14 @@ public class CameraFollow : MonoBehaviour
         transform.rotation = baseRot * yawRot;
     }
 
-    public void TurnOffBrain()
+    public void ChangeFOV()
     {
         cinemachineBrain.enabled = false;
-        carCam.fieldOfView = 30f;
+        carCam.fieldOfView = 22f;
+    }
+    public void TurnFOV2()
+    {
+        cinemachineBrain.enabled = false;
+        carCam.fieldOfView = 10f;
     }
 }

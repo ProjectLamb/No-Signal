@@ -170,7 +170,7 @@ public class Creature : MonoBehaviour
     {
         rb.isKinematic = false;
         col.isTrigger = true;
-        Vector3 offset = targetTr.forward * 30f + targetTr.up * -6f;
+        Vector3 offset = targetTr.forward * 35f + targetTr.up * -6f;
         this.transform.position = targetTr.position + offset;
     }
 

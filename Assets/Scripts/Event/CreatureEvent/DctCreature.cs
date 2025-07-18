@@ -96,7 +96,7 @@ public class DctCreature : MonoBehaviour
     {
         rb.isKinematic = false;
         col.isTrigger = true;
-        Vector3 offset = targetTr.forward * 30f + targetTr.up * -4f;
+        Vector3 offset = targetTr.forward * 35f + targetTr.up * -5f;
         this.transform.position = targetTr.position + offset;
     }
 }
