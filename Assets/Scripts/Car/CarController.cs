@@ -412,11 +412,12 @@ public class CarController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
-            soundFill.fillAmount += 0.02f; // 사운드 소리 
-
-        if (collision.gameObject.tag != "Road" && collision.gameObject.tag != "Creature")
         {
-            AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
+            if (collision.gameObject.tag != "Road" && collision.gameObject.tag != "Creature")
+            {
+                soundFill.fillAmount += 0.02f; // 사운드 소리 
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
+            }
         }
         if (collision.gameObject.tag == "Deer")
         {
