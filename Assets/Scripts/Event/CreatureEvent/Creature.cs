@@ -71,6 +71,7 @@ public class Creature : MonoBehaviour
         {
             IsReveal = false;
             NavCheck();
+            distCheck();
         }
         LookTarget();
 
@@ -115,6 +116,16 @@ public class Creature : MonoBehaviour
         this.transform.rotation = creatureRot;
     }
 
+    void distCheck()
+    {
+        float distance = 0f;
+        distance = Vector3.Distance(targetTr.position, transform.position);
+        if (distance > 30f)
+        {
+            navMeshAgent.speed = 30f;
+        }
+        else navMeshAgent.speed = 10f;
+    }
     public void ChaseStart()
     {
         StartCoroutine("WaitChase");
