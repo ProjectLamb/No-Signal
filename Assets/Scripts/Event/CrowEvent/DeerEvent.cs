@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD.Studio;
 
 public class DeerEvent : MonoBehaviour
 {
     Animator anim;
     public Transform rushTr;
     public GameObject deerDot;
-    private float deerSpeed = 1f;
+    public float deerSpeed = 2f;
     public float rotationSpeed = 1f; // 회전 속도
     public static bool IsEventStart = false;
     public Vector3 relativeSpawnPos = new Vector3(-50, 0, 100); //new location of deer
 
+    private EventInstance deerFootsteps;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
+        deerFootsteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.deerFootsteps);
     }
 
     void Update()
@@ -23,13 +27,8 @@ public class DeerEvent : MonoBehaviour
         {
             IsEventStart = false;
 
-            if (rushTr != null)
-            {
-                Vector3 worldSpawnPos = rushTr.TransformPoint(relativeSpawnPos);
-                transform.position = worldSpawnPos;
-            }
-
             anim.SetBool("IsRun", true);
+            deerFootsteps.start();
             StartCoroutine("RushToCar");
         }
     }
@@ -62,6 +61,7 @@ public class DeerEvent : MonoBehaviour
     {
         if (col.gameObject.tag == "Car")
         {
+            deerFootsteps.stop(STOP_MODE.IMMEDIATE);
             Destroy(deerDot.gameObject);
             Destroy(this.gameObject);
         }

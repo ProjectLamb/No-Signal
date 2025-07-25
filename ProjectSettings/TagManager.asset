@@ -5,24 +5,27 @@ TagManager:
   serializedVersion: 2
   tags:
   - Car
-  - lb_bird
-  - lb_groundTarget
-  - lb_perchTarget
   - CrowEvent
   - Entity
   - DeerEvent
+  - Creature
   - Deer
+  - CreatureEvent
+  - lb_bird
+  - Road
+  - Oak
+  - Tree
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Trees
   - Water
   - UI
   - Minimap
   - Fogs
-  - 
-  - 
+  - Oak
+  - GuardLail
   - 
   - 
   - 

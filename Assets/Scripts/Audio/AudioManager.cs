@@ -8,16 +8,29 @@ public class AudioManager : MonoBehaviour
 
     private List<EventInstance> eventInstances;
     private List<StudioEventEmitter> eventEmitters;
-    public static AudioManager instance { get; private set; }
+    private static AudioManager instance;
+    public static AudioManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                Debug.LogError("No AudioManagerInstance");
+            }
+            return instance;
+        }
+    }
 
     private void Awake()
     {
-        if(instance != null)
+        if (instance == null)
         {
-            Debug.LogError("More than one AudioManger exists");
+            instance = this;
         }
-        instance = this;
-
+        else
+        {
+            Destroy(gameObject);
+        }
         eventInstances = new List<EventInstance>();
         eventEmitters = new List<StudioEventEmitter>();
     }
@@ -44,19 +57,19 @@ public class AudioManager : MonoBehaviour
 
     private void CleanUp()
     {
-        foreach(EventInstance eventInstance in eventInstances)
+        foreach (EventInstance eventInstance in eventInstances)
         {
             eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
             eventInstance.release();
         }
 
-        foreach(StudioEventEmitter emitter in eventEmitters)
+        foreach (StudioEventEmitter emitter in eventEmitters)
         {
             emitter.Stop();
         }
     }
 
-    private void OnDestoy()
+    private void OnDestroy()
     {
         CleanUp();
     }

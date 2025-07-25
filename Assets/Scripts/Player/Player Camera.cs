@@ -18,7 +18,10 @@ public class PlayerCamera : MonoBehaviour
         
     // }
     void LateUpdate()
-    {
+    {   
+        if (target == null){
+        return;
+        }
         transform.position = new Vector3(target.position.x, target.position.y + 2.7f ,target.position.z -2f);
     }
 }

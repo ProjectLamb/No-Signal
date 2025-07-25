@@ -7,11 +7,17 @@ public class CrowEvent : MonoBehaviour
     public Transform carLandSpot;
     public Transform finalDestination;
     public GameObject crowDot;
-    public float speed = 5f;       // 이동 속도
+    public float followSpeed = 5f; // 이동 속도
+    public float flyAwaySpeed = 1f;
     public float rotationSpeed = 1f; // 회전 속도
+    private float passedTime = 0f;
+    private int EventPsv = 0;
     public static bool IsEventStart = false;
     private bool IsStayCar = false;
     private bool IsFlyAway = false;
+    private bool IsRanEvent = false;
+    private bool IsPsvCheck = false;
+
 
     private Animator anim;
 
@@ -26,13 +32,49 @@ public class CrowEvent : MonoBehaviour
 
         if (IsEventStart)
         {
+            float ranDestX = Random.Range(30, 50);
+            float ranDestY = Random.Range(10, 20);
+            float ranDestZ = Random.Range(30, 50);
+
             // 여기가 까마귀 이벤트의 시작
             IsEventStart = false;
+            crowDot.SetActive(true);
             anim.SetBool("flying", true);
+            this.transform.position = carLandSpot.position + new Vector3(-ranDestX, ranDestY, -ranDestZ);
             StartCoroutine("FollowTarget");
         }
 
-        if(IsFlyAway) FlyToTheDest();
+        if (IsFlyAway) FlyToTheDest();
+    }
+
+    void Update()
+    {
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
+        if (CarController.IsChaseEventStart) return;
+        RandomEvent();
+    }
+
+    void RandomEvent()
+    {
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
+        if (CarController.IsChaseEventStart) return;
+        if (BoomGateEventTrigger.isBoomEvent) return;
+
+        passedTime += Time.deltaTime;
+
+        if ((int)passedTime != 0 && (int)passedTime % 10 == 0 && !IsPsvCheck)
+        {
+            IsPsvCheck = true;
+            EventPsv = (int)passedTime;
+            int ran = Random.Range(0, 100);
+            if (ran <= EventPsv && !IsRanEvent)
+            {
+                IsRanEvent = true;
+                passedTime = 0f;
+                IsEventStart = true;
+            }
+        }
+        else if ((int)passedTime % 10 != 0) IsPsvCheck = false;
     }
 
     IEnumerator FollowTarget()
@@ -40,7 +82,7 @@ public class CrowEvent : MonoBehaviour
         while (true)
         {
             // 현재 위치에서 대상 위치로 이동
-            transform.position = Vector3.MoveTowards(transform.position, carLandSpot.position, speed);
+            transform.position = Vector3.MoveTowards(transform.position, carLandSpot.position, followSpeed * Time.deltaTime);
 
             // 대상 방향으로 회전
             Vector3 direction = (carLandSpot.position - transform.position).normalized;
@@ -51,7 +93,7 @@ public class CrowEvent : MonoBehaviour
             }
 
             float distance = Vector3.Distance(transform.position, carLandSpot.position);
-            if (distance < 0.1f)
+            if (distance < 0.3f)
             {
                 IsStayCar = true;
                 anim.SetBool("landing", true);
@@ -65,6 +107,16 @@ public class CrowEvent : MonoBehaviour
         EventManager.Instance.PlayEvent();
     }
 
+    IEnumerator WorAndCaw()
+    {
+        while (CarController.lightOffTime <= 3f)
+        {
+            EventManager.Instance.SetEvent(0);
+            EventManager.Instance.PlayEvent();
+            yield return new WaitForSeconds(2f);
+        }
+    }
+
     public void StayOnCar()
     {
         StopCoroutine("FollowTarget");
@@ -74,15 +126,19 @@ public class CrowEvent : MonoBehaviour
 
     public void FlyAway()
     {
-        IsStayCar = false;
         anim.SetBool("landing", true);
         IsFlyAway = true;
     }
 
     private void FlyToTheDest()
     {
+        // if (CarController.lightOffTime <= 3f && !IsFlyAway) return;
+        // if (CarController.IsChaseEventStart && IsRanEvent && !IsFlyAway) return;
         anim.SetBool("flying", true);
-        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, speed * Time.deltaTime * 0.5f);
+
+        finalDestination.position = this.transform.position + new Vector3(-10f, 10f, -100f);
+        IsStayCar = false;
+        this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
         // 대상 방향으로 회전
         Vector3 direction = (finalDestination.position - transform.position).normalized;
         if (direction != Vector3.zero)
@@ -101,5 +157,11 @@ public class CrowEvent : MonoBehaviour
             crowDot.SetActive(false);
             IsFlyAway = false;
         }
+    }
+
+    public void Cawcaw()
+    {
+        CarController.IsCrowCaw = true;
+        StartCoroutine("WorAndCaw");
     }
 }
