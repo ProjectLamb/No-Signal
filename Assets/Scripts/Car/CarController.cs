@@ -577,15 +577,20 @@ public class CarController : MonoBehaviour
             GameManager.Instance.IsDeathEvent = true;
             soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
 
-            float creatureRanX = UnityEngine.Random.Range(10, 30);
-            float creatureRanZ = UnityEngine.Random.Range(10, 30);
-            Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z + creatureRanZ);
-            Vector3 creatureRot = this.transform.position - creaturePos;
-            Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
-            creatureDct.transform.position = creaturePos;
-            creatureDct.transform.rotation = creatureLook;
             creatureDct.SetActive(true);
-            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+            TurnOffRadio();
+            cinemachineBrain.enabled = true;
+            carRb.isKinematic = true;
+            carDrive.stop(STOP_MODE.IMMEDIATE);
+
+            // float creatureRanX = UnityEngine.Random.Range(10, 30);
+            // float creatureRanZ = UnityEngine.Random.Range(10, 30);
+            // Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z + creatureRanZ);
+            // Vector3 creatureRot = this.transform.position - creaturePos;
+            // Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
+            // creatureDct.transform.position = creaturePos;
+            // creatureDct.transform.rotation = creatureLook;
+            // AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         }
 
     }

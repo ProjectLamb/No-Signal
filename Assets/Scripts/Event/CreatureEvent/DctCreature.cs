@@ -27,14 +27,27 @@ public class DctCreature : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
-        {
-            navMeshAgent.Warp(hit.position);
-        }
-        anim.SetBool("IsRun", true);
-        stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
-        stepEmitter.Play();
+
+        // float ranDestX = UnityEngine.Random.Range(20, 30);
+        // float ranDestY = UnityEngine.Random.Range(3, 5);
+
+        // Vector3 offset = targetTr.forward * ranDestX + targetTr.up * ranDestY;
+        // this.transform.position = targetTr.position + offset;
+
+        IsGameOver = true;
+        GameManager.Instance.IsDeathEvent = true;
+        EventManager.Instance.SetEvent(3);
+        EventManager.Instance.PlayEvent();
+        // stepEmitter.Stop();
+
+        // NavMeshHit hit;
+        // if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
+        // {
+        //     navMeshAgent.Warp(hit.position);
+        // }
+        // anim.SetBool("IsRun", true);
+        // stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        // stepEmitter.Play();
     }
 
     // Update is called once per frame
@@ -69,20 +82,20 @@ public class DctCreature : MonoBehaviour
         this.transform.rotation = creatureRot;
     }
 
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.name == "Car")
-        {
-            if (!IsGameOver)
-            {
-                IsGameOver = true;
-                GameManager.Instance.IsDeathEvent = true;
-                EventManager.Instance.SetEvent(3);
-                EventManager.Instance.PlayEvent();
-                stepEmitter.Stop();
-            }
-        }
-    }
+    // void OnTriggerEnter(Collider col)
+    // {
+    //     if (col.gameObject.name == "Car")
+    //     {
+    //         if (!IsGameOver)
+    //         {
+    //             IsGameOver = true;
+    //             GameManager.Instance.IsDeathEvent = true;
+    //             EventManager.Instance.SetEvent(3);
+    //             EventManager.Instance.PlayEvent();
+    //             stepEmitter.Stop();
+    //         }
+    //     }
+    // }
 
     public void JumpToCar()
     {
