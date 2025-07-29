@@ -17,6 +17,7 @@ public class CrowEvent : MonoBehaviour
     private bool IsFlyAway = false;
     private bool IsRanEvent = false;
     private bool IsPsvCheck = false;
+    private bool IsFollowing = false;
 
 
     private Animator anim;
@@ -51,6 +52,7 @@ public class CrowEvent : MonoBehaviour
     {
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
         if (CarController.IsChaseEventStart) return;
+        if (IsFollowing) return;
         RandomEvent();
     }
 
@@ -70,11 +72,16 @@ public class CrowEvent : MonoBehaviour
             if (ran <= EventPsv && !IsRanEvent)
             {
                 IsRanEvent = true;
-                passedTime = 0f;
                 IsEventStart = true;
+                IsFollowing = true;
+                passedTime = 0f;
+                EventPsv = 0;
             }
         }
-        else if ((int)passedTime % 10 != 0) IsPsvCheck = false;
+        else if ((int)passedTime % 10 != 0)
+        {
+            IsPsvCheck = false;
+        }
     }
 
     IEnumerator FollowTarget()
@@ -128,6 +135,7 @@ public class CrowEvent : MonoBehaviour
     {
         anim.SetBool("landing", true);
         IsFlyAway = true;
+        finalDestination.position = this.transform.position + new Vector3(-10f, 10f, -100f);
     }
 
     private void FlyToTheDest()
@@ -135,8 +143,6 @@ public class CrowEvent : MonoBehaviour
         // if (CarController.lightOffTime <= 3f && !IsFlyAway) return;
         // if (CarController.IsChaseEventStart && IsRanEvent && !IsFlyAway) return;
         anim.SetBool("flying", true);
-
-        finalDestination.position = this.transform.position + new Vector3(-10f, 10f, -100f);
         IsStayCar = false;
         this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
         // 대상 방향으로 회전
@@ -156,6 +162,9 @@ public class CrowEvent : MonoBehaviour
 
             crowDot.SetActive(false);
             IsFlyAway = false;
+            IsPsvCheck = false;
+            IsFollowing = false;
+            IsRanEvent = false;
         }
     }
 

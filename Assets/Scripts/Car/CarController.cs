@@ -37,6 +37,7 @@ public class CarController : MonoBehaviour
     public static bool IsGameOver = false;
     public static bool IsChaseEventStart = false;
     public static bool IsEndingStart = false;
+    public static bool IsTutorialEnd = false;
 
     public Vector3 _centerOfMass;
     public Transform modelTr;
@@ -158,12 +159,7 @@ public class CarController : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 50f * Time.deltaTime);
             return;
         }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
-        if (GameManager.Instance.IsCargateEvent)
-        {
-            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
-            return;
-        }
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent) return;
         if (IsEndingStart) RushToTree();
 
         if (IsChaseEventStart)
@@ -183,13 +179,10 @@ public class CarController : MonoBehaviour
             if (carRb.velocity.magnitude > 0.5f) EngineSound();
             return;
         }
-        if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
+        if (!IsChased && !BoomGateEventTrigger.isBoomEvent)
         {
             GetInputs();
             AnimateWheels();
-        }
-        if (!IsChased && !BoomGateEventTrigger.isBoomEvent)
-        {
             // 엔진사운드 시스템
             EngineSound();
             Vibrate();
@@ -202,13 +195,18 @@ public class CarController : MonoBehaviour
             IsEngineStart = true;
             carDrive.start();
         }
+        if (IsTutorialEnd)
+        {
+            IsTutorialEnd = false;
+            carDrive.start();
+        }
 
         // 치트코드 모음
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            this.transform.position = boomgateCheat.position;
-            this.transform.rotation = boomgateCheat.rotation;
-        }
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                this.transform.position = boomgateCheat.position;
+                this.transform.rotation = boomgateCheat.rotation;
+            }
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
@@ -256,8 +254,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsTutorialFirst) return;
-        if (GameManager.Instance.IsCargateEvent) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
@@ -359,6 +356,7 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.name == "BoomGateEventTrigger")
         {
+            carDrive.stop(STOP_MODE.IMMEDIATE);
             GameManager.Instance.IsCargateEvent = true;
         }
 
