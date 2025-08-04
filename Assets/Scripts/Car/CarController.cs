@@ -179,13 +179,14 @@ public class CarController : MonoBehaviour
             if (carRb.velocity.magnitude > 0.5f) EngineSound();
             return;
         }
-        if (!IsChased && !BoomGateEventTrigger.isBoomEvent)
+
+        GetInputs();
+        AnimateWheels();
+        // 엔진사운드 시스템
+        EngineSound();
+        Vibrate();
+        if (!IsChased)
         {
-            GetInputs();
-            AnimateWheels();
-            // 엔진사운드 시스템
-            EngineSound();
-            Vibrate();
             SoundDetect();
             RandomRadio();
         }
@@ -202,22 +203,22 @@ public class CarController : MonoBehaviour
         }
 
         // 치트코드 모음
-            if (Input.GetKeyDown(KeyCode.F2))
-            {
-                this.transform.position = boomgateCheat.position;
-                this.transform.rotation = boomgateCheat.rotation;
-            }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            this.transform.position = boomgateCheat.position;
+            this.transform.rotation = boomgateCheat.rotation;
+        }
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
-            this.transform.position = deerCheat.position;
-            this.transform.rotation = deerCheat.rotation;
+            this.transform.position = trafficLightcrowCheat.position;
+            this.transform.rotation = trafficLightcrowCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
         {
-            this.transform.position = trafficLightcrowCheat.position;
-            this.transform.rotation = trafficLightcrowCheat.rotation;
+            this.transform.position = deerCheat.position;
+            this.transform.rotation = deerCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F5))
@@ -395,7 +396,7 @@ public class CarController : MonoBehaviour
             // 내비게이션 우회
             // 전 음성 재생
         }
-        if (col.gameObject.name == "DeerRushTrigger")
+        if (col.gameObject.name == "DeerRushTrigger" && IsChased)
         {
             deerRush.SetActive(true);
         }
@@ -403,15 +404,15 @@ public class CarController : MonoBehaviour
         {
             FindTree();
             IsWrongWay = true;
-            col.gameObject.SetActive(false);  
-            }
+            col.gameObject.SetActive(false);
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
         {
-            if (collision.gameObject.tag != "Road" && collision.gameObject.tag != "Creature")
+            if (!collision.gameObject.CompareTag("Road") && !collision.gameObject.CompareTag("Creature") && !collision.gameObject.CompareTag("Car"))
             {
                 soundFill.fillAmount += 0.02f; // 사운드 소리 
                 AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
@@ -444,7 +445,7 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             IsGameOver = true;
             carDrive.stop(STOP_MODE.IMMEDIATE);
-            AudioManager.Instance.PlayOneShot(FMODEvents.instance.introNoise,this.transform.position);
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.introNoise, this.transform.position);
         }
     }
 
