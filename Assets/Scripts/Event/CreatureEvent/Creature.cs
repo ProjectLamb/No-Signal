@@ -134,16 +134,16 @@ public class Creature : MonoBehaviour
         stepEmitter.Play();
     }
 
-    public void OnCollisionEnter(Collision collision)
+    public void OnCollisionEnter(Collision col)
     {
-        if (collision.gameObject.tag == "Oak")
+        if (col.gameObject.CompareTag("Oak"))
         {
             //stepEmitter.Stop();
             anim.SetTrigger("DoDie");
             IsChase = false;
         }
 
-        if (collision.gameObject.tag == "Car")
+        if (col.gameObject.CompareTag("Car"))
         {
             if (GameManager.Instance.IsJunctionEvent)
             {

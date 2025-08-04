@@ -15,6 +15,9 @@ TagManager:
   - Road
   - Oak
   - Tree
+  - DeerRush
+  - LeftWay
+  - Junction
   layers:
   - Default
   - TransparentFX

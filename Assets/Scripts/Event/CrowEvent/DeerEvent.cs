@@ -59,7 +59,7 @@ public class DeerEvent : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.tag == "Car")
+        if (col.gameObject.CompareTag("Car"))
         {
             deerFootsteps.stop(STOP_MODE.IMMEDIATE);
             Destroy(deerDot.gameObject);

@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if(col.gameObject.tag == "Car")
+        if(col.gameObject.CompareTag("Car"))
         {
             IsCarContact = true;
             playerFootsteps.stop(STOP_MODE.IMMEDIATE);
@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
     }
     void OnTriggerStay(Collider col)
     {
-        if(col.gameObject.tag == "Car")
+        if(col.gameObject.CompareTag("Car"))
         {
             IsCarContact = true;
             playerFootsteps.stop(STOP_MODE.IMMEDIATE);

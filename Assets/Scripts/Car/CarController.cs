@@ -94,6 +94,7 @@ public class CarController : MonoBehaviour
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
     private bool IsWrongWay = false;
+    private bool IsAxelPressed = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -191,7 +192,10 @@ public class CarController : MonoBehaviour
             RandomRadio();
         }
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) && !IsEngineStart)
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S)) IsAxelPressed = true;
+        else if (Input.GetKeyUp(KeyCode.W) && Input.GetKeyUp(KeyCode.S)) IsAxelPressed = false;
+
+        if (IsAxelPressed && !IsEngineStart)
         {
             IsEngineStart = true;
             carDrive.start();
@@ -349,19 +353,19 @@ public class CarController : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "CrowEvent")
+        if (col.gameObject.CompareTag("CrowEvent"))
         {
             CrowEvent.IsEventStart = true;
             Destroy(col.gameObject);
         }
 
-        if (col.gameObject.name == "BoomGateEventTrigger")
+        if (col.gameObject.CompareTag("BoomGateEventTrigger"))
         {
             carDrive.stop(STOP_MODE.IMMEDIATE);
             GameManager.Instance.IsCargateEvent = true;
         }
 
-        if (col.gameObject.tag == "DeerEvent")
+        if (col.gameObject.CompareTag("DeerEvent"))
         {
             DeerEvent.IsEventStart = true;
             Destroy(col.gameObject);
@@ -369,7 +373,7 @@ public class CarController : MonoBehaviour
             soundFill.fillAmount += 0.05f;
         }
 
-        if (col.gameObject.tag == "CreatureEvent")
+        if (col.gameObject.CompareTag("CreatureEvent"))
         {
             soundFill.fillAmount = 0f;
             IsSoundWarning = false;
@@ -384,7 +388,7 @@ public class CarController : MonoBehaviour
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
-        if (col.gameObject.name == "JunctionTrigger")
+        if (col.gameObject.CompareTag("Junction"))
         {
             GameManager.Instance.IsJunctionEvent = true;
             Creature.IsJunction = true;
@@ -396,11 +400,11 @@ public class CarController : MonoBehaviour
             // 내비게이션 우회
             // 전 음성 재생
         }
-        if (col.gameObject.name == "DeerRushTrigger" && IsChased)
+        if (col.gameObject.CompareTag("DeerRush") && IsChased)
         {
             deerRush.SetActive(true);
         }
-        if (col.gameObject.name == "LeftWay")
+        if (col.gameObject.CompareTag("LeftWay"))
         {
             FindTree();
             IsWrongWay = true;
@@ -408,17 +412,17 @@ public class CarController : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision col)
     {
         if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
         {
-            if (!collision.gameObject.CompareTag("Road") && !collision.gameObject.CompareTag("Creature") && !collision.gameObject.CompareTag("Car"))
+            if (!col.gameObject.CompareTag("Road") && !col.gameObject.CompareTag("Creature") && !col.gameObject.CompareTag("Car"))
             {
                 soundFill.fillAmount += 0.02f; // 사운드 소리 
                 AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
             }
         }
-        if (collision.gameObject.tag == "Deer")
+        if (col.gameObject.CompareTag("Deer"))
         {
             originBody.SetActive(false);
             brokenBody.SetActive(true);
@@ -426,21 +430,21 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             soundFill.fillAmount += 0.1f;
         }
-        if (collision.gameObject.tag == "Creature" && !GameManager.Instance.IsJunctionEvent)
+        if (col.gameObject.CompareTag("Creature") && !GameManager.Instance.IsJunctionEvent)
         {
             TurnOffRadio();
             cinemachineBrain.enabled = true;
             carRb.isKinematic = true;
             carDrive.stop(STOP_MODE.IMMEDIATE);
         }
-        if (collision.gameObject.tag == "Oak" && IsChased)
+        if (col.gameObject.CompareTag("Oak") && IsChased)
         {
             IsEndingStart = false;
             chaseBackground.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(2);
             EventManager.Instance.PlayEvent();
         }
-        if (collision.gameObject.tag == "Tree" && IsWrongWay)
+        if (col.gameObject.CompareTag("Tree") && IsWrongWay)
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             IsGameOver = true;
