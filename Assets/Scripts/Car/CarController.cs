@@ -192,9 +192,9 @@ public class CarController : MonoBehaviour
             RandomRadio();
         }
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S)) IsAxelPressed = true;
-        else if (Input.GetKeyUp(KeyCode.W) && Input.GetKeyUp(KeyCode.S)) IsAxelPressed = false;
-
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) IsAxelPressed = true;
+        else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S)) IsAxelPressed = false;
+        Debug.Log("악셀은" + IsAxelPressed);
         if (IsAxelPressed && !IsEngineStart)
         {
             IsEngineStart = true;
@@ -359,7 +359,7 @@ public class CarController : MonoBehaviour
             Destroy(col.gameObject);
         }
 
-        if (col.gameObject.CompareTag("BoomGateEventTrigger"))
+        if (col.gameObject.CompareTag("BoomGateEvent"))
         {
             carDrive.stop(STOP_MODE.IMMEDIATE);
             GameManager.Instance.IsCargateEvent = true;
@@ -498,9 +498,10 @@ public class CarController : MonoBehaviour
         }
 
         // 속도가 거의 0이면 엔진소리 off
-        if (speed < 0.1f && speed > -0.1f)
+        if (carRb.velocity.magnitude < 0.1f && carRb.velocity.magnitude > -0.1f)
         {
             IsEngineStart = false;
+            carDrive.stop(STOP_MODE.ALLOWFADEOUT);
         }
 
         // 차량이 움직이지 못하는 상태면 엔진 off

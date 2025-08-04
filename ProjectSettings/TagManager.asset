@@ -18,6 +18,7 @@ TagManager:
   - DeerRush
   - LeftWay
   - Junction
+  - BoomGateEvent
   layers:
   - Default
   - TransparentFX
