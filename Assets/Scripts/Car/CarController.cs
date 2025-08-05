@@ -44,10 +44,11 @@ public class CarController : MonoBehaviour
     public Transform crowCheat;
     public Transform boomgateCheat;
     public Transform deerCheat;
-    public Transform trafficLightcrowCheat;
+    public Transform trafficLightCheat;
     public Transform creatureCheat;
     public Transform junctionCheat;
     public Transform oakTree;
+
     public GameObject creature;
     public GameObject creatureDct;
     public List<Wheel> wheels;
@@ -63,6 +64,8 @@ public class CarController : MonoBehaviour
     public GameObject insectSound;
     public GameObject closedTree;
     public GameObject deerRush;
+    public GameObject deerEvent;
+    public GameObject boomGateEvent;
 
     public Image deerBlack;
     public Image soundFill;
@@ -138,6 +141,28 @@ public class CarController : MonoBehaviour
         {
             initialSteeringRotation = steeringWheel.transform.localRotation; // �ʱ� ȸ���� ����
         }
+
+        // 스폰 위치 지정
+        if (SaveLoadManager.Instance.IsTrafficClear)
+        {
+            this.transform.position = boomgateCheat.position;
+            this.transform.rotation = boomgateCheat.rotation;
+        }
+        if (SaveLoadManager.Instance.IsCargateClear)
+        {
+            this.transform.position = deerCheat.position;
+            this.transform.rotation = deerCheat.rotation;
+        }
+        if (SaveLoadManager.Instance.IsDeerClear)
+        {
+            this.transform.position = creatureCheat.position;
+            this.transform.rotation = creatureCheat.rotation;
+        }
+        if (SaveLoadManager.Instance.IsChaseEvent)
+        {
+            this.transform.position = creatureCheat.position;
+            this.transform.rotation = creatureCheat.rotation;
+        }
     }
 
     void Update()
@@ -194,7 +219,7 @@ public class CarController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) IsAxelPressed = true;
         else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S)) IsAxelPressed = false;
-        Debug.Log("악셀은" + IsAxelPressed);
+
         if (IsAxelPressed && !IsEngineStart)
         {
             IsEngineStart = true;
@@ -215,8 +240,8 @@ public class CarController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
-            this.transform.position = trafficLightcrowCheat.position;
-            this.transform.rotation = trafficLightcrowCheat.rotation;
+            this.transform.position = trafficLightCheat.position;
+            this.transform.rotation = trafficLightCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
@@ -268,9 +293,7 @@ public class CarController : MonoBehaviour
             Brake();
 
             float currentSpeed = carRb.velocity.magnitude;
-            //Debug.Log("현재 속도: " + currentSpeed.ToString("F2") + " m/s");
             float currentSpeedKmh = currentSpeed * 3.6f;
-            //Debug.Log("현재 속도: " + currentSpeedKmh.ToString("F2") + " km/h");
 
             if (currentSpeed > maxSpeed)
             {
@@ -278,7 +301,6 @@ public class CarController : MonoBehaviour
 
                 if (!hasReachedMaxSpeed)
                 {
-                    Debug.Log("최고 속도 도달");
                     hasReachedMaxSpeed = true;
                 }
             }
@@ -381,7 +403,10 @@ public class CarController : MonoBehaviour
 
             this.GetComponent<Animator>().enabled = false;
             letterBox.SetActive(true);
-            GameManager.Instance.IsTrafficClear = true;
+
+            SaveLoadManager.Instance.IsTrafficClear = true;
+            SaveLoadManager.Instance.SaveGameData();
+
             cinemachineBrain.enabled = true;
 
             EventManager.Instance.SetEvent(1);
@@ -463,7 +488,11 @@ public class CarController : MonoBehaviour
         deerBlack.gameObject.SetActive(true);
         yield return new WaitForSeconds(2f);
         deerBlack.gameObject.SetActive(false);
-        GameManager.Instance.IsDeerClear = true;
+
+        SaveLoadManager.Instance.IsDeerClear = true;
+        boomGateEvent.SetActive(false);
+        deerEvent.SetActive(false);
+        SaveLoadManager.Instance.SaveGameData();
     }
 
     void ToggleHeadlights()
@@ -686,7 +715,11 @@ public class CarController : MonoBehaviour
     {
         IsChaseEventStart = true;
         insectSound.SetActive(false);
-        GameManager.Instance.IsChaseEvent = true;
+
+        SaveLoadManager.Instance.IsChaseEvent = true;
+        deerEvent.SetActive(false);
+        boomGateEvent.SetActive(false);
+        SaveLoadManager.Instance.SaveGameData();
     }
     public void ChaseCarStop()
     {
@@ -768,7 +801,6 @@ public class CarController : MonoBehaviour
         {
             if (hit.CompareTag("Tree"))
             {
-                Debug.Log("나무 찾음!~!");
                 float distance = (hit.transform.position - transform.position).sqrMagnitude;
                 if (distance < closestDistance)
                 {

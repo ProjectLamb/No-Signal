@@ -50,7 +50,7 @@ public class CrowEvent : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
+        if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
         if (CarController.IsChaseEventStart) return;
         if (IsFollowing) return;
         RandomEvent();
@@ -58,7 +58,7 @@ public class CrowEvent : MonoBehaviour
 
     void RandomEvent()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
+        if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
         if (CarController.IsChaseEventStart) return;
         if (BoomGateEventTrigger.isBoomEvent) return;
 

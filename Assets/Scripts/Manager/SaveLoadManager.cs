@@ -37,15 +37,15 @@ public static class SaveSystem
 
         string saveFilePath;
 
-    #if UNITY_EDITOR   //만약 유니티 에디터라면
+#if UNITY_EDITOR   //만약 유니티 에디터라면
         saveFilePath = Path.Combine(Application.dataPath, "UserData.json");
         
-    #elif UNITY_STANDALONE_WIN //운영체제가 Windows
+#elif UNITY_STANDALONE_WIN //운영체제가 Windows
         saveFilePath = Path.Combine(Application.dataPath, "UserData.json");
         
-    #elif UNITY_STANDALONE_OSX //운영체제가 Mac
+#elif UNITY_STANDALONE_OSX //운영체제가 Mac
         saveFilePath = Path.Combine(Application.persistentDataPath, "UserData.json");
-    #endif
+#endif
 
         File.WriteAllText(saveFilePath, saveJson);
         Debug.Log("Save Success: " + saveFilePath);
@@ -55,15 +55,15 @@ public static class SaveSystem
     {
         string saveFilePath;
 
-        #if UNITY_EDITOR   //만약 유니티 에디터라면
+#if UNITY_EDITOR   //만약 유니티 에디터라면
         saveFilePath = Path.Combine(Application.dataPath, "UserData.json");
         
-        #elif UNITY_STANDALONE_WIN //운영체제가 Windows
+#elif UNITY_STANDALONE_WIN //운영체제가 Windows
         saveFilePath = Path.Combine(Application.dataPath, "UserData.json");
         
-        #elif UNITY_STANDALONE_OSX //운영체제가 Mac
+#elif UNITY_STANDALONE_OSX //운영체제가 Mac
         saveFilePath = Path.Combine(Application.persistentDataPath, "UserData.json");
-        #endif
+#endif
 
         if (!File.Exists(saveFilePath))
         {
@@ -78,23 +78,49 @@ public static class SaveSystem
 }
 public class SaveLoadManager : MonoBehaviour
 {
+    private static SaveLoadManager instance;
+    public static SaveLoadManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                Debug.LogError("No SaveLoadManager Instance");
+            }
+            return instance;
+        }
+    }
+
+    public bool IsTrafficClear = false;
+    public bool IsDeerClear = false;
+    public bool IsCargateClear = false;
+    public bool IsChaseEvent = false;
+
     SaveData saveData;
     SaveData loadData;
-    void Update()
+
+    void Awake()
     {
-        if (Input.GetKeyDown("s"))
+        if (instance == null)
         {
-            saveData = new SaveData(false,false,false,false);
-
-            SaveSystem.Save(saveData);
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
 
-        if (Input.GetKeyDown("l"))
-        {
-            loadData = SaveSystem.Load();
-            Debug.Log(string.Format(
-                "LoadData Result => IsTraffic : {0}, IsCargate : {1}, IsDeer : {2}, IsChase : {3}",
-                loadData._IsTrafficClear, loadData._IsCargateClear, loadData._IsDeerClear, loadData._IsChaseEvent));
-        }
+        loadData = SaveSystem.Load();
+
+        IsTrafficClear = loadData._IsTrafficClear;
+        IsCargateClear = loadData._IsCargateClear;
+        IsDeerClear = loadData._IsDeerClear;
+        IsChaseEvent = loadData._IsChaseEvent;
+    }
+    public void SaveGameData()
+    {
+        saveData = new SaveData(IsTrafficClear, IsDeerClear, IsCargateClear, IsChaseEvent);
+        SaveSystem.Save(saveData);
     }
 }
