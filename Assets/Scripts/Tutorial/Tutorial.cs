@@ -80,17 +80,21 @@ public class Tutorial : MonoBehaviour
     {
         IsFade = true;
         Color fadeCol = fadeImage.color;
-        while (fadeCol.a > 0f)
+        if (page == 4)
         {
-            fadeCol.a -= 0.05f;
-            fadeImage.color = fadeCol;
-            yield return new WaitForSeconds(0.01f);
+            GameManager.Instance.IsTutorial = false;
+            GameManager.Instance.IsTutorialFirst = false;
+            CarController.IsTutorialEnd = true;
         }
+        while (fadeCol.a > 0f)
+            {
+                fadeCol.a -= 0.05f;
+                fadeImage.color = fadeCol;
+                yield return new WaitForSeconds(0.01f);
+            }
         fadeImage.gameObject.SetActive(false);
         if (page < 4) IsCanSkip = false;
-        else if (page == 4) GameManager.Instance.IsTutorial = false;
         IsFade = false;
-        GameManager.Instance.IsTutorialFirst = false;
     }
 
     IEnumerator WaitSkip()

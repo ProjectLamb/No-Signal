@@ -15,6 +15,10 @@ TagManager:
   - Road
   - Oak
   - Tree
+  - DeerRush
+  - LeftWay
+  - Junction
+  - BoomGateEvent
   layers:
   - Default
   - TransparentFX
@@ -26,7 +30,7 @@ TagManager:
   - Fogs
   - Oak
   - GuardLail
-  - 
+  - Light
   - 
   - 
   - 

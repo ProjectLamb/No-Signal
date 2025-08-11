@@ -17,14 +17,11 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-    public bool IsDeerClear = false;
-    public bool IsCargateClear = false;
+
     public bool IsCargateEvent = false;
-    public bool IsTrafficClear = false;
 
     public bool IsTutorial = true;
     public bool IsTutorialFirst = true;
-    public bool IsChaseEvent = false;
     public bool IsJunctionEvent = false;
     public bool IsDeathEvent = false;
 
@@ -42,6 +39,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        CarController.IsGameOver = false;
         IsTutorial = true;
     }
 
