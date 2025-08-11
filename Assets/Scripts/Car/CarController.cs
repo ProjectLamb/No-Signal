@@ -231,18 +231,18 @@ public class CarController : MonoBehaviour
             IsTutorialEnd = false;
             carDrive.start();
         }
-
+        
         // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            this.transform.position = boomgateCheat.position;
-            this.transform.rotation = boomgateCheat.rotation;
+            this.transform.position = trafficLightCheat.position;
+            this.transform.rotation = trafficLightCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
-            this.transform.position = trafficLightCheat.position;
-            this.transform.rotation = trafficLightCheat.rotation;
+            this.transform.position = boomgateCheat.position;
+            this.transform.rotation = boomgateCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
