@@ -35,7 +35,6 @@ public class CarController : MonoBehaviour
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
-    public static bool IsChaseEventStart = false;
     public static bool IsEndingStart = false;
     public static bool IsTutorialEnd = false;
 
@@ -93,6 +92,7 @@ public class CarController : MonoBehaviour
     private bool IsDctDie = false;
     private bool IsRadioOn = false;
     private bool IsRadioTime = false;
+    private bool IsChaseEventStart = false;
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsFinalCreature = false;
@@ -142,6 +142,7 @@ public class CarController : MonoBehaviour
             initialSteeringRotation = steeringWheel.transform.localRotation; // �ʱ� ȸ���� ����
         }
 
+        GameManager.Instance.IsDeathEvent = false;
         // 스폰 위치 지정
         if (SaveLoadManager.Instance.IsTrafficClear)
         {
@@ -715,9 +716,9 @@ public class CarController : MonoBehaviour
         insectSound.SetActive(false);
 
         SaveLoadManager.Instance.IsChaseEvent = true;
+        SaveLoadManager.Instance.SaveGameData();
         deerEvent.SetActive(false);
         boomGateEvent.SetActive(false);
-        SaveLoadManager.Instance.SaveGameData();
     }
     public void ChaseCarStop()
     {

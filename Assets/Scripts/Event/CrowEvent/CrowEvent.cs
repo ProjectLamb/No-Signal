@@ -51,7 +51,6 @@ public class CrowEvent : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
-        if (CarController.IsChaseEventStart) return;
         if (IsFollowing) return;
         RandomEvent();
     }
@@ -59,7 +58,6 @@ public class CrowEvent : MonoBehaviour
     void RandomEvent()
     {
         if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
-        if (CarController.IsChaseEventStart) return;
         if (BoomGateEventTrigger.isBoomEvent) return;
 
         passedTime += Time.deltaTime;
@@ -140,8 +138,6 @@ public class CrowEvent : MonoBehaviour
 
     private void FlyToTheDest()
     {
-        // if (CarController.lightOffTime <= 3f && !IsFlyAway) return;
-        // if (CarController.IsChaseEventStart && IsRanEvent && !IsFlyAway) return;
         anim.SetBool("flying", true);
         IsStayCar = false;
         this.transform.position = Vector3.Lerp(this.transform.position, finalDestination.position, flyAwaySpeed * Time.deltaTime);
