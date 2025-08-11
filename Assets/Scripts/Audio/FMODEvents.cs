@@ -52,6 +52,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference creatureCrying { get; private set; }
     [field: SerializeField] public EventReference creatureDie { get; private set; }
     [field: SerializeField] public EventReference creatureBreathe { get; private set; }
+    [field: SerializeField] public EventReference creatureGameOver { get; private set; }
+
 
     [Header("Radio")]
     [field: SerializeField] public EventReference radio { get; private set; }

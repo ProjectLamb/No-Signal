@@ -171,7 +171,7 @@ public class Creature : MonoBehaviour
 
     public void JumpToCar()
     {
-        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, targetTr.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureGameOver, targetTr.position);
         LookTarget();
         anim.SetTrigger("DoAttack");
         rb.isKinematic = true;
