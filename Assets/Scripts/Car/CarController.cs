@@ -321,7 +321,7 @@ public class CarController : MonoBehaviour
     {
         for (int i = 0; i < wheels.Count; i++)
         {
-            wheels[i].wheelCollider.motorTorque = moveInput * 600 * maxAcceleration * Time.deltaTime;
+            wheels[i].wheelCollider.motorTorque = moveInput * 650 * maxAcceleration * Time.deltaTime;
         }
     }
     void Steer()
@@ -384,6 +384,7 @@ public class CarController : MonoBehaviour
         if (col.gameObject.CompareTag("BoomGateEvent"))
         {
             carDrive.stop(STOP_MODE.IMMEDIATE);
+            TurnOffRadio();
             GameManager.Instance.IsCargateEvent = true;
         }
 
@@ -605,29 +606,26 @@ public class CarController : MonoBehaviour
 
         if (soundFill.fillAmount > 0.99f && !IsCreatureDct)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
             IsCreatureDct = true;
             IsDctDie = true;
             GameManager.Instance.IsDeathEvent = true;
-            soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
 
-            creatureDct.SetActive(true);
-            TurnOffRadio();
-            cinemachineBrain.enabled = true;
-            carRb.isKinematic = true;
-            carDrive.stop(STOP_MODE.IMMEDIATE);
-
-            // float creatureRanX = UnityEngine.Random.Range(10, 30);
-            // float creatureRanZ = UnityEngine.Random.Range(10, 30);
-            // Vector3 creaturePos = new Vector3(this.transform.position.x + creatureRanX, this.transform.position.y + 10f, this.transform.position.z + creatureRanZ);
-            // Vector3 creatureRot = this.transform.position - creaturePos;
-            // Quaternion creatureLook = Quaternion.LookRotation(creatureRot);
-            // creatureDct.transform.position = creaturePos;
-            // creatureDct.transform.rotation = creatureLook;
-            // AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+            StartCoroutine("BadGameOver");
         }
 
     }
 
+    IEnumerator BadGameOver()
+    {
+        yield return new WaitForSeconds(1.5f);
+        carRb.isKinematic = true;
+        soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
+        cinemachineBrain.enabled = true;
+        carDrive.stop(STOP_MODE.IMMEDIATE);
+        TurnOffRadio();
+        creatureDct.SetActive(true);
+    }
     IEnumerator SoundLoudWarn()
     {
         Color soundFillCol = soundFill.color;
