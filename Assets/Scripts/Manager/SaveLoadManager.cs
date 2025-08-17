@@ -9,10 +9,10 @@ public class SaveData
 {
     public SaveData(bool IsTrafficClear, bool IsCargateClear, bool IsDeerClear, bool IsChaseEvent)
     {
-        IsTrafficClear = _IsTrafficClear;
-        IsCargateClear = _IsCargateClear;
-        IsDeerClear = _IsDeerClear;
-        IsChaseEvent = _IsChaseEvent;
+        _IsTrafficClear = IsTrafficClear;
+        _IsCargateClear = IsCargateClear;
+        _IsDeerClear = IsDeerClear;
+        _IsChaseEvent = IsChaseEvent;
     }
 
     public bool _IsTrafficClear;

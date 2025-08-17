@@ -625,6 +625,8 @@ public class CarController : MonoBehaviour
         cinemachineBrain.enabled = true;
         carDrive.stop(STOP_MODE.IMMEDIATE);
         TurnOffRadio();
+
+        yield return new WaitForSeconds(4.5f);
         creatureDct.SetActive(true);
     }
     IEnumerator SoundLoudWarn()
