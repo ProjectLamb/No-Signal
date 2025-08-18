@@ -120,6 +120,7 @@ public class EventMove : MonoBehaviour
         {
         playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         }
+        yield return StartCoroutine(BGEvent_Lighton());
         yield return StartCoroutine(PlayerActiveOff());
         yield return new WaitForSecondsRealtime(1.0f);
         
