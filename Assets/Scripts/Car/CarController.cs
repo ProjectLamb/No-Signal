@@ -566,11 +566,12 @@ public class CarController : MonoBehaviour
         }
         if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
         // 까마귀 울음소리리
-        if (IsCrowCaw)
-        {
-            IsCrowCaw = false;
-            soundFill.fillAmount += 0.05f;
-        }
+        // if (IsCrowCaw)
+        // {
+        //     IsCrowCaw = false;
+        //     soundFill.fillAmount += 0.05f;
+        //     Debug.Log("까마귀게이지");
+        // }
         if (!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.02f * Time.deltaTime;
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
