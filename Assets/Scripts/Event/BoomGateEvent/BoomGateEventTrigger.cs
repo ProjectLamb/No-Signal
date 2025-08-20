@@ -9,7 +9,6 @@ public class BoomGateEventTrigger : MonoBehaviour
 {
     public EventMove EventMove;
     public GameObject target;
-    public CinemachineBrain cinemachineBrain;
     public static bool isBoomEvent = false;
     public static bool isFinished = false;
     // private Transform carCamTr;
@@ -82,7 +81,6 @@ public class BoomGateEventTrigger : MonoBehaviour
         Quaternion targetCarRotation = Quaternion.LookRotation(carTrToGate, Vector3.up);
         Vector3 targetRotation = targetCarRotation.eulerAngles;
 
-        cinemachineBrain.enabled = true;
         CameraFollow.isEvent = true;
         isBoomEvent = true;
 
