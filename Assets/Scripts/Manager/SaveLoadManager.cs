@@ -123,4 +123,15 @@ public class SaveLoadManager : MonoBehaviour
         saveData = new SaveData(IsTrafficClear, IsDeerClear, IsCargateClear, IsChaseEvent);
         SaveSystem.Save(saveData);
     }
+
+    public void CleanUp()
+    {
+        IsTrafficClear = false;
+        IsCargateClear = false;
+        IsDeerClear = false;
+        IsChaseEvent = false;
+        
+        saveData = new SaveData(IsTrafficClear, IsDeerClear, IsCargateClear, IsChaseEvent);
+        SaveSystem.Save(saveData);
+    }
 }
