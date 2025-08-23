@@ -65,6 +65,7 @@ public class CarController : MonoBehaviour
     public GameObject deerRush;
     public GameObject deerEvent;
     public GameObject boomGateEvent;
+    public GameObject GPSLine;
 
     public Image deerBlack;
     public Image soundFill;
@@ -229,9 +230,10 @@ public class CarController : MonoBehaviour
         if (IsTutorialEnd)
         {
             IsTutorialEnd = false;
+            StartCoroutine("NaviStart");
             carDrive.start();
         }
-        
+
         // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F2))
         {
@@ -399,6 +401,7 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.CompareTag("CreatureEvent"))
         {
+            GPSLine.SetActive(false);
             soundFill.fillAmount = 0f;
             IsSoundWarning = false;
             vvs._weight.value = 0.3f;
@@ -813,5 +816,13 @@ public class CarController : MonoBehaviour
         }
 
         closedTree = nearest;
+    }
+
+    IEnumerator NaviStart()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviStart, this.transform.position);
+        yield return new WaitForSeconds(3.5f);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviBeep, this.transform.position);
+        GPSLine.SetActive(true);
     }
 }
