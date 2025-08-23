@@ -35,6 +35,7 @@ public class FMODEvents : MonoBehaviour
     [Header("DeerEvent SFX")]
     [field: SerializeField] public EventReference deerCrying { get; private set; }
     [field: SerializeField] public EventReference deerFootsteps { get; private set; }
+    [field: SerializeField] public EventReference deerRush { get; private set; }
 
     [Header("BoomGateEvent SFX")]
     [field: SerializeField] public EventReference boomGateBarSound { get; private set; }
@@ -67,6 +68,9 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference navi { get; private set; }
     [field: SerializeField] public EventReference chaseNavi { get; private set; }
     [field: SerializeField] public EventReference goLeft { get; private set; }
+    [field: SerializeField] public EventReference naviStart { get; private set; }
+    [field: SerializeField] public EventReference naviResearch { get; private set; }
+    [field: SerializeField] public EventReference naviBeep { get; private set; }
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }

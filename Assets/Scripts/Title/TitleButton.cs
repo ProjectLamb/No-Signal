@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using FMOD.Studio;
+using TMPro;
 
 public class TitleButton : MonoBehaviour
 {
     public Image fadeImage;
+    public TextMeshProUGUI startGameText;
+    public GameObject ContinueText;
+
     private EventInstance title;
 
     void Awake()
@@ -17,12 +21,31 @@ public class TitleButton : MonoBehaviour
 
     void Start()
     {
+        if (!SaveLoadManager.Instance.IsTrafficClear && !SaveLoadManager.Instance.IsCargateClear && !SaveLoadManager.Instance.IsDeerClear && !SaveLoadManager.Instance.IsChaseEvent)
+        {
+            startGameText.text = "Start Game";
+            ContinueText.SetActive(false);
+        }
+        else
+        {
+            startGameText.text = "New Game";
+            ContinueText.SetActive(true);
+        }
         title.start();
         StartCoroutine("CoFadeOut");
     }
-    public void LoadGame()
+    public void NewGame()
     {
-        SceneManager.LoadScene("kabocha");
+        SaveLoadManager.Instance.CleanUp();
+        GameManager.Instance.IsTutorialFirst = true;
+        GameManager.Instance.IsTutorial = true;
+
+        FadeIn();
+    }
+
+    public void Continue()
+    {
+        FadeIn();
     }
 
     public void ExitGame()
@@ -46,7 +69,7 @@ public class TitleButton : MonoBehaviour
             fadeImage.color = fadeCol;
             yield return new WaitForSeconds(0.01f);
         }
-        LoadGame();
+        SceneManager.LoadScene("kabocha");
     }
 
     IEnumerator CoFadeOut()

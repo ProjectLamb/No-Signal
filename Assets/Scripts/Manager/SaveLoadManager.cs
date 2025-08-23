@@ -9,10 +9,10 @@ public class SaveData
 {
     public SaveData(bool IsTrafficClear, bool IsCargateClear, bool IsDeerClear, bool IsChaseEvent)
     {
-        IsTrafficClear = _IsTrafficClear;
-        IsCargateClear = _IsCargateClear;
-        IsDeerClear = _IsDeerClear;
-        IsChaseEvent = _IsChaseEvent;
+        _IsTrafficClear = IsTrafficClear;
+        _IsCargateClear = IsCargateClear;
+        _IsDeerClear = IsDeerClear;
+        _IsChaseEvent = IsChaseEvent;
     }
 
     public bool _IsTrafficClear;
@@ -120,6 +120,17 @@ public class SaveLoadManager : MonoBehaviour
     }
     public void SaveGameData()
     {
+        saveData = new SaveData(IsTrafficClear, IsDeerClear, IsCargateClear, IsChaseEvent);
+        SaveSystem.Save(saveData);
+    }
+
+    public void CleanUp()
+    {
+        IsTrafficClear = false;
+        IsCargateClear = false;
+        IsDeerClear = false;
+        IsChaseEvent = false;
+        
         saveData = new SaveData(IsTrafficClear, IsDeerClear, IsCargateClear, IsChaseEvent);
         SaveSystem.Save(saveData);
     }

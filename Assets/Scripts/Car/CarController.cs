@@ -65,6 +65,7 @@ public class CarController : MonoBehaviour
     public GameObject deerRush;
     public GameObject deerEvent;
     public GameObject boomGateEvent;
+    public GameObject GPSLine;
 
     public Image deerBlack;
     public Image soundFill;
@@ -89,7 +90,7 @@ public class CarController : MonoBehaviour
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
-    private bool IsDctDie = false;
+    private bool IsBadDeath = false;
     private bool IsRadioOn = false;
     private bool IsRadioTime = false;
     private bool IsChaseEventStart = false;
@@ -186,7 +187,7 @@ public class CarController : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 50f * Time.deltaTime);
             return;
         }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent || IsBadDeath) return;
         if (IsEndingStart) RushToTree();
 
         if (IsChaseEventStart)
@@ -229,20 +230,21 @@ public class CarController : MonoBehaviour
         if (IsTutorialEnd)
         {
             IsTutorialEnd = false;
+            StartCoroutine("NaviStart");
             carDrive.start();
         }
 
         // 치트코드 모음
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            this.transform.position = boomgateCheat.position;
-            this.transform.rotation = boomgateCheat.rotation;
+            this.transform.position = trafficLightCheat.position;
+            this.transform.rotation = trafficLightCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
-            this.transform.position = trafficLightCheat.position;
-            this.transform.rotation = trafficLightCheat.rotation;
+            this.transform.position = boomgateCheat.position;
+            this.transform.rotation = boomgateCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
@@ -399,6 +401,7 @@ public class CarController : MonoBehaviour
 
         if (col.gameObject.CompareTag("CreatureEvent"))
         {
+            GPSLine.SetActive(false);
             soundFill.fillAmount = 0f;
             IsSoundWarning = false;
             vvs._weight.value = 0.3f;
@@ -415,7 +418,7 @@ public class CarController : MonoBehaviour
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
-        if (col.gameObject.CompareTag("Junction"))
+        if (col.gameObject.CompareTag("Junction") && IsChased)
         {
             GameManager.Instance.IsJunctionEvent = true;
             Creature.IsJunction = true;
@@ -552,7 +555,7 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
-        if (IsDctDie) return; // 게이지를 100을 이미 채웠다면
+        if (IsBadDeath) return; // 게이지를 100을 이미 채웠다면
         //엔진 사운드 감지
         if (IsEngineStart && engineSoundFill < 0.1f)
         {
@@ -566,11 +569,12 @@ public class CarController : MonoBehaviour
         }
         if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
         // 까마귀 울음소리리
-        if (IsCrowCaw)
-        {
-            IsCrowCaw = false;
-            soundFill.fillAmount += 0.05f;
-        }
+        // if (IsCrowCaw)
+        // {
+        //     IsCrowCaw = false;
+        //     soundFill.fillAmount += 0.05f;
+        //     Debug.Log("까마귀게이지");
+        // }
         if (!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.02f * Time.deltaTime;
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
@@ -609,7 +613,7 @@ public class CarController : MonoBehaviour
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
             IsCreatureDct = true;
-            IsDctDie = true;
+            IsBadDeath = true;
             GameManager.Instance.IsDeathEvent = true;
 
             StartCoroutine("BadGameOver");
@@ -625,6 +629,8 @@ public class CarController : MonoBehaviour
         cinemachineBrain.enabled = true;
         carDrive.stop(STOP_MODE.IMMEDIATE);
         TurnOffRadio();
+
+        yield return new WaitForSeconds(4.5f);
         creatureDct.SetActive(true);
     }
     IEnumerator SoundLoudWarn()
@@ -810,5 +816,13 @@ public class CarController : MonoBehaviour
         }
 
         closedTree = nearest;
+    }
+
+    IEnumerator NaviStart()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviStart, this.transform.position);
+        yield return new WaitForSeconds(3.5f);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviBeep, this.transform.position);
+        GPSLine.SetActive(true);
     }
 }

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CrowEvent : MonoBehaviour
 {
     public Transform carLandSpot;
     public Transform finalDestination;
     public GameObject crowDot;
+    public Image soundfill;
     public float followSpeed = 5f; // 이동 속도
     public float flyAwaySpeed = 1f;
     public float rotationSpeed = 1f; // 회전 속도
@@ -62,7 +64,7 @@ public class CrowEvent : MonoBehaviour
 
         passedTime += Time.deltaTime;
 
-        if ((int)passedTime != 0 && (int)passedTime % 10 == 0 && !IsPsvCheck)
+        if ((int)passedTime != 0 && (int)passedTime % 20 == 0 && !IsPsvCheck)
         {
             IsPsvCheck = true;
             EventPsv = (int)passedTime;
@@ -76,7 +78,7 @@ public class CrowEvent : MonoBehaviour
                 EventPsv = 0;
             }
         }
-        else if ((int)passedTime % 10 != 0)
+        else if ((int)passedTime % 20 != 0)
         {
             IsPsvCheck = false;
         }
@@ -112,15 +114,15 @@ public class CrowEvent : MonoBehaviour
         EventManager.Instance.PlayEvent();
     }
 
-    IEnumerator WorAndCaw()
-    {
-        while (CarController.lightOffTime <= 3f)
-        {
-            EventManager.Instance.SetEvent(0);
-            EventManager.Instance.PlayEvent();
-            yield return new WaitForSeconds(2f);
-        }
-    }
+    // IEnumerator WorAndCaw()
+    // {
+    //     while (CarController.lightOffTime <= 3f)
+    //     {
+    //         EventManager.Instance.SetEvent(0);
+    //         EventManager.Instance.PlayEvent();
+    //         yield return new WaitForSeconds(2f);
+    //     }
+    // }
 
     public void StayOnCar()
     {
@@ -166,7 +168,10 @@ public class CrowEvent : MonoBehaviour
 
     public void Cawcaw()
     {
-        CarController.IsCrowCaw = true;
-        StartCoroutine("WorAndCaw");
+        //CarController.IsCrowCaw = true;
+        soundfill.fillAmount += 0.3f;
+        // StartCoroutine("WorAndCaw");
+        EventManager.Instance.SetEvent(0);
+        EventManager.Instance.PlayEvent();
     }
 }

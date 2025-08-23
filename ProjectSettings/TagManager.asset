@@ -19,6 +19,7 @@ TagManager:
   - LeftWay
   - Junction
   - BoomGateEvent
+  - DMS
   layers:
   - Default
   - TransparentFX

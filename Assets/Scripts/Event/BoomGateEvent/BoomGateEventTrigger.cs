@@ -24,6 +24,7 @@ public class BoomGateEventTrigger : MonoBehaviour
         //리팩터링 필요
         {
             SaveLoadManager.Instance.IsCargateClear = true;
+            SaveLoadManager.Instance.SaveGameData();
             GameManager.Instance.IsCargateEvent = true;
             Rigidbody carRb = collider.gameObject.GetComponent<Rigidbody>();
             Transform carTr = collider.gameObject.GetComponent<Transform>();

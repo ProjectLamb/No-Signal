@@ -55,7 +55,7 @@ public class DctCreature : MonoBehaviour
             }
             LookTarget();
         }
-    }
+    }    
 
 
     void LookTarget()
