@@ -89,7 +89,7 @@ public class CarController : MonoBehaviour
     private bool IsEngineStart = false;
     private bool IsSoundWarning = false;
     private bool IsCreatureDct = false;
-    private bool IsDctDie = false;
+    private bool IsBadDeath = false;
     private bool IsRadioOn = false;
     private bool IsRadioTime = false;
     private bool IsChaseEventStart = false;
@@ -186,7 +186,7 @@ public class CarController : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 50f * Time.deltaTime);
             return;
         }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent || IsBadDeath) return;
         if (IsEndingStart) RushToTree();
 
         if (IsChaseEventStart)
@@ -415,7 +415,7 @@ public class CarController : MonoBehaviour
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
-        if (col.gameObject.CompareTag("Junction"))
+        if (col.gameObject.CompareTag("Junction") && IsChased)
         {
             GameManager.Instance.IsJunctionEvent = true;
             Creature.IsJunction = true;
@@ -552,7 +552,7 @@ public class CarController : MonoBehaviour
 
     void SoundDetect()
     {
-        if (IsDctDie) return; // 게이지를 100을 이미 채웠다면
+        if (IsBadDeath) return; // 게이지를 100을 이미 채웠다면
         //엔진 사운드 감지
         if (IsEngineStart && engineSoundFill < 0.1f)
         {
@@ -610,7 +610,7 @@ public class CarController : MonoBehaviour
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
             IsCreatureDct = true;
-            IsDctDie = true;
+            IsBadDeath = true;
             GameManager.Instance.IsDeathEvent = true;
 
             StartCoroutine("BadGameOver");
