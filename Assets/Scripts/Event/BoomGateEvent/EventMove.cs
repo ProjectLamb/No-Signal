@@ -26,6 +26,41 @@ public class EventMove : MonoBehaviour
 
     public Collider carCollider;
 
+    [Header("Animator Controllers")]
+    public RuntimeAnimatorController boomGatePlayer;
+    public RuntimeAnimatorController boomGatePlayer1;
+    public RuntimeAnimatorController boomGatePlayer2;
+    public RuntimeAnimatorController boomGatePlayer3;
+
+    // 애니메이터 교체 전용 코루틴
+    private IEnumerator ChangeAnimatorController(RuntimeAnimatorController newController, string startStateName = null, float waitAfterChange = 0f)
+    {
+        if (animator == null) animator = GetComponent<Animator>();
+
+        if (newController != null)
+        {
+            animator.runtimeAnimatorController = newController;
+            Debug.Log($"Animator Controller 변경됨 → {newController.name} ✅");
+            // 원하는 State로 강제 시작
+            if (!string.IsNullOrEmpty(startStateName))
+            {
+                animator.Play(startStateName, 0, 0f); 
+                Debug.Log($"Animator State 강제 시작 → {startStateName}");
+            }
+        }
+        
+        else
+        {
+            Debug.LogWarning("넘겨받은 Animator Controller가 null 입니다 ⚠️");
+        }
+
+        // 교체 후 대기 (옵션)
+        if (waitAfterChange > 0f)
+        {
+            yield return new WaitForSecondsRealtime(waitAfterChange);
+        }
+    }
+
     void Awake()
     {  
         
@@ -53,8 +88,6 @@ public class EventMove : MonoBehaviour
         }
     }
 
-   
-
     private IEnumerator MoveRoutine()
     {   
         Vector3 destination = target.position;
@@ -68,6 +101,7 @@ public class EventMove : MonoBehaviour
 
         // 1. 이동 및 헤드라이트 on
         yield return StartCoroutine(BGEvent_Lighton()); //이벤트 진입 시 헤드라이트 on
+        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer));
         animator.SetInteger("Movement", 0);
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
@@ -77,10 +111,12 @@ public class EventMove : MonoBehaviour
             yield return null;
         }
         agent.isStopped = true;
+        agent.updateRotation = false;
         if (playerFootSteps.isValid())
         {
         playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         }
+        
         animator.SetInteger("Movement", 1); // 차단바 주섬주섬 애니메이션
         yield return new WaitForSecondsRealtime(3f); // 3초 기다림
 
@@ -94,25 +130,32 @@ public class EventMove : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
         yield return StartCoroutine(BGEvent_Lightoff());
         animator.SetInteger("Movement", 2); // 도는 애니메이션
+        yield return new WaitForSecondsRealtime(4.0f);
+
+        yield return StartCoroutine(BGEvent_Rotate120());
         yield return StartCoroutine(BGEvent_WaveInactive());
-        yield return new WaitForSecondsRealtime(3.5f);
+        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer1));
+        animator.SetInteger("Movement", 3); // 도는 애니메이션
+        yield return new WaitForSecondsRealtime(4.0f);
+
         
-        // animator.SetInteger("Movement", 3); // 도는 애니메이션
-        // yield return StartCoroutine(BGEvent_Rotate300());
-        // yield return new WaitForSecondsRealtime(4.0f);
-        // yield return StartCoroutine(BGEvent_Rotate120());
-        animator.SetInteger("Movement", 3); // 차단바 버튼 푸쉬 애니메이션
+        // yield return new WaitForSecondsRealtime(3.5f);
+        yield return StartCoroutine(BGEvent_Rotate300());
+        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer2));
+        animator.SetInteger("Movement", 4); // 차단바 버튼 푸쉬 애니메이션
         yield return new WaitForSecondsRealtime(1.0f);
         yield return StartCoroutine(BGEvent_BoomGateOpen());
 
-        // 4. 복귀
-        animator.SetInteger("Movement", 4); // 도는 애니메이션
-        yield return new WaitForSecondsRealtime(4.0f);
         
-        // yield return StartCoroutine(BGEvent_Rotate());
-       
-        animator.SetInteger("Movement", 5); // 복귀 애니메이션
+        // 4. 복귀
+        animator.SetInteger("Movement", 5); // 도는 애니메이션
+        yield return new WaitForSecondsRealtime(4.0f);
+
         yield return StartCoroutine(BGEvent_Rotate120());
+
+        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer3));
+        animator.SetInteger("Movement", 6); // 복귀 애니메이션
+        agent.updateRotation = true;
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
         yield return StartCoroutine(BGEvent_Return(startPos));
