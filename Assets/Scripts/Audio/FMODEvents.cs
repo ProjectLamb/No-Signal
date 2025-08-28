@@ -75,6 +75,7 @@ public class FMODEvents : MonoBehaviour
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
     [field: SerializeField] public EventReference gravel { get; private set; }
+    [field: SerializeField] public EventReference credit { get; private set; }
 
     [Header("SoundAndLight")]
     [field: SerializeField] public EventReference soundLoud { get; private set; }
@@ -87,6 +88,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference cricket { get; private set; }
     [field: SerializeField] public EventReference cricket2 { get; private set; }
     [field: SerializeField] public EventReference tutorialPage { get; private set; }
+    [field: SerializeField] public EventReference reality { get; private set; }
 
     private void Awake()
     {

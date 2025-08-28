@@ -11,7 +11,6 @@ public class DeerRush : MonoBehaviour
     public Transform finalDestTr;
     private NavMeshAgent navMeshAgent;
     private Animator anim;
-    //private bool IsMidDest = false;
     private bool IsFinDest = false;
     private float dis;
     private StudioEventEmitter emitter;
@@ -54,7 +53,7 @@ public class DeerRush : MonoBehaviour
             if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
                 navMeshAgent.Warp(hit.position);
         }
-        if (dis < 10f && IsFinDest)
+        if (dis < 100f && IsFinDest)
         {
             this.gameObject.SetActive(false);
         }

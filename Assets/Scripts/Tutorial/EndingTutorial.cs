@@ -91,7 +91,7 @@ public class EndingTutorial : MonoBehaviour
         fadeImage.gameObject.SetActive(false);
         if (page < 4) IsCanSkip = false;
         IsFade = false;
-        StartCoroutine("EndingNaviStart");
+        if (page == 4) StartCoroutine("EndingNaviStart");
     }
 
     IEnumerator WaitSkip()
@@ -106,7 +106,7 @@ public class EndingTutorial : MonoBehaviour
         yield return new WaitForSeconds(3.5f);
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviBeep, this.transform.position);
         GPSLine.SetActive(true);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(1.5f);
         endingPanel.SetActive(true);
     }
 }

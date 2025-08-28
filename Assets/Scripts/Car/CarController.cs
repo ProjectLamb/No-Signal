@@ -34,7 +34,7 @@ public class CarController : MonoBehaviour
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
-    public static bool IsEndingStart = false;
+    public static bool IsRushToTree = false;
     public static bool IsTutorialEnd = false;
 
     public Vector3 _centerOfMass;
@@ -170,7 +170,7 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.IsEnding) return;
+
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))
@@ -189,16 +189,22 @@ public class CarController : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(transform.position, closedTree.transform.position, 50f * Time.deltaTime);
             return;
         }
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent || IsBadDeath) return;
-        disToTree = Vector3.Distance(this.transform.position, oakTree.transform.position);
-        if (disToTree < 100f && IsChased && !IsEndingStart)
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsEnding)
         {
-            IsEndingStart = true;
+            carRb.isKinematic = true;
+            return;
+        }
+        if (GameManager.Instance.IsCargateEvent || IsBadDeath) return;
+
+        disToTree = Vector3.Distance(this.transform.position, oakTree.transform.position);
+        if (disToTree < 50f && IsChased && !IsRushToTree)
+        {
             RushToTree();
         }
 
         if (IsChaseEventStart)
         {
+            GPSLine.SetActive(false);
             TurnOffRadio();
             soundGauge.SetActive(false);
 
@@ -237,6 +243,7 @@ public class CarController : MonoBehaviour
         if (IsTutorialEnd)
         {
             IsTutorialEnd = false;
+            carRb.isKinematic = false;
             StartCoroutine("NaviStart");
             carDrive.start();
         }
@@ -418,6 +425,7 @@ public class CarController : MonoBehaviour
 
             cinemachineBrain.enabled = true;
 
+            IsChaseEventStart = true;
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
@@ -473,6 +481,7 @@ public class CarController : MonoBehaviour
         }
         if (col.gameObject.CompareTag("Oak") && IsChased)
         {
+            IsRushToTree = true;
             chaseBackground.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(2);
             EventManager.Instance.PlayEvent();
@@ -488,8 +497,10 @@ public class CarController : MonoBehaviour
 
     public void EndPanelOn()
     {
-        gameEndPanel.SetActive(true);
         GameManager.Instance.IsEnding = true;
+        IsRushToTree = true;
+        IsChased = false;
+        gameEndPanel.SetActive(true);
     }
     IEnumerator WaitForDeer()
     {
@@ -721,7 +732,6 @@ public class CarController : MonoBehaviour
     }
     public void ChaseCarBreak()
     {
-        IsChaseEventStart = true;
         insectSound.SetActive(false);
 
         SaveLoadManager.Instance.IsChaseEvent = true;
@@ -835,6 +845,7 @@ public class CarController : MonoBehaviour
     {
         yield return new WaitForSeconds(3.5f);
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.chaseReNavi, this.transform.position);
+        yield return new WaitForSeconds(3.95f);
         chaseGPSLine.SetActive(true);
     }
 }

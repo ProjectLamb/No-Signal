@@ -15,23 +15,6 @@ public class GPS : MonoBehaviour
     void Update()
     {
         GPSFollow();
-        // if (IsIndicate)
-        // {
-        //     SetIndicator();
-        // }
-    }
-
-    void SetIndicator()
-    {
-        Vector3 viewportPos = minimapCam.WorldToViewportPoint(target.position);
-        // 타겟이 미니맵 카메라 안에 있음
-        bool Isinview = viewportPos.z > 0 &&
-                        viewportPos.x >= 0 && viewportPos.x <= 1 &&
-                        viewportPos.y >= 0 && viewportPos.y <= 1;
-        if (Isinview)
-        {
-            CarController.IsEndingStart = true;
-        }
     }
     void GPSFollow()
     {

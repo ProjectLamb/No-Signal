@@ -88,7 +88,7 @@ public class Creature : MonoBehaviour
             }
         }
 
-        if (IsAttachCar)
+        if (IsAttachCar && !GameManager.Instance.IsEnding)
         {
             this.transform.position = attachTr.position;
             anim.SetBool("IsRun", false);

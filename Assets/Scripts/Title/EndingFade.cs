@@ -25,6 +25,6 @@ public class EndingFade : MonoBehaviour
             endingFadeImage.color = fadeCol;
             yield return new WaitForSeconds(0.02f);
         }
-        SceneManager.LoadScene("Clear");
+        SceneManager.LoadScene("Credit");
     }
 }
