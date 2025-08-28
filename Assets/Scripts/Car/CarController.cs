@@ -31,7 +31,6 @@ public class CarController : MonoBehaviour
     public float maxSteerAngle = 30.0f;
     public float maxSpeedRatio = 350f;
     public float maxSpeed = 100f;
-    public static float lightOffTime = 0f;
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
@@ -66,6 +65,7 @@ public class CarController : MonoBehaviour
     public GameObject deerEvent;
     public GameObject boomGateEvent;
     public GameObject GPSLine;
+    public GameObject chaseGPSLine;
 
     public Image deerBlack;
     public Image soundFill;
@@ -85,6 +85,7 @@ public class CarController : MonoBehaviour
     private float engineSoundFill = 0f;
     private float radioPassedTime = 0;
     private float treeSearchRad = 100f;
+    private float disToTree = 0f;
 
     private bool hasReachedMaxSpeed = false;
     private bool IsEngineStart = false;
@@ -169,6 +170,7 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsEnding) return;
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))
@@ -188,7 +190,12 @@ public class CarController : MonoBehaviour
             return;
         }
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent || IsBadDeath) return;
-        if (IsEndingStart) RushToTree();
+        disToTree = Vector3.Distance(this.transform.position, oakTree.transform.position);
+        if (disToTree < 100f && IsChased && !IsEndingStart)
+        {
+            IsEndingStart = true;
+            RushToTree();
+        }
 
         if (IsChaseEventStart)
         {
@@ -276,9 +283,6 @@ public class CarController : MonoBehaviour
             TurnOffRadio();
         }
 
-        if (!IsHeadlightsOn) lightOffTime += Time.deltaTime;
-        else if (IsHeadlightsOn) lightOffTime = 0f;
-
         if (Input.GetKeyDown(KeyCode.P)) // 어디 꼈을때 위치 재조정
         {
             this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3f, this.transform.position.z);
@@ -287,7 +291,7 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent) return;
+        if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsEnding) return;
         if (IsGameOver) return;
         if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
         {
@@ -469,7 +473,6 @@ public class CarController : MonoBehaviour
         }
         if (col.gameObject.CompareTag("Oak") && IsChased)
         {
-            IsEndingStart = false;
             chaseBackground.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(2);
             EventManager.Instance.PlayEvent();
@@ -486,6 +489,7 @@ public class CarController : MonoBehaviour
     public void EndPanelOn()
     {
         gameEndPanel.SetActive(true);
+        GameManager.Instance.IsEnding = true;
     }
     IEnumerator WaitForDeer()
     {
@@ -502,7 +506,6 @@ public class CarController : MonoBehaviour
 
     void ToggleHeadlights()
     {
-        if (IsChaseEventStart) return;
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         IsHeadlightsOn = !IsHeadlightsOn;
         HeadLight.SetActive(IsHeadlightsOn);
@@ -748,6 +751,8 @@ public class CarController : MonoBehaviour
         carRb.isKinematic = false;
         IsChaseEventStart = false;
         IsChased = true;
+
+        StartCoroutine("ChaseNaviStart");
     }
     public void WarnTextOn()
     {
@@ -824,5 +829,12 @@ public class CarController : MonoBehaviour
         yield return new WaitForSeconds(3.5f);
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviBeep, this.transform.position);
         GPSLine.SetActive(true);
+    }
+
+    IEnumerator ChaseNaviStart()
+    {
+        yield return new WaitForSeconds(3.5f);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.chaseReNavi, this.transform.position);
+        chaseGPSLine.SetActive(true);
     }
 }

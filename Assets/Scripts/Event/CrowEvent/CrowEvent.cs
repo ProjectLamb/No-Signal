@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using FMODUnity;
 
 public class CrowEvent : MonoBehaviour
 {
@@ -110,8 +111,17 @@ public class CrowEvent : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         anim.SetBool("landing", false);
-        EventManager.Instance.SetEvent(0);
-        EventManager.Instance.PlayEvent();
+        if (CarController.IsHeadlightsOn)
+        {
+            EventManager.Instance.SetEvent(0);
+            EventManager.Instance.PlayEvent();
+        }
+        else
+        {
+            EventManager.Instance.SetEvent(6);
+            EventManager.Instance.PlayEvent();
+        }
+
     }
 
     // IEnumerator WorAndCaw()
@@ -168,10 +178,6 @@ public class CrowEvent : MonoBehaviour
 
     public void Cawcaw()
     {
-        //CarController.IsCrowCaw = true;
         soundfill.fillAmount += 0.3f;
-        // StartCoroutine("WorAndCaw");
-        EventManager.Instance.SetEvent(0);
-        EventManager.Instance.PlayEvent();
     }
 }

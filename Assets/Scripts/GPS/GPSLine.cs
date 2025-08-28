@@ -47,4 +47,14 @@ public class GPSLine : MonoBehaviour
             }
         }
     }
+
+    void LineOff()
+    {
+        this.gameObject.SetActive(false);
+    }
+
+    void LineOn()
+    {
+        this.gameObject.SetActive(true);
+    }
 }

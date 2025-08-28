@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 public class GameEndFade : MonoBehaviour
 {
     public Image fadeImage;
+    public GameObject car;
+    public GameObject endingTutorial;
+    public Transform startTr;
     public void Start()
     {
         StartCoroutine("CoFadeIn");
@@ -20,6 +23,10 @@ public class GameEndFade : MonoBehaviour
             fadeImage.color = fadeCol;
             yield return new WaitForSeconds(0.01f);
         }
-        SceneManager.LoadScene("Clear");
+        yield return new WaitForSeconds(0.5f);
+        car.transform.position = startTr.position;
+        car.transform.rotation = startTr.rotation;
+        fadeImage.gameObject.SetActive(false);
+        endingTutorial.SetActive(true);
     }
 }

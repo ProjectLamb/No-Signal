@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public bool IsTutorialFirst = true;
     public bool IsJunctionEvent = false;
     public bool IsDeathEvent = false;
+    public bool IsEnding = false;
 
     void Awake()
     {
