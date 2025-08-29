@@ -15,9 +15,8 @@ public class VideoManager : MonoBehaviour
     void Start()
     {
         creditOST = AudioManager.Instance.CreateInstance(FMODEvents.instance.credit);
-        vid.Play();
         creditOST.start();
-        vid.loopPointReached += VideoEnd;
+        StartCoroutine("WaitForVid");
     }
 
     void VideoEnd(UnityEngine.Video.VideoPlayer vp)
@@ -29,17 +28,24 @@ public class VideoManager : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            creditOST.getPitch(out pitch);
-            pitch = 3f;
-            creditOST.setPitch(pitch);
+            // creditOST.getPitch(out pitch);
+            // pitch = 3f;
+            // creditOST.setPitch(pitch);
             vid.playbackSpeed = 3f;
         }
         else
         {
-            creditOST.getPitch(out pitch);
-            pitch = 1.0f;
-            creditOST.setPitch(pitch);
+            // creditOST.getPitch(out pitch);
+            // pitch = 1.0f;
+            // creditOST.setPitch(pitch);
             vid.playbackSpeed = 1f;
         }
+    }
+
+    IEnumerator WaitForVid()
+    {
+        yield return new WaitForSeconds(10f);
+        vid.Play();
+        vid.loopPointReached += VideoEnd;
     }
 }
