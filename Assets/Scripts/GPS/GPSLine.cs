@@ -30,6 +30,7 @@ public class GPSLine : MonoBehaviour
         lineRenderer.alignment = LineAlignment.View;
 
         curLines[0] = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
+        IsPassedLines[0] = true;
 
         if (SaveLoadManager.Instance.IsTrafficClear)
         {
@@ -55,9 +56,7 @@ public class GPSLine : MonoBehaviour
     }
     void Update()
     {
-        curLines[0] = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
-
-        for (int i = 1; i < orgLines.Length; i++)
+        for (int i = 0; i < orgLines.Length; i++)
         {
             if (GameManager.Instance.IsEnding)
             {

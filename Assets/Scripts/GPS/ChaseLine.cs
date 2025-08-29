@@ -10,7 +10,6 @@ public class ChaseLine : MonoBehaviour
     public bool[] IsPassedFirst;
     private Vector3[] orgLines;
     private Vector3[] curLines;
-    private Vector3 defVec;
     private float dis;
 
     void Awake()
@@ -29,16 +28,13 @@ public class ChaseLine : MonoBehaviour
         lineRenderer.GetPositions(orgLines);
         lineRenderer.alignment = LineAlignment.View;
 
-        defVec = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
-        lineRenderer.SetPosition(0, defVec);
+        curLines[0] = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
+        IsPassedLines[0] = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        defVec = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
-        lineRenderer.SetPosition(0, defVec);
-
         for (int i = 0; i < orgLines.Length; i++)
         {
             if (GameManager.Instance.IsEnding)
