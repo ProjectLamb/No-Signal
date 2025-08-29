@@ -53,19 +53,25 @@ public class DeerRush : MonoBehaviour
             if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
                 navMeshAgent.Warp(hit.position);
         }
-        if (dis < 100f && IsFinDest)
+        if (dis < 50f && !IsFinDest)
         {
-            this.gameObject.SetActive(false);
+            IsFinDest = true;
+            dis = Vector3.Distance(this.transform.position, destTr.position);
+            destTr = finalDestTr;
+            //navMeshAgent.speed = 50f;
         }
+        if (dis < 100f && IsFinDest)
+            {
+                this.gameObject.SetActive(false);
+            }
     }
 
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.CompareTag("DMS"))
-        {
-            destTr = finalDestTr;
-            navMeshAgent.speed = 50f;
-            IsFinDest = true;
-        }
-    }
+    // void OnTriggerEnter(Collider col)
+    // {
+    //     if (col.gameObject.CompareTag("DMS"))
+    //     {
+    //         destTr = finalDestTr;
+    //         navMeshAgent.speed = 50f;     
+    //     }
+    // }
 }
