@@ -29,7 +29,7 @@ public class GameEndFade : MonoBehaviour
         car.transform.position = startTr.position;
         car.transform.rotation = startTr.rotation;
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
         fadeImage.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(1.5f);

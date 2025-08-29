@@ -11,7 +11,6 @@ public class VideoManager : MonoBehaviour
     private EventInstance creditOST;
     private float pitch;
     public VideoPlayer vid;
-    // Start is called before the first frame update
 
     void Start()
     {

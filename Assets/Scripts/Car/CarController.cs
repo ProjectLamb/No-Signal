@@ -845,7 +845,7 @@ public class CarController : MonoBehaviour
     {
         yield return new WaitForSeconds(3.5f);
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.chaseReNavi, this.transform.position);
-        yield return new WaitForSeconds(3.95f);
+        yield return new WaitForSeconds(3.6f);
         chaseGPSLine.SetActive(true);
     }
 }

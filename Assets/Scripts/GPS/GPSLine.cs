@@ -7,7 +7,9 @@ public class GPSLine : MonoBehaviour
     private LineRenderer lineRenderer;
     public Transform carTr;
     public bool[] IsPassedLines;
+    public bool[] IsPassedFirst;
     private Vector3[] orgLines;
+    private Vector3[] curLines;
     private Vector3 defVec;
     private float dis;
 
@@ -19,42 +21,65 @@ public class GPSLine : MonoBehaviour
     void Start()
     {
         IsPassedLines = new bool[lineRenderer.positionCount];
+        IsPassedFirst = new bool[lineRenderer.positionCount];
+
         orgLines = new Vector3[lineRenderer.positionCount];
+        curLines = new Vector3[lineRenderer.positionCount];
+
         lineRenderer.GetPositions(orgLines);
         lineRenderer.alignment = LineAlignment.View;
 
-        defVec = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
-        lineRenderer.SetPosition(0, defVec);
-    }
+        curLines[0] = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
 
-    // Update is called once per frame
-    void Update()
-    {
-        defVec = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
-        lineRenderer.SetPosition(0, defVec);
-
-        for (int i = 1; i < orgLines.Length; i++)
+        if (SaveLoadManager.Instance.IsTrafficClear)
         {
-            dis = Vector3.Distance(new Vector3(carTr.position.x, 0, carTr.position.z), new Vector3(orgLines[i].x, 0, orgLines[i].z));
-            if (dis < 5f) IsPassedLines[i] = true;
-            if (IsPassedLines[i])
+            for (int i = 1; i <= 13; i++)
             {
-                lineRenderer.SetPosition(i, new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z));
+                IsPassedLines[i] = true;
             }
-            else
+        }
+        if (SaveLoadManager.Instance.IsCargateClear)
+        {
+            for (int i = 1; i <= 16; i++)
             {
-                lineRenderer.SetPosition(i, new Vector3(orgLines[i].x, carTr.position.y + 10f, orgLines[i].z));
+                IsPassedLines[i] = true;
+            }
+        }
+        if (SaveLoadManager.Instance.IsDeerClear || SaveLoadManager.Instance.IsChaseEvent)
+        {
+            for (int i = 1; i <= 17; i++)
+            {
+                IsPassedLines[i] = true;
             }
         }
     }
-
-    void LineOff()
+    void Update()
     {
-        this.gameObject.SetActive(false);
-    }
+        curLines[0] = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
 
-    void LineOn()
-    {
-        this.gameObject.SetActive(true);
+        for (int i = 1; i < orgLines.Length; i++)
+        {
+            if (GameManager.Instance.IsEnding)
+            {
+                curLines[i] = orgLines[i];
+                continue;
+            }
+
+            dis = Vector3.Distance(new Vector3(carTr.position.x, 0, carTr.position.z), new Vector3(orgLines[i].x, 0, orgLines[i].z));
+
+            if (i < 14 && dis < 20f) IsPassedLines[i] = true;
+            if (i >= 14 && dis < 50f) IsPassedLines[i] = true; 
+
+            if (IsPassedLines[i])
+            {
+                curLines[i] = new Vector3(carTr.position.x, carTr.position.y + 10f, carTr.position.z);
+            }
+            else
+            {
+                curLines[i] = orgLines[i];
+            }
+            lineRenderer.SetPositions(curLines);
+        
+        }
     }
 }

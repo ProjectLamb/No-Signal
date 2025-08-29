@@ -91,7 +91,11 @@ public class EndingTutorial : MonoBehaviour
         fadeImage.gameObject.SetActive(false);
         if (page < 4) IsCanSkip = false;
         IsFade = false;
-        if (page == 4) StartCoroutine("EndingNaviStart");
+        if (page == 4)
+        {
+            GameManager.Instance.IsTutorial = false;
+            StartCoroutine("EndingNaviStart");
+        }
     }
 
     IEnumerator WaitSkip()
