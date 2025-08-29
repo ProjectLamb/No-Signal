@@ -18,13 +18,14 @@ public class EndingFade : MonoBehaviour
 
     IEnumerator CoFadeIn()
     {
-        Color fadeCol = endingFadeImage.color;
-        while (fadeCol.a < 1f)
-        {
-            fadeCol.a += 0.02f;
-            endingFadeImage.color = fadeCol;
-            yield return new WaitForSeconds(0.02f);
-        }
+        // Color fadeCol = endingFadeImage.color;
+        // while (fadeCol.a < 1f)
+        // {
+        //     fadeCol.a += 0.02f;
+        //     endingFadeImage.color = fadeCol;
+        //     yield return new WaitForSeconds(0.02f);
+        // }
+        yield return new WaitForSeconds(1.0f);
         SceneManager.LoadScene("Credit");
     }
 }

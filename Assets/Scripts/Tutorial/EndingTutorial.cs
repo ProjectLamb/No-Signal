@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using FMODUnity;
 using FMOD.Studio;
 
@@ -111,6 +112,9 @@ public class EndingTutorial : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.naviBeep, this.transform.position);
         GPSLine.SetActive(true);
         yield return new WaitForSeconds(1.5f);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
         endingPanel.SetActive(true);
+        yield return new WaitForSeconds(1.0f);
+        SceneManager.LoadScene("Credit");
     }
 }
