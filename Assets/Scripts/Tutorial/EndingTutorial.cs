@@ -9,9 +9,6 @@ using FMOD.Studio;
 public class EndingTutorial : MonoBehaviour
 {
     public Image memo1;
-    public Image memo2;
-    public Image memo3;
-    public Image memo4;
     public GameObject endingPanel;
     public GameObject GPSLine;
 
@@ -23,9 +20,6 @@ public class EndingTutorial : MonoBehaviour
     {
         GameManager.Instance.IsTutorial = true;
         StartCoroutine(CoFadeIn(memo1));
-        StartCoroutine(CoFadeIn(memo2));
-        StartCoroutine(CoFadeIn(memo3));
-        StartCoroutine(CoFadeIn(memo4));
         StartCoroutine("WaitSkip");
     }
     void Update()
@@ -38,29 +32,6 @@ public class EndingTutorial : MonoBehaviour
                 StartCoroutine(CoFadeOut(memo1));
                 AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
                 StartCoroutine("WaitSkip");
-            }
-
-            else if (page == 1)
-            {
-                page++;
-                StartCoroutine(CoFadeOut(memo2));
-                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
-                StartCoroutine("WaitSkip");
-            }
-
-            else if (page == 2)
-            {
-                page++;
-                StartCoroutine(CoFadeOut(memo3));
-                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
-                StartCoroutine("WaitSkip");
-            }
-
-            else if (page == 3)
-            {
-                page++;
-                StartCoroutine(CoFadeOut(memo4));
-                AudioManager.Instance.PlayOneShot(FMODEvents.instance.tutorialPage, this.transform.position);
             }
         }
     }
@@ -90,9 +61,9 @@ public class EndingTutorial : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         fadeImage.gameObject.SetActive(false);
-        if (page < 4) IsCanSkip = false;
+        if (page < 1) IsCanSkip = false;
         IsFade = false;
-        if (page == 4)
+        if (page == 1)
         {
             GameManager.Instance.IsTutorial = false;
             StartCoroutine("EndingNaviStart");

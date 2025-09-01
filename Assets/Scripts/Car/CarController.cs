@@ -452,6 +452,11 @@ public class CarController : MonoBehaviour
             IsWrongWay = true;
             col.gameObject.SetActive(false);
         }
+        if (col.gameObject.CompareTag("Tunnel"))
+        {
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.tunnel, this.transform.position);
+            Destroy(col.gameObject);
+        }
     }
 
     void OnCollisionEnter(Collision col)

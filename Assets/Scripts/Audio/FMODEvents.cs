@@ -71,6 +71,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference naviResearch { get; private set; }
     [field: SerializeField] public EventReference naviBeep { get; private set; }
     [field: SerializeField] public EventReference chaseReNavi { get; private set; }
+    [field: SerializeField] public EventReference tunnel { get; private set; }
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }

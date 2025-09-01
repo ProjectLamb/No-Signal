@@ -20,6 +20,7 @@ TagManager:
   - Junction
   - BoomGateEvent
   - DMS
+  - Tunnel
   layers:
   - Default
   - TransparentFX
