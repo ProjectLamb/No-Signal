@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public bool IsTutorial = true;
     public bool IsTutorialFirst = true;
     public bool IsJunctionEvent = false;
+    public bool IsRushToTree = false;
     public bool IsDeathEvent = false;
     public bool IsEnding = false;
 

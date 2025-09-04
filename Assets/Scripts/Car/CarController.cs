@@ -199,6 +199,7 @@ public class CarController : MonoBehaviour
         disToTree = Vector3.Distance(this.transform.position, oakTree.transform.position);
         if (disToTree < 50f && IsChased && !IsRushToTree)
         {
+            GameManager.Instance.IsRushToTree = true;
             RushToTree();
         }
 
@@ -430,18 +431,14 @@ public class CarController : MonoBehaviour
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
-        if (col.gameObject.CompareTag("Junction") && IsChased)
-        {
-            GameManager.Instance.IsJunctionEvent = true;
-            Creature.IsJunction = true;
-            AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
+        // if (col.gameObject.CompareTag("Junction") && IsChased)
+        // {
+        //     GameManager.Instance.IsJunctionEvent = true;
+        //     Creature.IsJunction = true;
+        //     AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
 
-            col.gameObject.SetActive(false);
-            // 크리처 등장 (isCancreatureattach)
-            // 크리처 유리에 붙음
-            // 내비게이션 우회
-            // 전 음성 재생
-        }
+        //     col.gameObject.SetActive(false);
+        // }
         if (col.gameObject.CompareTag("DeerRush") && IsChased)
         {
             deerRush.SetActive(true);
@@ -777,6 +774,7 @@ public class CarController : MonoBehaviour
 
     public void RushToTree()
     {
+        Creature.IsAttachCar = true;
         if (!IsRushTreeStart)
         {
             IsRushTreeStart = true;
@@ -787,6 +785,7 @@ public class CarController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, oakTree.position);
         if (distance < 5f && !IsFinalCreature)
         {
+            Creature.IsAttachCar = false;
             IsFinalCreature = true;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carSliding, this.transform.position);
         }

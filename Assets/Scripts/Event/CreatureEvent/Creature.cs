@@ -22,10 +22,10 @@ public class Creature : MonoBehaviour
     public static bool IsDie = false;
     private bool IsChase = false;
     private bool IsReveal = false;
-    private bool IsAttachCar = false;
+    public static bool IsAttachCar = false;
     private bool IsGameOver = false;
 
-    public static bool IsJunction = false;
+    //public static bool IsJunction = false;
     public static bool IsEnding = false;
     //private bool  
     void Awake()
@@ -47,18 +47,18 @@ public class Creature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsJunction)
-        {
-            IsJunction = false;
-            float ranDestX = UnityEngine.Random.Range(20, 30);
-            float ranDestY = UnityEngine.Random.Range(3, 5);
+        // if (IsJunction)
+        // {
+        //     IsJunction = false;
+        //     float ranDestX = UnityEngine.Random.Range(20, 30);
+        //     float ranDestY = UnityEngine.Random.Range(3, 5);
 
-            Vector3 offset = targetTr.forward * ranDestX + targetTr.up * ranDestY;
-            this.transform.position = targetTr.position + offset;
-            navMeshAgent.enabled = false;
-            NavCheck();
-            navMeshAgent.enabled = true;
-        }
+        //     Vector3 offset = targetTr.forward * ranDestX + targetTr.up * ranDestY;
+        //     this.transform.position = targetTr.position + offset;
+        //     navMeshAgent.enabled = false;
+        //     NavCheck();
+        //     navMeshAgent.enabled = true;
+        // }
         if (IsDie)
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
@@ -145,13 +145,14 @@ public class Creature : MonoBehaviour
 
         if (col.gameObject.CompareTag("Car"))
         {
-            if (GameManager.Instance.IsJunctionEvent)
-            {
-                IsAttachCar = true;
-                AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
-                stepEmitter.Stop();
-            }
-            if (!IsGameOver && !GameManager.Instance.IsJunctionEvent)
+            // if (GameManager.Instance.IsJunctionEvent)
+            // {
+            //     IsAttachCar = true;
+            //     AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
+            //     stepEmitter.Stop();
+            // }
+            //if (!IsGameOver && !GameManager.Instance.IsJunctionEvent)
+            if(!IsGameOver && !GameManager.Instance.IsRushToTree)
             {
                 AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
                 IsGameOver = true;
