@@ -36,8 +36,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference deerFootsteps { get; private set; }
     [field: SerializeField] public EventReference deerRush { get; private set; }
 
-    [Header("BoomGateEvent SFX")]
-    [field: SerializeField] public EventReference boomGateBarSound { get; private set; }
+    [Header("CarGateEvent SFX")]
+    [field: SerializeField] public EventReference carGateBarSound { get; private set; }
     [field: SerializeField] public EventReference fuseOff { get; private set; }
 
     [Header("TrafficLightEvent SFX")]

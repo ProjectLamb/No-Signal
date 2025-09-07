@@ -18,9 +18,9 @@ TagManager:
   - DeerRush
   - LeftWay
   - Junction
-  - BoomGateEvent
   - DMS
   - Tunnel
+  - CarGateEvent
   layers:
   - Default
   - TransparentFX

@@ -5,11 +5,11 @@ using DG.Tweening;
 using Cinemachine;
 
 
-public class BoomGateEventTrigger : MonoBehaviour
+public class CarGateEventTrigger : MonoBehaviour
 {
     public EventMove EventMove;
     public GameObject target;
-    public static bool isBoomEvent = false;
+    public static bool isCargateEvent = false;
     public static bool isFinished = false;
     // private Transform carCamTr;
 
@@ -83,7 +83,7 @@ public class BoomGateEventTrigger : MonoBehaviour
         Vector3 targetRotation = targetCarRotation.eulerAngles;
 
         CameraFollow.isEvent = true;
-        isBoomEvent = true;
+        isCargateEvent = true;
 
         Sequence mySequence = DOTween.Sequence();
         mySequence.Append(carTr.DORotate(targetRotation, 3.0f));
