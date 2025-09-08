@@ -61,7 +61,7 @@ public class CrowEvent : MonoBehaviour
     void RandomEvent()
     {
         if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
-        if (BoomGateEventTrigger.isBoomEvent) return;
+        if (CarGateEventTrigger.isCargateEvent) return;
 
         passedTime += Time.deltaTime;
 

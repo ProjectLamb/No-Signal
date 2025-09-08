@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BGEventDotFollowTarget : MonoBehaviour
+public class CGEventDotFollowTarget : MonoBehaviour
 {
     [SerializeField]
     private Transform target;

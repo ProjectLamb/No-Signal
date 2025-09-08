@@ -40,7 +40,7 @@ public class CarController : MonoBehaviour
     public Vector3 _centerOfMass;
     public Transform modelTr;
     public Transform crowCheat;
-    public Transform boomgateCheat;
+    public Transform cargateCheat;
     public Transform deerCheat;
     public Transform trafficLightCheat;
     public Transform creatureCheat;
@@ -63,7 +63,7 @@ public class CarController : MonoBehaviour
     public GameObject closedTree;
     public GameObject deerRush;
     public GameObject deerEvent;
-    public GameObject boomGateEvent;
+    public GameObject carGateEvent;
     public GameObject GPSLine;
     public GameObject chaseGPSLine;
 
@@ -148,8 +148,8 @@ public class CarController : MonoBehaviour
         // 스폰 위치 지정
         if (SaveLoadManager.Instance.IsTrafficClear)
         {
-            this.transform.position = boomgateCheat.position;
-            this.transform.rotation = boomgateCheat.rotation;
+            this.transform.position = cargateCheat.position;
+            this.transform.rotation = cargateCheat.rotation;
         }
         if (SaveLoadManager.Instance.IsCargateClear)
         {
@@ -258,8 +258,8 @@ public class CarController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
-            this.transform.position = boomgateCheat.position;
-            this.transform.rotation = boomgateCheat.rotation;
+            this.transform.position = cargateCheat.position;
+            this.transform.rotation = cargateCheat.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.F4))
@@ -281,7 +281,7 @@ public class CarController : MonoBehaviour
         }
 
         // 헤드라이트 키
-        if (Input.GetKeyDown(KeyCode.F) && !BoomGateEventTrigger.isBoomEvent)
+        if (Input.GetKeyDown(KeyCode.F) && !CarGateEventTrigger.isCargateEvent)
         {
             ToggleHeadlights();
         }
@@ -301,7 +301,7 @@ public class CarController : MonoBehaviour
     {
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsEnding) return;
         if (IsGameOver) return;
-        if (!BoomGateEventTrigger.isBoomEvent && !IsChaseEventStart)
+        if (!CarGateEventTrigger.isCargateEvent && !IsChaseEventStart)
         {
             Move();
             Steer();
@@ -396,7 +396,7 @@ public class CarController : MonoBehaviour
             Destroy(col.gameObject);
         }
 
-        if (col.gameObject.CompareTag("BoomGateEvent"))
+        if (col.gameObject.CompareTag("CarGateEvent"))
         {
             carDrive.stop(STOP_MODE.IMMEDIATE);
             TurnOffRadio();
@@ -458,7 +458,7 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        if (!IsChased && !BoomGateEventTrigger.isBoomEvent && !GameManager.Instance.IsCargateEvent)
+        if (!IsChased && !CarGateEventTrigger.isCargateEvent && !GameManager.Instance.IsCargateEvent)
         {
             if (!col.gameObject.CompareTag("Road") && !col.gameObject.CompareTag("Creature") && !col.gameObject.CompareTag("Car"))
             {
@@ -512,7 +512,7 @@ public class CarController : MonoBehaviour
         deerBlack.gameObject.SetActive(false);
 
         SaveLoadManager.Instance.IsDeerClear = true;
-        boomGateEvent.SetActive(false);
+        carGateEvent.SetActive(false);
         deerEvent.SetActive(false);
         SaveLoadManager.Instance.SaveGameData();
     }
@@ -708,7 +708,7 @@ public class CarController : MonoBehaviour
 
     private void TurnOffRadio()
     {
-        if (BoomGateEventTrigger.isBoomEvent) return;
+        if (CarGateEventTrigger.isCargateEvent) return;
         switch (radioCh)
         {
             case 1:
@@ -739,7 +739,7 @@ public class CarController : MonoBehaviour
         SaveLoadManager.Instance.IsChaseEvent = true;
         SaveLoadManager.Instance.SaveGameData();
         deerEvent.SetActive(false);
-        boomGateEvent.SetActive(false);
+        carGateEvent.SetActive(false);
     }
     public void ChaseCarStop()
     {
@@ -851,5 +851,10 @@ public class CarController : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.chaseReNavi, this.transform.position);
         yield return new WaitForSeconds(3.6f);
         chaseGPSLine.SetActive(true);
+    }
+
+    public void CarFmodPause()
+    {
+        
     }
 }

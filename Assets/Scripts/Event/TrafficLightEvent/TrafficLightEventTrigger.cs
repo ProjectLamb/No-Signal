@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TrafficLightEventTrigger : MonoBehaviour
 {   
-    public GameObject Car;
     public List<Light> light;
     public static bool isTLEvent = false;
     public GameObject obstacle;
@@ -15,7 +14,7 @@ public class TrafficLightEventTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {   
-        if(collider.gameObject == Car)
+        if(collider.gameObject.CompareTag("Car"))
         //리팩터링 필요
         {   
             if(eventStart != null)

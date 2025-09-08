@@ -30,7 +30,7 @@ public class PauseGame : MonoBehaviour
 
     public void PauseOff()
     {
-        GameManager.Instance.IsGamePaused = true;
+        GameManager.Instance.IsGamePaused = false;
         pausePanel.SetActive(false);
         buttons.SetActive(false);
         gameScale = 1;

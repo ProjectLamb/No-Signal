@@ -11,26 +11,29 @@ public class EventMove : MonoBehaviour
 {   
     private NavMeshAgent agent;
     private EventInstance playerFootSteps;
-    private EventInstance boomGateBarSound;
+    private EventInstance carGateBarSound;
     private EventInstance carLight;
     private EventInstance fuseOff;
     public Animator animator;
-    public Transform target;       // BoomGate의 Transform
-    public Transform boomgatebar;
+    public Transform target;       // carGate의 Transform
+    public Transform carGatebar;
     public GameObject light;
     public Rigidbody CarRb;
     public float speed = 2f;       // 이동 속도
     private Coroutine moveRoutine;
-    public List<EventDot> BGEventWave;
+    public List<EventDot> CGEventWave;
     public CinemachineBrain cinemachineBrain;
 
     public Collider carCollider;
 
     [Header("Animator Controllers")]
-    public RuntimeAnimatorController boomGatePlayer;
-    public RuntimeAnimatorController boomGatePlayer1;
-    public RuntimeAnimatorController boomGatePlayer2;
-    public RuntimeAnimatorController boomGatePlayer3;
+    public RuntimeAnimatorController carGatePlayer;
+    public RuntimeAnimatorController carGatePlayer1;
+    public RuntimeAnimatorController carGatePlayer2;
+    public RuntimeAnimatorController carGatePlayer3;
+    
+    [Header("Scripts")]
+    public CarController CarController;
 
     // 애니메이터 교체 전용 코루틴
     private IEnumerator ChangeAnimatorController(RuntimeAnimatorController newController, string startStateName = null, float waitAfterChange = 0f)
@@ -66,7 +69,7 @@ public class EventMove : MonoBehaviour
         
         agent = GetComponent<NavMeshAgent>();
         playerFootSteps = AudioManager.Instance.CreateInstance(FMODEvents.instance.playerFootSteps);
-        boomGateBarSound = AudioManager.Instance.CreateInstance(FMODEvents.instance.boomGateBarSound);
+        carGateBarSound = AudioManager.Instance.CreateInstance(FMODEvents.instance.carGateBarSound);
     }
 
     public void MoveToTarget()
@@ -81,7 +84,7 @@ public class EventMove : MonoBehaviour
         {
             cinemachineBrain.enabled = false;
             CameraFollow.isEvent = false;
-            BoomGateEventTrigger.isBoomEvent = false;
+            CarGateEventTrigger.isCargateEvent = false;
             CarRb.isKinematic = false;
             CarRb.velocity = Vector3.zero;
             // 차단바 이벤트 진입시 player가 null인 에러가 떠도 차 움직이게 하는 예외처리
@@ -100,8 +103,8 @@ public class EventMove : MonoBehaviour
         
 
         // 1. 이동 및 헤드라이트 on
-        yield return StartCoroutine(BGEvent_Lighton()); //이벤트 진입 시 헤드라이트 on
-        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer));
+        yield return StartCoroutine(CGEvent_Lighton()); //이벤트 진입 시 헤드라이트 on
+        yield return StartCoroutine(ChangeAnimatorController(carGatePlayer));
         animator.SetInteger("Movement", 0);
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
@@ -122,48 +125,48 @@ public class EventMove : MonoBehaviour
 
 
         // 2. 파동 시작
-        StartCoroutine(BGEvent_WaveActive());
+        StartCoroutine(CGEvent_WaveActive());
         yield return new WaitForSecondsRealtime(4.0f);
         // 3. 회전 및 헤드라이트 점등
         
-        yield return StartCoroutine(BGEvent_Lightblink(3));
+        yield return StartCoroutine(CGEvent_Lightblink(3));
         yield return new WaitForSecondsRealtime(0.5f);
-        yield return StartCoroutine(BGEvent_Lightoff());
+        yield return StartCoroutine(CGEvent_Lightoff());
         animator.SetInteger("Movement", 2); // 도는 애니메이션
         yield return new WaitForSecondsRealtime(4.0f);
 
-        yield return StartCoroutine(BGEvent_Rotate120());
-        yield return StartCoroutine(BGEvent_WaveInactive());
-        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer1));
+        yield return StartCoroutine(CGEvent_Rotate120());
+        yield return StartCoroutine(CGEvent_WaveInactive());
+        yield return StartCoroutine(ChangeAnimatorController(carGatePlayer1));
         animator.SetInteger("Movement", 3); // 도는 애니메이션
         yield return new WaitForSecondsRealtime(4.0f);
 
         
         // yield return new WaitForSecondsRealtime(3.5f);
-        yield return StartCoroutine(BGEvent_Rotate300());
-        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer2));
+        yield return StartCoroutine(CGEvent_Rotate300());
+        yield return StartCoroutine(ChangeAnimatorController(carGatePlayer2));
         animator.SetInteger("Movement", 4); // 차단바 버튼 푸쉬 애니메이션
         yield return new WaitForSecondsRealtime(1.0f);
-        yield return StartCoroutine(BGEvent_BoomGateOpen());
+        yield return StartCoroutine(CGEvent_carGateOpen());
 
         
         // 4. 복귀
         animator.SetInteger("Movement", 5); // 도는 애니메이션
         yield return new WaitForSecondsRealtime(4.0f);
 
-        yield return StartCoroutine(BGEvent_Rotate120());
+        yield return StartCoroutine(CGEvent_Rotate120());
 
-        yield return StartCoroutine(ChangeAnimatorController(boomGatePlayer3));
+        yield return StartCoroutine(ChangeAnimatorController(carGatePlayer3));
         animator.SetInteger("Movement", 6); // 복귀 애니메이션
         agent.updateRotation = true;
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerFootSteps, transform, GetComponent<Rigidbody>());
         playerFootSteps.start();
-        yield return StartCoroutine(BGEvent_Return(startPos));
+        yield return StartCoroutine(CGEvent_Return(startPos));
         if (playerFootSteps.isValid())
         {
         playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         }
-        yield return StartCoroutine(BGEvent_Lighton());
+        yield return StartCoroutine(CGEvent_Lighton());
         yield return StartCoroutine(PlayerActiveOff());
         yield return new WaitForSecondsRealtime(1.0f);
         
@@ -175,17 +178,17 @@ public class EventMove : MonoBehaviour
     private IEnumerator PlayerActiveOff(){
         GameManager.Instance.IsCargateEvent = false;
         CameraFollow.isEvent = false;
-        BoomGateEventTrigger.isBoomEvent = false;
+        CarGateEventTrigger.isCargateEvent = false;
         this.gameObject.SetActive(false);
         CarRb.isKinematic = false;
         CarRb.useGravity = true;
         CarRb.velocity = Vector3.zero;
         cinemachineBrain.enabled = false;
-         //BoomGateEventTrigger off
+         //CarGateEventTrigger off
         yield return null;
     }
 
-    // private IEnumerator BGEvent_Move(Vector3 destination){
+    // private IEnumerator CGEvent_Move(Vector3 destination){
     //     while (Vector3.Distance(transform.position, destination) > 0.45f)
     //     {
     //         Vector3 dir = (destination - transform.position).normalized;
@@ -195,7 +198,7 @@ public class EventMove : MonoBehaviour
     //     }
     //     }
 
-    private IEnumerator BGEvent_Rotate120(){
+    private IEnumerator CGEvent_Rotate120(){
         
         // Quaternion startRot = transform.rotation;
         // Quaternion endRot = startRot * Quaternion.Euler(0, 90, 0);
@@ -212,7 +215,7 @@ public class EventMove : MonoBehaviour
         transform.rotation = Quaternion.Euler(0,120,0);
         yield return null;
         }
-    private IEnumerator BGEvent_Rotate300(){
+    private IEnumerator CGEvent_Rotate300(){
         
         // Quaternion startRot = transform.rotation;
         // Quaternion endRot = startRot * Quaternion.Euler(0, 90, 0);
@@ -229,7 +232,7 @@ public class EventMove : MonoBehaviour
         transform.rotation = Quaternion.Euler(0,300,0);
         yield return null;
         }
-    private IEnumerator BGEvent_Return(Vector3 startPos){
+    private IEnumerator CGEvent_Return(Vector3 startPos){
         agent.isStopped = false;
         agent.SetDestination(startPos);
 
@@ -246,21 +249,26 @@ public class EventMove : MonoBehaviour
         // }
         }
 
-    private IEnumerator BGEvent_Lighton()
+    private IEnumerator CGEvent_Lighton()
     {   
+        if(!CarController.IsHeadlightsOn)
+        {
+        CarController.IsHeadlightsOn = true;
         light.SetActive(true);
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
+        }
         yield return null;
     }
     
-    private IEnumerator BGEvent_Lightoff()
+    private IEnumerator CGEvent_Lightoff()
     {   
+        CarController.IsHeadlightsOn = false;
         light.SetActive(false);
         yield return null;
 
     }
 
-    private IEnumerator BGEvent_Lightblink(int num)
+    private IEnumerator CGEvent_Lightblink(int num)
     {   
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.fuseOff, this.transform.position);
         int i = 0;
@@ -279,40 +287,40 @@ public class EventMove : MonoBehaviour
 
     }
 
-    private IEnumerator BGEvent_BoomGateOpen()
+    private IEnumerator CGEvent_carGateOpen()
     {   
-        AudioManager.Instance.PlayOneShot(FMODEvents.instance.boomGateBarSound, target.transform.position);
-        Quaternion startRot = boomgatebar.transform.rotation;
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.carGateBarSound, target.transform.position);
+        Quaternion startRot = carGatebar.transform.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, -90, 0);
         float elapsed = 0f;
         float turnDuration = 5.0f;
 
         while (elapsed < turnDuration)
         {
-            boomgatebar.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
+            carGatebar.transform.rotation = Quaternion.Slerp(startRot, endRot, elapsed / turnDuration);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        boomgatebar.transform.rotation = endRot;
+        carGatebar.transform.rotation = endRot;
 
         yield return new WaitForSecondsRealtime(3.0f);
     }
-    private IEnumerator BGEvent_WaveActive()
+    private IEnumerator CGEvent_WaveActive()
     {
-        BGEventDotFollowTarget.isWaveActived = true;
-        for (int i = 0; i < BGEventWave.Count; i++)
+        CGEventDotFollowTarget.isWaveActived = true;
+        for (int i = 0; i < CGEventWave.Count; i++)
     {   
-        BGEventWave[i].gameObject.SetActive(true);
+        CGEventWave[i].gameObject.SetActive(true);
         yield return new WaitForSecondsRealtime(0.5f);
         // 시간 랜덤화(0.2~0.8) 필요
     }
         
         yield return null;
     }
-    private IEnumerator BGEvent_WaveInactive()
+    private IEnumerator CGEvent_WaveInactive()
     {   
-        BGEventDotFollowTarget.isWaveActived = false;
-        foreach (var dot in BGEventWave)
+        CGEventDotFollowTarget.isWaveActived = false;
+        foreach (var dot in CGEventWave)
         {
             dot.gameObject.SetActive(false);
         }

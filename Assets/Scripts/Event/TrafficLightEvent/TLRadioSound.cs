@@ -6,8 +6,6 @@ using FMOD.Studio;
 public class TLRadioSound : MonoBehaviour
 {   
     private EventInstance radio_TL;
-    public GameObject Car;
-    
     // Start is called before the first frame update
     void Awake()
     {
@@ -16,7 +14,7 @@ public class TLRadioSound : MonoBehaviour
 
     // Update is called once per frame
     void OnTriggerEnter(Collider collider){
-        if(collider.gameObject == Car){
+        if (collider.gameObject.CompareTag("Car")){
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.radio_TL, this.transform.position);
 
         this.gameObject.SetActive(false);
