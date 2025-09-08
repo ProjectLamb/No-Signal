@@ -124,16 +124,6 @@ public class CrowEvent : MonoBehaviour
 
     }
 
-    // IEnumerator WorAndCaw()
-    // {
-    //     while (CarController.lightOffTime <= 3f)
-    //     {
-    //         EventManager.Instance.SetEvent(0);
-    //         EventManager.Instance.PlayEvent();
-    //         yield return new WaitForSeconds(2f);
-    //     }
-    // }
-
     public void StayOnCar()
     {
         StopCoroutine("FollowTarget");

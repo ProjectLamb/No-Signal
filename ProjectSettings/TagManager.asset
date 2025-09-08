@@ -21,6 +21,7 @@ TagManager:
   - BoomGateEvent
   - DMS
   - Tunnel
+  - TunnelNavi
   layers:
   - Default
   - TransparentFX
