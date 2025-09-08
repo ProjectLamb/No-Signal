@@ -21,6 +21,7 @@ TagManager:
   - DMS
   - Tunnel
   - CarGateEvent
+  - TunnelNavi
   layers:
   - Default
   - TransparentFX
