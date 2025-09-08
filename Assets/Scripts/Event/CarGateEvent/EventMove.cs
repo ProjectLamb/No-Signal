@@ -31,6 +31,9 @@ public class EventMove : MonoBehaviour
     public RuntimeAnimatorController carGatePlayer1;
     public RuntimeAnimatorController carGatePlayer2;
     public RuntimeAnimatorController carGatePlayer3;
+    
+    [Header("Scripts")]
+    public CarController CarController;
 
     // 애니메이터 교체 전용 코루틴
     private IEnumerator ChangeAnimatorController(RuntimeAnimatorController newController, string startStateName = null, float waitAfterChange = 0f)
@@ -248,13 +251,18 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator CGEvent_Lighton()
     {   
+        if(!CarController.IsHeadlightsOn)
+        {
+        CarController.IsHeadlightsOn = true;
         light.SetActive(true);
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.carLight, this.transform.position);
+        }
         yield return null;
     }
     
     private IEnumerator CGEvent_Lightoff()
     {   
+        CarController.IsHeadlightsOn = false;
         light.SetActive(false);
         yield return null;
 
