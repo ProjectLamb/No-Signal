@@ -34,7 +34,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsDeathEvent) return;
 
-        if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
+        if (!CarGateEventTrigger.isCargateEvent && !isEvent)
         {
             FollowTarget();
         }
