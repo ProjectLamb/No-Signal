@@ -170,7 +170,7 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-
+        if (GameManager.Instance.IsGamePaused) return;
         if (IsGameOver)
         {
             if (vhsVolume.profile.TryGet(out vvs))

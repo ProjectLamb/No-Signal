@@ -32,6 +32,7 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsGamePaused) return;
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsDeathEvent) return;
 
         if (!BoomGateEventTrigger.isBoomEvent && !isEvent)
