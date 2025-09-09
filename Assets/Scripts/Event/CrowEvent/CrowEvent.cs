@@ -32,6 +32,9 @@ public class CrowEvent : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if (GameManager.Instance.IsGamePaused) return;
+        if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
+
         if (IsStayCar) StayOnCar();
 
         if (IsEventStart)
@@ -53,18 +56,15 @@ public class CrowEvent : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsGamePaused) return;
         if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
-        if (IsFollowing) return;
+        if (IsFollowing || IsFlyAway) return;
         RandomEvent();
     }
 
     void RandomEvent()
     {
-        if (GameManager.Instance.IsTutorial || SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent || GameManager.Instance.IsDeathEvent) return;
-        if (CarGateEventTrigger.isCargateEvent) return;
-
         passedTime += Time.deltaTime;
-
         if ((int)passedTime != 0 && (int)passedTime % 20 == 0 && !IsPsvCheck)
         {
             IsPsvCheck = true;
@@ -87,8 +87,14 @@ public class CrowEvent : MonoBehaviour
 
     IEnumerator FollowTarget()
     {
+        bool IsFlyToCar = true;
         while (true)
         {
+            if (!CarController.IsHeadlightsOn)
+            {
+                IsFlyToCar = false;
+                break;
+            }
             // 현재 위치에서 대상 위치로 이동
             transform.position = Vector3.MoveTowards(transform.position, carLandSpot.position, followSpeed * Time.deltaTime);
 
@@ -111,12 +117,19 @@ public class CrowEvent : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         anim.SetBool("landing", false);
-        if (CarController.IsHeadlightsOn)
+
+        if (!IsFlyToCar)
+        {
+            IsFlyAway = true;
+            ClearVar();
+            yield return new WaitForSeconds(0.01f);
+        }
+        if (CarController.IsHeadlightsOn && IsFlyToCar)
         {
             EventManager.Instance.SetEvent(0);
             EventManager.Instance.PlayEvent();
         }
-        else
+        else if(!CarController.IsHeadlightsOn && IsFlyToCar)
         {
             EventManager.Instance.SetEvent(6);
             EventManager.Instance.PlayEvent();
@@ -160,14 +173,19 @@ public class CrowEvent : MonoBehaviour
 
             crowDot.SetActive(false);
             IsFlyAway = false;
-            IsPsvCheck = false;
-            IsFollowing = false;
-            IsRanEvent = false;
+            ClearVar();
         }
     }
 
     public void Cawcaw()
     {
         soundfill.fillAmount += 0.3f;
+    }
+
+    private void ClearVar()
+    {
+        IsPsvCheck = false;
+        IsFollowing = false;
+        IsRanEvent = false;
     }
 }
