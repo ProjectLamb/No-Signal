@@ -23,6 +23,7 @@ public class PauseGame : MonoBehaviour
     public void PauseOn()
     {
         GameManager.Instance.IsGamePaused = true;
+        AudioManager.Instance.PauseOn();
         pausePanel.SetActive(true);
         buttons.SetActive(true);
         gameScale = 0;
@@ -31,6 +32,7 @@ public class PauseGame : MonoBehaviour
     public void PauseOff()
     {
         GameManager.Instance.IsGamePaused = false;
+        AudioManager.Instance.PauseOff();
         pausePanel.SetActive(false);
         buttons.SetActive(false);
         gameScale = 1;
