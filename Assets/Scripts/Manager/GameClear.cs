@@ -5,6 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class GameClear : MonoBehaviour
 {
+
+    void Start()
+    {
+        Cursor.visible = true;
+    }
     public void BackToTitle()
     {
         CarController.IsGameOver = false;

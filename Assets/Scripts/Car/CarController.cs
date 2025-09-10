@@ -134,6 +134,8 @@ public class CarController : MonoBehaviour
         radioCh = 0;
         carDrive.getPitch(out pitch);
 
+        Cursor.visible = false;
+
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 

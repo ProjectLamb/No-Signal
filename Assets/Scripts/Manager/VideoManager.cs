@@ -14,6 +14,7 @@ public class VideoManager : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = true;
         vid.url = System.IO.Path.Combine(Application.streamingAssetsPath, "Credit.mp4");
         creditOST = AudioManager.Instance.CreateInstance(FMODEvents.instance.credit);
         creditOST.start();
