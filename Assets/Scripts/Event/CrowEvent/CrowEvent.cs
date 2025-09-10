@@ -90,7 +90,7 @@ public class CrowEvent : MonoBehaviour
         bool IsFlyToCar = true;
         while (true)
         {
-            if (!CarController.IsHeadlightsOn)
+            if (!CarController.IsHeadlightsOn && !CheckCondition())
             {
                 IsFlyToCar = false;
                 break;
@@ -129,9 +129,9 @@ public class CrowEvent : MonoBehaviour
             EventManager.Instance.SetEvent(0);
             EventManager.Instance.PlayEvent();
         }
-        else if(!CarController.IsHeadlightsOn && IsFlyToCar)
+        else if (!CarController.IsHeadlightsOn && IsFlyToCar)
         {
-            EventManager.Instance.SetEvent(6);
+            EventManager.Instance.SetEvent(5);
             EventManager.Instance.PlayEvent();
         }
 
@@ -187,5 +187,15 @@ public class CrowEvent : MonoBehaviour
         IsPsvCheck = false;
         IsFollowing = false;
         IsRanEvent = false;
+    }
+
+    private bool CheckCondition()
+    {
+        if (SaveLoadManager.Instance.IsChaseEvent || GameManager.Instance.IsCargateEvent ||
+        GameManager.Instance.IsDeathEvent || GameManager.Instance.IsRushToTree ||
+        GameManager.Instance.IsEnding || GameManager.Instance.IsGamePaused)
+            return false;
+        else
+            return true;
     }
 }
