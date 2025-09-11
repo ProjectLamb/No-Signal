@@ -9,6 +9,7 @@ public class Creature : MonoBehaviour
 {
     private NavMeshAgent navMeshAgent;
     private StudioEventEmitter stepEmitter;
+    private StudioEventEmitter stepEmitter2;
     private Rigidbody rb;
     private Animator anim;
 
@@ -18,47 +19,40 @@ public class Creature : MonoBehaviour
     public Transform attachTr;
     public Collider col;
 
-    public float rotSpeed = 3f;
     public static bool IsDie = false;
+    public static bool IsAttachCar = false;
+    public static bool IsRushToCar = false;
+    public float rotSpeed = 3f;
+
     private bool IsChase = false;
     private bool IsReveal = false;
-    public static bool IsAttachCar = false;
     private bool IsGameOver = false;
+    private bool IsCanRespawn = false;
+    private bool IsTeleport = false;
+    private float reSpawnCool = 30f;
 
-    //public static bool IsJunction = false;
+
+
     public static bool IsEnding = false;
-    //private bool  
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
-    // Start is called before the first frame update
+
     void Start()
     {
-        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         stepEmitter = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep, this.gameObject);
+        stepEmitter2 = AudioManager.Instance.InitializeEventEmitter(FMODEvents.instance.creatureStep2, this.gameObject);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
         IsReveal = true;
-        stepEmitter.Play();
-        anim.SetBool("IsRun", true);
+        stepEmitter2.Play();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // if (IsJunction)
-        // {
-        //     IsJunction = false;
-        //     float ranDestX = UnityEngine.Random.Range(20, 30);
-        //     float ranDestY = UnityEngine.Random.Range(3, 5);
-
-        //     Vector3 offset = targetTr.forward * ranDestX + targetTr.up * ranDestY;
-        //     this.transform.position = targetTr.position + offset;
-        //     navMeshAgent.enabled = false;
-        //     NavCheck();
-        //     navMeshAgent.enabled = true;
-        // }
         if (IsDie)
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureDeath, this.transform.position);
@@ -72,26 +66,39 @@ public class Creature : MonoBehaviour
             IsReveal = false;
             NavCheck();
             distCheck();
+            ReSpawn();
         }
         LookTarget();
 
         if (IsReveal)
         {
-            anim.SetBool("IsRun", true);
+            anim.SetBool("IsRun2", true);
             Vector3 revealPos = new Vector3(targetTr.position.x - 21f, targetTr.position.y - 1.7f, targetTr.position.z + 2f);
             this.transform.position = Vector3.MoveTowards(transform.position, revealPos, 20f * Time.deltaTime);
 
             if (transform.position == revealPos)
             {
-                anim.SetBool("IsRun", false);
+                anim.SetBool("IsRun2", false);
                 IsReveal = false;
             }
         }
 
+        if (IsRushToCar && !IsTeleport)
+        {
+            IsTeleport = true;
+            navMeshAgent.enabled = false;
+            Vector3 targetPos = new Vector3(targetTr.position.x + 10f, targetTr.position.y + 5f, targetTr.position.z + 10f);
+            this.transform.position = targetPos;
+            navMeshAgent.enabled = true;
+            navMeshAgent.speed = 50f;
+        }
+        
         if (IsAttachCar && !GameManager.Instance.IsEnding)
         {
-            this.transform.position = attachTr.position;
+            navMeshAgent.enabled = false;
+            stepEmitter.Stop();
             anim.SetBool("IsRun", false);
+            this.transform.position = attachTr.position;
         }
     }
 
@@ -122,8 +129,10 @@ public class Creature : MonoBehaviour
         distance = Vector3.Distance(targetTr.position, transform.position);
         if (distance > 30f)
         {
+            IsCanRespawn = true;
             navMeshAgent.speed = 30f;
         }
+        else if (IsRushToCar) navMeshAgent.speed = 50f;
         else navMeshAgent.speed = 10f;
     }
     public void ChaseStart()
@@ -131,34 +140,30 @@ public class Creature : MonoBehaviour
         StartCoroutine("WaitChase");
         IsChase = true;
         anim.SetBool("IsRun", true);
-        stepEmitter.Play();
     }
 
     public void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.CompareTag("Oak"))
         {
-            //stepEmitter.Stop();
+            stepEmitter.Stop();
             anim.SetTrigger("DoDie");
             IsChase = false;
         }
 
         if (col.gameObject.CompareTag("Car"))
         {
-            // if (GameManager.Instance.IsJunctionEvent)
-            // {
-            //     IsAttachCar = true;
-            //     AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
-            //     stepEmitter.Stop();
-            // }
-            //if (!IsGameOver && !GameManager.Instance.IsJunctionEvent)
-            if(!IsGameOver && !GameManager.Instance.IsRushToTree)
+            if (!IsGameOver && !GameManager.Instance.IsRushToTree && !IsRushToCar)
             {
                 AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCol, this.transform.position);
                 IsGameOver = true;
                 EventManager.Instance.SetEvent(4);
                 EventManager.Instance.PlayEvent();
                 stepEmitter.Stop();
+            }
+            else
+            {
+                IsAttachCar = true;
             }
         }
 
@@ -167,7 +172,7 @@ public class Creature : MonoBehaviour
     IEnumerator WaitChase()
     {
         yield return new WaitForSeconds(2f);
-        stepEmitter.Stop();
+        stepEmitter.Play();
     }
 
     public void JumpToCar()
@@ -176,6 +181,23 @@ public class Creature : MonoBehaviour
         LookTarget();
         anim.SetTrigger("DoAttack");
         rb.isKinematic = true;
+    }
+
+    void ReSpawn()
+    {
+        reSpawnCool += Time.deltaTime;
+
+        if (IsCanRespawn && reSpawnCool > 30f)
+        {
+            float ranX = Random.Range(20, 30);
+            float ranY = Random.Range(5, 10);
+            float ranZ = Random.Range(20, 30);
+
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+            this.transform.position = new Vector3(targetTr.position.x + ranX, targetTr.position.y + ranY, targetTr.position.z + ranZ);
+            IsCanRespawn = false;
+            reSpawnCool = 0f;
+        }
     }
 
     public void SetRushPosition()
@@ -190,5 +212,10 @@ public class Creature : MonoBehaviour
     {
         anim.SetTrigger("DoDie");
         IsChase = false;
+    }
+
+    public void StandUp()
+    {
+        stepEmitter2.Stop();
     }
 }

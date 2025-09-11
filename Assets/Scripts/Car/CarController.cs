@@ -34,7 +34,7 @@ public class CarController : MonoBehaviour
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
-    public static bool IsRushToTree = false;
+    public static bool IsCanRushTree = false;
     public static bool IsTutorialEnd = false;
 
     public Vector3 _centerOfMass;
@@ -66,6 +66,8 @@ public class CarController : MonoBehaviour
     public GameObject carGateEvent;
     public GameObject GPSLine;
     public GameObject chaseGPSLine;
+    WheelHit hit;
+    public WheelCollider wheelCollider;
 
     public Image deerBlack;
     public Image soundFill;
@@ -97,9 +99,12 @@ public class CarController : MonoBehaviour
     private bool IsChaseEventStart = false;
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
-    private bool IsFinalCreature = false;
+    private bool IsCreatureOut = false;
+    private bool IsCreatureCanAttach = false; 
     private bool IsWrongWay = false;
     private bool IsAxelPressed = false;
+    private bool IsOnGravel = false;
+    private bool IsGravelSound = false;
 
     private Rigidbody carRb;
     private Quaternion initialSteeringRotation;
@@ -113,6 +118,8 @@ public class CarController : MonoBehaviour
     private EventInstance radio5;
     private EventInstance radio6;
     private EventInstance chaseBackground;
+    private EventInstance wind;
+    private EventInstance gravel;
 
     void Awake()
     {
@@ -126,6 +133,9 @@ public class CarController : MonoBehaviour
         radio4 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio4);
         radio5 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio5);
         radio6 = AudioManager.Instance.CreateInstance(FMODEvents.instance.radio6);
+
+        wind = AudioManager.Instance.CreateInstance(FMODEvents.instance.wind);
+        gravel = AudioManager.Instance.CreateInstance(FMODEvents.instance.gravel);
     }
 
     void Start()
@@ -199,7 +209,12 @@ public class CarController : MonoBehaviour
         if (GameManager.Instance.IsCargateEvent || IsBadDeath) return;
 
         disToTree = Vector3.Distance(this.transform.position, oakTree.transform.position);
-        if (disToTree < 50f && IsChased && !IsRushToTree)
+        if (disToTree < 70f && IsChased && !IsCreatureCanAttach)
+        {
+            Creature.IsRushToCar = true;
+            IsCreatureCanAttach = true;
+        }
+        if (IsCanRushTree)
         {
             GameManager.Instance.IsRushToTree = true;
             RushToTree();
@@ -242,6 +257,17 @@ public class CarController : MonoBehaviour
         {
             IsEngineStart = true;
             carDrive.start();
+        }
+
+        if (IsOnGravel && IsEngineStart && !IsGravelSound)
+        {
+            IsGravelSound = true;
+            gravel.start();
+        }
+        if (!IsOnGravel && IsGravelSound)
+        {
+            IsGravelSound = false;
+            gravel.stop(STOP_MODE.IMMEDIATE);
         }
         if (IsTutorialEnd)
         {
@@ -325,6 +351,18 @@ public class CarController : MonoBehaviour
             {
                 hasReachedMaxSpeed = false;
             }
+
+            if (wheelCollider.GetGroundHit(out hit))
+            {
+                if (hit.collider.CompareTag("Gravel"))
+                {
+                    IsOnGravel = true;
+                }
+                else if (hit.collider.CompareTag("Grass"))
+                {
+                    Debug.Log("잔디 위에 있음!");
+                }
+            }
         }
     }
 
@@ -401,6 +439,7 @@ public class CarController : MonoBehaviour
         if (col.gameObject.CompareTag("CarGateEvent"))
         {
             carDrive.stop(STOP_MODE.IMMEDIATE);
+            gravel.stop(STOP_MODE.IMMEDIATE);
             TurnOffRadio();
             GameManager.Instance.IsCargateEvent = true;
         }
@@ -429,18 +468,18 @@ public class CarController : MonoBehaviour
             cinemachineBrain.enabled = true;
 
             IsChaseEventStart = true;
+            gravel.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
             Destroy(col.gameObject);
         }
-        // if (col.gameObject.CompareTag("Junction") && IsChased)
-        // {
-        //     GameManager.Instance.IsJunctionEvent = true;
-        //     Creature.IsJunction = true;
-        //     AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
 
-        //     col.gameObject.SetActive(false);
-        // }
+        if (col.gameObject.CompareTag("Junction") && IsChased)
+        {
+            AudioManager.Instance.PlayOneShot(FMODEvents.instance.goLeft, this.transform.position);
+            col.gameObject.SetActive(false);
+        }
+
         if (col.gameObject.CompareTag("DeerRush") && IsChased)
         {
             deerRush.SetActive(true);
@@ -478,14 +517,22 @@ public class CarController : MonoBehaviour
         }
         if (col.gameObject.CompareTag("Creature") && !GameManager.Instance.IsJunctionEvent)
         {
-            TurnOffRadio();
-            cinemachineBrain.enabled = true;
-            carRb.isKinematic = true;
-            carDrive.stop(STOP_MODE.IMMEDIATE);
+            if (!IsCreatureCanAttach)
+            {
+                TurnOffRadio();
+                cinemachineBrain.enabled = true;
+                carRb.isKinematic = true;
+                carDrive.stop(STOP_MODE.IMMEDIATE);
+                gravel.stop(STOP_MODE.IMMEDIATE);
+            }
+            else
+            {
+                IsCanRushTree = true;
+            }
         }
         if (col.gameObject.CompareTag("Oak") && IsChased)
         {
-            IsRushToTree = true;
+            IsCanRushTree = false;
             chaseBackground.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(2);
             EventManager.Instance.PlayEvent();
@@ -495,6 +542,7 @@ public class CarController : MonoBehaviour
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
             IsGameOver = true;
             carDrive.stop(STOP_MODE.IMMEDIATE);
+            gravel.stop(STOP_MODE.IMMEDIATE);
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.introNoise, this.transform.position);
         }
     }
@@ -502,7 +550,7 @@ public class CarController : MonoBehaviour
     public void EndPanelOn()
     {
         GameManager.Instance.IsEnding = true;
-        IsRushToTree = true;
+        IsCanRushTree = false;
         IsChased = false;
         gameEndPanel.SetActive(true);
     }
@@ -514,9 +562,11 @@ public class CarController : MonoBehaviour
         deerBlack.gameObject.SetActive(false);
 
         SaveLoadManager.Instance.IsDeerClear = true;
+        SaveLoadManager.Instance.SaveGameData();
+
         carGateEvent.SetActive(false);
         deerEvent.SetActive(false);
-        SaveLoadManager.Instance.SaveGameData();
+        wind.start();
     }
 
     void ToggleHeadlights()
@@ -554,6 +604,7 @@ public class CarController : MonoBehaviour
         {
             IsEngineStart = false;
             carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+            gravel.stop(STOP_MODE.IMMEDIATE);
         }
 
         // 차량이 움직이지 못하는 상태면 엔진 off
@@ -586,13 +637,7 @@ public class CarController : MonoBehaviour
             engineSoundFill -= 0.02f * Time.deltaTime;
         }
         if (IsRadioOn) soundFill.fillAmount += 0.02f * Time.deltaTime;
-        // 까마귀 울음소리리
-        // if (IsCrowCaw)
-        // {
-        //     IsCrowCaw = false;
-        //     soundFill.fillAmount += 0.05f;
-        //     Debug.Log("까마귀게이지");
-        // }
+
         if (!IsEngineStart && !IsRadioOn) soundFill.fillAmount -= 0.02f * Time.deltaTime;
         // 소리바가 70퍼 이상이면
         if (soundFill.fillAmount >= 0.7f)
@@ -646,6 +691,7 @@ public class CarController : MonoBehaviour
         soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
         cinemachineBrain.enabled = true;
         carDrive.stop(STOP_MODE.IMMEDIATE);
+        gravel.stop(STOP_MODE.IMMEDIATE);
         TurnOffRadio();
 
         yield return new WaitForSeconds(4.5f);
@@ -746,6 +792,7 @@ public class CarController : MonoBehaviour
     public void ChaseCarStop()
     {
         carDrive.stop(STOP_MODE.ALLOWFADEOUT);
+        gravel.stop(STOP_MODE.IMMEDIATE);
         HeadLight.SetActive(false);
         //carRb.isKinematic = true;
     }
@@ -785,10 +832,10 @@ public class CarController : MonoBehaviour
         }
         this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 20f * Time.deltaTime);
         float distance = Vector3.Distance(transform.position, oakTree.position);
-        if (distance < 5f && !IsFinalCreature)
+        if (distance < 5f && !IsCreatureOut)
         {
             Creature.IsAttachCar = false;
-            IsFinalCreature = true;
+            IsCreatureOut = true;
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.carSliding, this.transform.position);
         }
     }
@@ -857,6 +904,6 @@ public class CarController : MonoBehaviour
 
     public void CarFmodPause()
     {
-        
+
     }
 }

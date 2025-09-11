@@ -40,6 +40,8 @@ public class PauseGame : MonoBehaviour
 
     public void ExitGame()
     {
+        GameManager.Instance.IsGamePaused = false;
+        gameScale = 1;
         SceneManager.LoadScene("Title");
     }
 

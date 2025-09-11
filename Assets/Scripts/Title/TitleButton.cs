@@ -21,6 +21,7 @@ public class TitleButton : MonoBehaviour
 
     void Start()
     {
+
         Cursor.visible = true;
         if (!SaveLoadManager.Instance.IsTrafficClear && !SaveLoadManager.Instance.IsCargateClear && !SaveLoadManager.Instance.IsDeerClear && !SaveLoadManager.Instance.IsChaseEvent)
         {
@@ -70,6 +71,7 @@ public class TitleButton : MonoBehaviour
             fadeImage.color = fadeCol;
             yield return new WaitForSeconds(0.01f);
         }
+        StopCoroutine("CoFadeOut");
         SceneManager.LoadScene("kabocha");
     }
 

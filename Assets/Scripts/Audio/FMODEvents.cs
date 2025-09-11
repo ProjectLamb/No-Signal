@@ -27,6 +27,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference carSliding { get; private set; }
     [field: SerializeField] public EventReference carCrash2 { get; private set; }
     [field: SerializeField] public EventReference carBoom { get; private set; }
+    [field: SerializeField] public EventReference wind { get; private set; }
+    [field: SerializeField] public EventReference gravel { get; private set; }
 
     [Header("Radar SFX")]
     [field: SerializeField] public EventReference radar { get; private set; }
@@ -46,10 +48,10 @@ public class FMODEvents : MonoBehaviour
     [Header("Creature SFX")]
     [field: SerializeField] public EventReference creatureHowl { get; private set; }
     [field: SerializeField] public EventReference creatureStep { get; private set; }
+    [field: SerializeField] public EventReference creatureStep2 { get; private set; }
     [field: SerializeField] public EventReference creatureClick { get; private set; }
     [field: SerializeField] public EventReference creatureDeath { get; private set; }
     [field: SerializeField] public EventReference chaseBackground { get; private set; }
-    [field: SerializeField] public EventReference creatureCrying { get; private set; }
     [field: SerializeField] public EventReference creatureDie { get; private set; }
     [field: SerializeField] public EventReference creatureBreathe { get; private set; }
     [field: SerializeField] public EventReference creatureGameOver { get; private set; }
@@ -75,7 +77,6 @@ public class FMODEvents : MonoBehaviour
 
     [Header("OST")]
     [field: SerializeField] public EventReference title { get; private set; }
-    [field: SerializeField] public EventReference gravel { get; private set; }
     [field: SerializeField] public EventReference credit { get; private set; }
 
     [Header("SoundAndLight")]
