@@ -42,8 +42,12 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        if (!IsTutorialFirst)
+        {
+            IsTutorial = false;
+            CarController.IsTutorialEnd = true;
+        }
         CarController.IsGameOver = false;
-        IsTutorial = true;
     }
 
 }
