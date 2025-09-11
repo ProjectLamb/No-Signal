@@ -47,6 +47,7 @@ public class TitleButton : MonoBehaviour
 
     public void Continue()
     {
+        GameManager.Instance.IsTutorialFirst = false;
         FadeIn();
     }
 
