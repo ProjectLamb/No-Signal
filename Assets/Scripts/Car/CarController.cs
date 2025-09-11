@@ -34,6 +34,7 @@ public class CarController : MonoBehaviour
     public static bool IsHeadlightsOn = false;
     public static bool IsCrowCaw = false;
     public static bool IsGameOver = false;
+    public static bool IsAFCGameOver = false;
     public static bool IsCanRushTree = false;
     public static bool IsTutorialEnd = false;
 
@@ -66,6 +67,7 @@ public class CarController : MonoBehaviour
     public GameObject carGateEvent;
     public GameObject GPSLine;
     public GameObject chaseGPSLine;
+    public GameObject AFCpanel;
     WheelHit hit;
     public WheelCollider wheelCollider;
 
@@ -100,7 +102,7 @@ public class CarController : MonoBehaviour
     private bool IsChased = false;
     private bool IsRushTreeStart = false;
     private bool IsCreatureOut = false;
-    private bool IsCreatureCanAttach = false; 
+    private bool IsCreatureCanAttach = false;
     private bool IsWrongWay = false;
     private bool IsAxelPressed = false;
     private bool IsOnGravel = false;
@@ -679,7 +681,9 @@ public class CarController : MonoBehaviour
             IsBadDeath = true;
             GameManager.Instance.IsDeathEvent = true;
 
-            StartCoroutine("BadGameOver");
+            if (SaveLoadManager.Instance.IsCargateClear) StartCoroutine("BadGameOverAFC");
+
+            else StartCoroutine("BadGameOver");
         }
 
     }
@@ -695,6 +699,37 @@ public class CarController : MonoBehaviour
         TurnOffRadio();
 
         yield return new WaitForSeconds(4.5f);
+        creatureDct.SetActive(true);
+    }
+
+    IEnumerator BadGameOverAFC()
+    {
+        IsAFCGameOver = true;
+        if (vhsVolume.profile.TryGet(out vvs))
+        {
+            while (vvs._weight.value < 0.99f)
+            {
+                vvs._weight.value += 0.5f;
+                yield return new WaitForSeconds(0.01f);
+            }
+        }
+        AFCpanel.SetActive(true);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHowl, this.transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.carCrash, this.transform.position);
+        // 괴물 울음소리
+        // 부딪치는 소리
+        yield return new WaitForSeconds(1.5f);
+        carRb.isKinematic = true;
+        soundLoud.stop(STOP_MODE.ALLOWFADEOUT);
+        cinemachineBrain.enabled = true;
+        carDrive.stop(STOP_MODE.IMMEDIATE);
+        gravel.stop(STOP_MODE.IMMEDIATE);
+        TurnOffRadio();
+
+        yield return new WaitForSeconds(4.5f);
+        this.transform.position = new Vector3(2753f, 462f, -2859f);
+        this.transform.rotation = Quaternion.Euler(new Vector3(351.025787f,117.775482f,354.717651f));
+        AFCpanel.SetActive(false);
         creatureDct.SetActive(true);
     }
     IEnumerator SoundLoudWarn()

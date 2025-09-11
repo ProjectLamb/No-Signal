@@ -10,6 +10,15 @@ public class ChangeFov : MonoBehaviour
     public Camera cam;
     private float focalLength;
 
+    void Start()
+    {
+        if (CarController.IsAFCGameOver)
+        {
+            vCam1.m_Lens.FarClipPlane = 30f;
+            vCam2.m_Lens.FarClipPlane = 30f;
+        }
+    }
+
     public void ChangeFOV()
     {
         StartCoroutine("FOVDown");
