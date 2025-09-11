@@ -30,9 +30,10 @@ public class StartFade : MonoBehaviour
         }
         startFadeImage.gameObject.SetActive(false);
         tutorial.SetActive(GameManager.Instance.IsTutorialFirst);
-        if (!GameManager.Instance.IsTutorial && !GameManager.Instance.IsTutorialFirst)
+        if (!GameManager.Instance.IsTutorialFirst)
         {
-            StartCoroutine("NaviStart");
+            GameManager.Instance.IsTutorial = false;
+            CarController.IsTutorialEnd = true;
         }
     }
 

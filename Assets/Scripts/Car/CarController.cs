@@ -181,8 +181,6 @@ public class CarController : MonoBehaviour
             this.transform.position = creatureCheat.position;
             this.transform.rotation = creatureCheat.rotation;
         }
-
-        if (!GameManager.Instance.IsTutorialFirst) IsTutorialEnd = false;
     }
 
     void Update()
