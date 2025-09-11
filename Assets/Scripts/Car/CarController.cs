@@ -157,7 +157,6 @@ public class CarController : MonoBehaviour
         {
             initialSteeringRotation = steeringWheel.transform.localRotation; // �ʱ� ȸ���� ����
         }
-
         GameManager.Instance.IsDeathEvent = false;
         // 스폰 위치 지정
         if (SaveLoadManager.Instance.IsTrafficClear)
@@ -172,6 +171,8 @@ public class CarController : MonoBehaviour
         }
         if (SaveLoadManager.Instance.IsDeerClear)
         {
+            originBody.SetActive(false);
+            brokenBody.SetActive(true);
             this.transform.position = creatureCheat.position;
             this.transform.rotation = creatureCheat.rotation;
         }
@@ -180,6 +181,8 @@ public class CarController : MonoBehaviour
             this.transform.position = creatureCheat.position;
             this.transform.rotation = creatureCheat.rotation;
         }
+
+        if (!GameManager.Instance.IsTutorialFirst) IsTutorialEnd = false;
     }
 
     void Update()
@@ -240,6 +243,8 @@ public class CarController : MonoBehaviour
             if (carRb.velocity.magnitude > 0.5f) EngineSound();
             return;
         }
+
+        CameraFollow.carSpeed = carRb.velocity.magnitude;
 
         GetInputs();
         AnimateWheels();
@@ -362,7 +367,7 @@ public class CarController : MonoBehaviour
                 }
                 else if (hit.collider.CompareTag("Grass"))
                 {
-                    Debug.Log("잔디 위에 있음!");
+                    IsOnGravel = false;
                 }
             }
         }

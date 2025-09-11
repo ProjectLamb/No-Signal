@@ -161,7 +161,7 @@ public class Creature : MonoBehaviour
                 EventManager.Instance.PlayEvent();
                 stepEmitter.Stop();
             }
-            else
+            else if(!IsGameOver && IsRushToCar)
             {
                 IsAttachCar = true;
             }
