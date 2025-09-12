@@ -55,6 +55,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference creatureDie { get; private set; }
     [field: SerializeField] public EventReference creatureBreathe { get; private set; }
     [field: SerializeField] public EventReference creatureGameOver { get; private set; }
+    [field: SerializeField] public EventReference creatureHitCar { get; private set; }
 
 
     [Header("Radio")]
@@ -91,6 +92,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference cricket2 { get; private set; }
     [field: SerializeField] public EventReference tutorialPage { get; private set; }
     [field: SerializeField] public EventReference reality { get; private set; }
+    [field: SerializeField] public EventReference endingRush { get; private set; }
+    [field: SerializeField] public EventReference toBottom { get; private set; }
 
     private void Awake()
     {

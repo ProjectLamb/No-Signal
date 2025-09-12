@@ -47,6 +47,8 @@ public class CarController : MonoBehaviour
     public Transform creatureCheat;
     public Transform junctionCheat;
     public Transform oakTree;
+    public Transform oakTreeCarTr;
+    public Transform oakTreeCreatureTr;
 
     public GameObject creature;
     public GameObject creatureDct;
@@ -68,13 +70,17 @@ public class CarController : MonoBehaviour
     public GameObject GPSLine;
     public GameObject chaseGPSLine;
     public GameObject AFCpanel;
+    public GameObject creaturePanel;
     WheelHit hit;
     public WheelCollider wheelCollider;
 
     public Image deerBlack;
     public Image soundFill;
     public Volume vhsVolume;
+    public Volume globalVolume;
     private VhsVol vvs;
+    private MotionBlur motionBlur;
+
     public CinemachineBrain cinemachineBrain;
 
     private int radioCh;
@@ -151,6 +157,15 @@ public class CarController : MonoBehaviour
         carRb = GetComponent<Rigidbody>();
         carRb.centerOfMass = _centerOfMass;
 
+
+        if (globalVolume != null && globalVolume.profile != null)
+        {
+            // Global Volume에서 MotionBlur 가져오기
+            if (globalVolume.profile.TryGet(out motionBlur))
+            {
+                motionBlur.intensity.Override(0.3f);
+            }
+        }
         HeadLight.SetActive(false);
 
         if (steeringWheel != null) //�ڵ�
@@ -212,15 +227,11 @@ public class CarController : MonoBehaviour
         if (GameManager.Instance.IsCargateEvent || IsBadDeath) return;
 
         disToTree = Vector3.Distance(this.transform.position, oakTree.transform.position);
-        if (disToTree < 70f && IsChased && !IsCreatureCanAttach)
-        {
-            Creature.IsRushToCar = true;
-            IsCreatureCanAttach = true;
-        }
         if (IsCanRushTree)
         {
+            IsCanRushTree = false;
             GameManager.Instance.IsRushToTree = true;
-            RushToTree();
+            StartCoroutine("RushToTree");
         }
 
         if (IsChaseEventStart)
@@ -473,6 +484,15 @@ public class CarController : MonoBehaviour
             cinemachineBrain.enabled = true;
 
             IsChaseEventStart = true;
+
+            if (globalVolume != null && globalVolume.profile != null)
+            {
+                // Global Volume에서 MotionBlur 가져오기
+                if (globalVolume.profile.TryGet(out motionBlur))
+                {
+                    motionBlur.intensity.Override(1f);
+                }
+            }
             gravel.stop(STOP_MODE.IMMEDIATE);
             EventManager.Instance.SetEvent(1);
             EventManager.Instance.PlayEvent();
@@ -498,6 +518,13 @@ public class CarController : MonoBehaviour
         if (col.gameObject.CompareTag("TunnelNavi"))
         {
             AudioManager.Instance.PlayOneShot(FMODEvents.instance.tunnel, this.transform.position);
+            Destroy(col.gameObject);
+        }
+        if (col.gameObject.CompareTag("Ending") && IsChased && !IsCreatureCanAttach)
+        {
+            IsCanRushTree = true;
+            Creature.IsRushToCar = true;
+            IsCreatureCanAttach = true;
             Destroy(col.gameObject);
         }
     }
@@ -530,17 +557,6 @@ public class CarController : MonoBehaviour
                 carDrive.stop(STOP_MODE.IMMEDIATE);
                 gravel.stop(STOP_MODE.IMMEDIATE);
             }
-            else
-            {
-                IsCanRushTree = true;
-            }
-        }
-        if (col.gameObject.CompareTag("Oak") && IsChased)
-        {
-            IsCanRushTree = false;
-            chaseBackground.stop(STOP_MODE.IMMEDIATE);
-            EventManager.Instance.SetEvent(2);
-            EventManager.Instance.PlayEvent();
         }
         if (col.gameObject.CompareTag("Tree") && IsWrongWay)
         {
@@ -731,7 +747,7 @@ public class CarController : MonoBehaviour
 
         yield return new WaitForSeconds(4.5f);
         this.transform.position = new Vector3(2753f, 462f, -2859f);
-        this.transform.rotation = Quaternion.Euler(new Vector3(351.025787f,117.775482f,354.717651f));
+        this.transform.rotation = Quaternion.Euler(new Vector3(351.025787f, 117.775482f, 354.717651f));
         AFCpanel.SetActive(false);
         creatureDct.SetActive(true);
     }
@@ -832,7 +848,6 @@ public class CarController : MonoBehaviour
         carDrive.stop(STOP_MODE.ALLOWFADEOUT);
         gravel.stop(STOP_MODE.IMMEDIATE);
         HeadLight.SetActive(false);
-        //carRb.isKinematic = true;
     }
 
     public void CreatureReveal()
@@ -859,23 +874,28 @@ public class CarController : MonoBehaviour
         StartCoroutine("WarnTextEffect");
     }
 
-    public void RushToTree()
+    IEnumerator RushToTree()
     {
-        Creature.IsAttachCar = true;
         if (!IsRushTreeStart)
         {
             IsRushTreeStart = true;
             carRb.isKinematic = false;
-            AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureAttach, this.transform.position);
         }
-        this.transform.position = Vector3.MoveTowards(transform.position, oakTree.position, 20f * Time.deltaTime);
-        float distance = Vector3.Distance(transform.position, oakTree.position);
-        if (distance < 5f && !IsCreatureOut)
-        {
-            Creature.IsAttachCar = false;
-            IsCreatureOut = true;
-            AudioManager.Instance.PlayOneShot(FMODEvents.instance.carSliding, this.transform.position);
-        }
+        yield return new WaitForSeconds(0.5f);
+        creaturePanel.SetActive(true);
+        chaseGPSLine.SetActive(false);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.endingRush, this.transform.position);
+        yield return new WaitForSeconds(6f);
+        Creature.IsAttachCar = false;
+        this.transform.position = oakTreeCarTr.position;
+        creature.transform.position = oakTreeCreatureTr.position;
+
+        creaturePanel.SetActive(false);
+        IsCanRushTree = false;
+        gravel.stop(STOP_MODE.IMMEDIATE);
+        chaseBackground.stop(STOP_MODE.IMMEDIATE);
+        EventManager.Instance.SetEvent(2);
+        EventManager.Instance.PlayEvent();
     }
 
     IEnumerator WarnTextEffect()
@@ -938,10 +958,5 @@ public class CarController : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.chaseReNavi, this.transform.position);
         yield return new WaitForSeconds(3.6f);
         chaseGPSLine.SetActive(true);
-    }
-
-    public void CarFmodPause()
-    {
-
     }
 }

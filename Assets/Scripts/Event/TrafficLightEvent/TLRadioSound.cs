@@ -16,7 +16,6 @@ public class TLRadioSound : MonoBehaviour
     void OnTriggerEnter(Collider collider){
         if (collider.gameObject.CompareTag("Car")){
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.radio_TL, this.transform.position);
-
         this.gameObject.SetActive(false);
     }
     }

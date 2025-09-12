@@ -24,6 +24,7 @@ TagManager:
   - TunnelNavi
   - Gravel
   - Grass
+  - Ending
   layers:
   - Default
   - TransparentFX
