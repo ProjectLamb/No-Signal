@@ -58,12 +58,12 @@ public class DeerRush : MonoBehaviour
             IsFinDest = true;
             dis = Vector3.Distance(this.transform.position, destTr.position);
             destTr = finalDestTr;
-            //navMeshAgent.speed = 50f;
+            navMeshAgent.speed = 50f;
         }
-        if (dis < 100f && IsFinDest)
-            {
-                this.gameObject.SetActive(false);
-            }
+        if (dis < 30f && IsFinDest)
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 
     // void OnTriggerEnter(Collider col)
