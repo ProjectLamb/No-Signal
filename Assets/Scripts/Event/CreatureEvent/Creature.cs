@@ -87,7 +87,11 @@ public class Creature : MonoBehaviour
         {
             IsTeleport = true;
             navMeshAgent.enabled = false;
-            Vector3 targetPos = new Vector3(targetTr.position.x + 10f, targetTr.position.y + 5f, targetTr.position.z + 10f);
+
+            float ranX = Random.Range(-15, 15);
+            float ranZ = Random.Range(-15, 15);
+
+            Vector3 targetPos = new Vector3(targetTr.position.x - ranX, targetTr.position.y + 5f, targetTr.position.z - ranZ);
             this.transform.position = targetPos;
             navMeshAgent.enabled = true;
             navMeshAgent.speed = 50f;
@@ -127,7 +131,7 @@ public class Creature : MonoBehaviour
     {
         float distance = 0f;
         distance = Vector3.Distance(targetTr.position, transform.position);
-        if (distance > 30f)
+        if (distance > 50f)
         {
             IsCanRespawn = true;
             navMeshAgent.speed = 30f;
