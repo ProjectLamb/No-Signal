@@ -21,6 +21,8 @@ public class TitleButton : MonoBehaviour
 
     void Start()
     {
+
+        Cursor.visible = true;
         if (!SaveLoadManager.Instance.IsTrafficClear && !SaveLoadManager.Instance.IsCargateClear && !SaveLoadManager.Instance.IsDeerClear && !SaveLoadManager.Instance.IsChaseEvent)
         {
             startGameText.text = "Start Game";
@@ -45,6 +47,7 @@ public class TitleButton : MonoBehaviour
 
     public void Continue()
     {
+        GameManager.Instance.IsTutorialFirst = false;
         FadeIn();
     }
 
@@ -69,6 +72,7 @@ public class TitleButton : MonoBehaviour
             fadeImage.color = fadeCol;
             yield return new WaitForSeconds(0.01f);
         }
+        StopCoroutine("CoFadeOut");
         SceneManager.LoadScene("kabocha");
     }
 

@@ -5,15 +5,20 @@ using Cinemachine;
 
 public class ChangeFov : MonoBehaviour
 {
-
     public CinemachineVirtualCamera vCam1;
     public CinemachineVirtualCamera vCam2;
     public Camera cam;
+    private float focalLength;
 
-    public void Start()
+    void Start()
     {
-        vCam2.m_Lens.FieldOfView = 22f;
+        if (CarController.IsAFCGameOver)
+        {
+            vCam1.m_Lens.FarClipPlane = 30f;
+            vCam2.m_Lens.FarClipPlane = 30f;
+        }
     }
+
     public void ChangeFOV()
     {
         StartCoroutine("FOVDown");
@@ -37,10 +42,27 @@ public class ChangeFov : MonoBehaviour
 
     IEnumerator FOVDown2()
     {
-        if (vCam2.m_Lens.FieldOfView > 10f)
+        focalLength = FOVToFocalLength(vCam2);
+        while (focalLength < 4f)
         {
-            vCam2.m_Lens.FieldOfView -= 0.1f;
-            yield return new WaitForSeconds(0.1f);
+            focalLength += 0.3f;
+            vCam2.m_Lens.FieldOfView = FocalLengthToFOV(vCam2, focalLength);
+            yield return new WaitForSeconds(0.01f);
         }
     }
+
+    // FOV(수직 기준) -> Focal Length(mm)
+    private float FOVToFocalLength(CinemachineVirtualCamera vcam)
+    {
+        return vcam.m_Lens.SensorSize.y * 0.5f / Mathf.Tan(Mathf.Deg2Rad * vcam.m_Lens.FieldOfView * 0.5f);
+    }
+
+    // Focal Length(mm) -> FOV(수직 기준)
+    private float FocalLengthToFOV(CinemachineVirtualCamera vcam, float focalLength)
+    {
+        if (focalLength < 0.001f)
+            return 180f;
+        return Mathf.Rad2Deg * 2.0f * Mathf.Atan(vcam.m_Lens.SensorSize.y * 0.5f / focalLength);
+    }
+
 }

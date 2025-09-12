@@ -22,6 +22,8 @@ TagManager:
   - Tunnel
   - CarGateEvent
   - TunnelNavi
+  - Gravel
+  - Grass
   layers:
   - Default
   - TransparentFX

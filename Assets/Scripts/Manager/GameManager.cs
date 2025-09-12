@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public bool IsRushToTree = false;
     public bool IsDeathEvent = false;
     public bool IsEnding = false;
+    public bool IsGamePaused = false;
 
     void Awake()
     {
@@ -42,7 +43,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         CarController.IsGameOver = false;
-        IsTutorial = true;
     }
 
 }

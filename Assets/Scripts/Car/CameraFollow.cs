@@ -13,12 +13,19 @@ public class CameraFollow : MonoBehaviour
     public float mouseSensitivity = 0.5f;
     public float maxYawAngle = 20f;
 
+    public float shakeAmount = 0f; // 흔들림 강도
+    public float shakeSpeed = 0.001f;
+    public static float carSpeed;
+
     private float currentYaw = 0f;
+    private Vector3 originalPos;
 
     public static bool isEvent = false; // 이벤트 제어용 변수 추가
     public static Quaternion fixedRotation = Quaternion.identity;
     private Camera carCam;
     private CinemachineBrain cinemachineBrain;
+
+
 
     void Awake()
     {
@@ -28,16 +35,25 @@ public class CameraFollow : MonoBehaviour
     void Start()
     {
         FollowTarget();
+        originalPos = carCam.transform.localPosition;
     }
 
     void Update()
     {
+        if (GameManager.Instance.IsGamePaused) return;
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsDeathEvent) return;
 
         if (!CarGateEventTrigger.isCargateEvent && !isEvent)
         {
             FollowTarget();
         }
+        // 기존보다 훨씬 작은 값으로 시작
+        float shakeAmount = Mathf.Lerp(0.005f, 0.01f, carSpeed / 50f);
+
+        // 간단한 Perlin Noise 기반 흔들림
+        float offsetX = (Mathf.PerlinNoise(Time.time * shakeSpeed, 0f) - 0.5f) * shakeAmount;
+        float offsetY = (Mathf.PerlinNoise(0f, Time.time * shakeSpeed) - 0.5f) * shakeAmount;
+        carCam.transform.localPosition = originalPos + new Vector3(offsetX, offsetY, 0);
     }
 
     void FollowTarget()

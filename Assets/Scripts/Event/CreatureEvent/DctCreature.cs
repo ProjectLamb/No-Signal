@@ -14,7 +14,7 @@ public class DctCreature : MonoBehaviour
     public Collider col;
     public float rotSpeed = 3f;
     private StudioEventEmitter stepEmitter;
-    public static bool IsGameOver = false;
+    private bool IsGameOver = false;
 
     Rigidbody rb;
 
@@ -32,31 +32,6 @@ public class DctCreature : MonoBehaviour
         EventManager.Instance.SetEvent(3);
         EventManager.Instance.PlayEvent();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (IsGameOver)
-        {
-            navMeshAgent.enabled = false;
-            return;
-        }
-        else
-        {
-            if (navMeshAgent.isOnNavMesh)
-            {
-                navMeshAgent.SetDestination(targetTr.position);
-            }
-            else
-            {
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(this.transform.position, out hit, 50.0f, NavMesh.AllAreas))
-                    navMeshAgent.Warp(hit.position);
-            }
-            LookTarget();
-        }
-    }    
-
 
     void LookTarget()
     {

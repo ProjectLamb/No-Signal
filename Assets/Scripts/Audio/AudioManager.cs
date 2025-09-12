@@ -69,6 +69,27 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PauseOn()
+    {
+        foreach (EventInstance eventInstance in eventInstances)
+        {
+            eventInstance.setPaused(true);
+        }
+
+        foreach (StudioEventEmitter emitter in eventEmitters)
+        {
+            emitter.Stop();
+        }
+    }
+
+    public void PauseOff()
+    {
+        foreach (EventInstance eventInstance in eventInstances)
+        {
+            eventInstance.setPaused(false);
+        }
+    }
+
     private void OnDestroy()
     {
         CleanUp();
