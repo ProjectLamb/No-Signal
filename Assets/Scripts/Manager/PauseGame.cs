@@ -26,6 +26,7 @@ public class PauseGame : MonoBehaviour
         AudioManager.Instance.PauseOn();
         pausePanel.SetActive(true);
         buttons.SetActive(true);
+        Cursor.visible = true;
         gameScale = 0;
     }
 
@@ -35,6 +36,7 @@ public class PauseGame : MonoBehaviour
         AudioManager.Instance.PauseOff();
         pausePanel.SetActive(false);
         buttons.SetActive(false);
+        Cursor.visible = false;
         gameScale = 1;
     }
 
@@ -42,6 +44,7 @@ public class PauseGame : MonoBehaviour
     {
         GameManager.Instance.IsGamePaused = false;
         gameScale = 1;
+        Cursor.visible = true;
         SceneManager.LoadScene("Title");
     }
 

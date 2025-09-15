@@ -61,7 +61,7 @@ public class Creature : MonoBehaviour
         {
             navMeshAgent.enabled = false;
         }
-        if (!IsGameOver && IsChase && !IsAttachCar)
+        if (!IsGameOver && IsChase && !IsAttachCar && !IsRushToCar)
         {
             IsReveal = false;
             NavCheck();
@@ -69,7 +69,6 @@ public class Creature : MonoBehaviour
             ReSpawn();
         }
         LookTarget();
-
         if (IsReveal)
         {
             anim.SetBool("IsRun2", true);
@@ -87,14 +86,8 @@ public class Creature : MonoBehaviour
         {
             IsTeleport = true;
             navMeshAgent.enabled = false;
-
-            float ranX = Random.Range(-15, 15);
-            float ranZ = Random.Range(-15, 15);
-
-            Vector3 targetPos = new Vector3(targetTr.position.x - ranX, targetTr.position.y + 5f, targetTr.position.z - ranZ);
-            this.transform.position = targetPos;
-            navMeshAgent.enabled = true;
-            navMeshAgent.speed = 50f;
+            SetRushPositionEnd();
+            StartCoroutine("JumpToCarEnd");
         }
         
         if (IsAttachCar && !GameManager.Instance.IsEnding)
@@ -165,8 +158,9 @@ public class Creature : MonoBehaviour
                 EventManager.Instance.PlayEvent();
                 stepEmitter.Stop();
             }
-            else if(!IsGameOver && IsRushToCar)
+            else if(!IsGameOver && IsRushToCar && !IsAttachCar)
             {
+                AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHitCar, targetTr.position);
                 IsAttachCar = true;
             }
         }
@@ -210,6 +204,26 @@ public class Creature : MonoBehaviour
         col.isTrigger = true;
         Vector3 offset = targetTr.forward * 35f + targetTr.up * -6f;
         this.transform.position = targetTr.position + offset;
+    }
+
+    public void SetRushPositionEnd()
+    {
+        rb.isKinematic = false;
+        col.isTrigger = true;
+        Vector3 offset = targetTr.forward * 15f + targetTr.up * 3f;
+        this.transform.position = targetTr.position + offset;
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureGameOver, targetTr.position);
+    }
+
+    IEnumerator JumpToCarEnd()
+    {
+        LookTarget();
+        rb.isKinematic = true;
+        col.isTrigger = false;
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.Instance.PlayOneShot(FMODEvents.instance.creatureHitCar, targetTr.position);
+        anim.SetBool("IsAttack", true);
+        IsAttachCar = true;
     }
 
     public void Die()
