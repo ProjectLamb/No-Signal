@@ -46,14 +46,8 @@ public class CameraFollow : MonoBehaviour
         if (!CarGateEventTrigger.isCargateEvent && !isEvent)
         {
             FollowTarget();
+            CamVibrate();
         }
-        // 기존보다 훨씬 작은 값으로 시작
-        float shakeAmount = Mathf.Lerp(0.005f, 0.01f, carSpeed / 50f);
-
-        // 간단한 Perlin Noise 기반 흔들림
-        float offsetX = (Mathf.PerlinNoise(Time.time * shakeSpeed, 0f) - 0.5f) * shakeAmount;
-        float offsetY = (Mathf.PerlinNoise(0f, Time.time * shakeSpeed) - 0.5f) * shakeAmount;
-        carCam.transform.localPosition = originalPos + new Vector3(offsetX, offsetY, 0);
     }
 
     void FollowTarget()
@@ -76,6 +70,17 @@ public class CameraFollow : MonoBehaviour
         Quaternion yawRot = Quaternion.Euler(0f, currentYaw, 0f);
 
         transform.rotation = baseRot * yawRot;
+    }
+
+    void CamVibrate()
+    {
+         // 기존보다 훨씬 작은 값으로 시작
+        float shakeAmount = Mathf.Lerp(0.005f, 0.01f, carSpeed / 50f);
+
+        // 간단한 Perlin Noise 기반 흔들림
+        float offsetX = (Mathf.PerlinNoise(Time.time * shakeSpeed, 0f) - 0.5f) * shakeAmount;
+        float offsetY = (Mathf.PerlinNoise(0f, Time.time * shakeSpeed) - 0.5f) * shakeAmount;
+        carCam.transform.localPosition = originalPos + new Vector3(offsetX, offsetY, 0);
     }
 
     public void ChangeFOV()
