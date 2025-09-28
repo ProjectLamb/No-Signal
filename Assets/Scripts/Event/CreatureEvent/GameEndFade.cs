@@ -28,6 +28,8 @@ public class GameEndFade : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.reality,car.transform.position);
         car.transform.position = startTr.position;
         car.transform.rotation = startTr.rotation;
+        
+        CarController.resetWindow();
 
         yield return new WaitForSeconds(1.68f);
         fadeImage.gameObject.SetActive(false);

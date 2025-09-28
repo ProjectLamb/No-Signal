@@ -25,6 +25,8 @@ public class CarController : MonoBehaviour
         public WheelCollider wheelCollider;
         public Axel axel;
     }
+    public static Action resetWindow;
+    
     public float maxAcceleration = 30.0f;
     public float brakeAcceleration = 50.0f;
     public float turnSensitivity = 1.0f;
@@ -144,6 +146,11 @@ public class CarController : MonoBehaviour
 
         wind = AudioManager.Instance.CreateInstance(FMODEvents.instance.wind);
         gravel = AudioManager.Instance.CreateInstance(FMODEvents.instance.gravel);
+
+        resetWindow = () =>
+        {
+            ResetWindow();
+        };
     }
 
     void Start()
@@ -960,5 +967,11 @@ public class CarController : MonoBehaviour
         AudioManager.Instance.PlayOneShot(FMODEvents.instance.chaseReNavi, this.transform.position);
         yield return new WaitForSeconds(3.6f);
         chaseGPSLine.SetActive(true);
+    }
+
+    public void ResetWindow()
+    {
+        brokenBody.SetActive(false);
+        originBody.SetActive(true);   
     }
 }
