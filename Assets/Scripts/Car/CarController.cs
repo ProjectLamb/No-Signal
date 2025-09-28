@@ -748,7 +748,9 @@ public class CarController : MonoBehaviour
         yield return new WaitForSeconds(4.5f);
         this.transform.position = new Vector3(2753f, 462f, -2859f);
         this.transform.rotation = Quaternion.Euler(new Vector3(351.025787f, 117.775482f, 354.717651f));
+
         AFCpanel.SetActive(false);
+        yield return new WaitForSeconds(3.0f);
         creatureDct.SetActive(true);
     }
     IEnumerator SoundLoudWarn()
