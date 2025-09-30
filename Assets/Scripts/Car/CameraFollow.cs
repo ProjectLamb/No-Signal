@@ -20,7 +20,7 @@ public class CameraFollow : MonoBehaviour
     private float currentYaw = 0f;
     private Vector3 originalPos;
 
-    public static bool isEvent = false; // 이벤트 제어용 변수 추가
+    public static bool IsEvent = false; // 이벤트 제어용 변수 추가
     public static Quaternion fixedRotation = Quaternion.identity;
     private Camera carCam;
     private CinemachineBrain cinemachineBrain;
@@ -43,7 +43,7 @@ public class CameraFollow : MonoBehaviour
         if (GameManager.Instance.IsGamePaused) return;
         if (GameManager.Instance.IsTutorial || GameManager.Instance.IsDeathEvent) return;
 
-        if (!CarGateEventTrigger.isCargateEvent && !isEvent)
+        if (!CarGateEventTrigger.isCargateEvent && !IsEvent)
         {
             FollowTarget();
             CamVibrate();

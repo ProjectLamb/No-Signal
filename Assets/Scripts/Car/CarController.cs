@@ -578,6 +578,8 @@ public class CarController : MonoBehaviour
     public void EndPanelOn()
     {
         GameManager.Instance.IsEnding = true;
+        CameraFollow.IsEvent = true;
+        
         IsCanRushTree = false;
         IsChased = false;
         gameEndPanel.SetActive(true);

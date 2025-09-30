@@ -82,7 +82,7 @@ public class CarGateEventTrigger : MonoBehaviour
         Quaternion targetCarRotation = Quaternion.LookRotation(carTrToGate, Vector3.up);
         Vector3 targetRotation = targetCarRotation.eulerAngles;
 
-        CameraFollow.isEvent = true;
+        CameraFollow.IsEvent = true;
         isCargateEvent = true;
 
         Sequence mySequence = DOTween.Sequence();
