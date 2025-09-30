@@ -83,7 +83,7 @@ public class EventMove : MonoBehaviour
         else 
         {
             cinemachineBrain.enabled = false;
-            CameraFollow.isEvent = false;
+            CameraFollow.IsEvent = false;
             CarGateEventTrigger.isCargateEvent = false;
             CarRb.isKinematic = false;
             CarRb.velocity = Vector3.zero;
@@ -177,7 +177,7 @@ public class EventMove : MonoBehaviour
 
     private IEnumerator PlayerActiveOff(){
         GameManager.Instance.IsCargateEvent = false;
-        CameraFollow.isEvent = false;
+        CameraFollow.IsEvent = false;
         CarGateEventTrigger.isCargateEvent = false;
         this.gameObject.SetActive(false);
         CarRb.isKinematic = false;
