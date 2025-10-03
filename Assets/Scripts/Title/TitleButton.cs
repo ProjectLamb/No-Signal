@@ -21,7 +21,8 @@ public class TitleButton : MonoBehaviour
 
     void Start()
     {
-
+        GameManager.Instance.IsEnding = false;
+        CameraFollow.IsEvent = false;
         Cursor.visible = true;
         if (!SaveLoadManager.Instance.IsTrafficClear && !SaveLoadManager.Instance.IsCargateClear && !SaveLoadManager.Instance.IsDeerClear && !SaveLoadManager.Instance.IsChaseEvent)
         {

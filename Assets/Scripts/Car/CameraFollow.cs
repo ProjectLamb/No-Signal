@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class CameraFollow : MonoBehaviour
     public float shakeAmount = 0f; // 흔들림 강도
     public float shakeSpeed = 0.001f;
     public static float carSpeed;
+    public static Action stopCam;
 
     private float currentYaw = 0f;
     private Vector3 originalPos;
@@ -31,6 +33,11 @@ public class CameraFollow : MonoBehaviour
     {
         carCam = GetComponent<Camera>();
         cinemachineBrain = GetComponent<CinemachineBrain>();
+
+        stopCam = () =>
+        {
+            StopCam();
+        };
     }
     void Start()
     {
@@ -74,7 +81,7 @@ public class CameraFollow : MonoBehaviour
 
     void CamVibrate()
     {
-         // 기존보다 훨씬 작은 값으로 시작
+        // 기존보다 훨씬 작은 값으로 시작
         float shakeAmount = Mathf.Lerp(0.005f, 0.01f, carSpeed / 50f);
 
         // 간단한 Perlin Noise 기반 흔들림
@@ -92,5 +99,16 @@ public class CameraFollow : MonoBehaviour
     {
         cinemachineBrain.enabled = false;
         carCam.fieldOfView = 10f;
+    }
+
+    public void StopCam()
+    {
+        float deltaX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        currentYaw = Mathf.Clamp(currentYaw + deltaX, -maxYawAngle, maxYawAngle + 40); // ���� + ����
+
+        Quaternion baseRot = carTarget.rotation * Quaternion.Euler(rotationOffset);
+        Quaternion yawRot = Quaternion.Euler(0f, 0f, 0f);
+
+        transform.rotation = baseRot * yawRot;
     }
 }

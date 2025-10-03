@@ -907,6 +907,8 @@ public class CarController : MonoBehaviour
         chaseBackground.stop(STOP_MODE.IMMEDIATE);
         EventManager.Instance.SetEvent(2);
         EventManager.Instance.PlayEvent();
+        CameraFollow.stopCam();
+        CameraFollow.IsEvent = true;
     }
 
     IEnumerator WarnTextEffect()
